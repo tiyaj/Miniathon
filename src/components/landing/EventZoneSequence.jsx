@@ -5,6 +5,7 @@ import { ArrowUpRight } from 'lucide-react';
 import { eventZones } from '../../data/eventZones';
 import { useRouteWipe } from './RouteWipeTransition';
 import { useReducedMotionSafe } from '../../hooks/useReducedMotionSafe';
+import ZoneCaption from './ZoneCaption';
 
 // Register ScrollTrigger plugin
 if (typeof window !== 'undefined') {
@@ -14,10 +15,10 @@ if (typeof window !== 'undefined') {
 /**
  * TUNING CONFIG: EventZoneSequence (§5.4, §5.5, §6.3, Correction Patch §3)
  * - Container height: travel + window.innerHeight (dynamically computed, zero guesswork)
- * - Cards: 5 varied asymmetric cards (lead 59vw landscape, portrait 38vw, landscape 52vw, portrait 36vw, landscape 50vw)
- * - Radius: 12px
- * - Card Height: clamp(520px, 84vh, 860px)
- * - Gap: 1.5vw
+ * - Cards: 5 varied asymmetric cards (lead 58vw landscape, portrait 38vw, landscape 52vw, portrait 38vw, landscape 50vw)
+ * - Radius: 1.5vw
+ * - Card Height: clamp(580px, 98vh, 1080px)
+ * - Gap: 4vw (3-5vw)
  * - Smoothness: GSAP ScrollTrigger scrub: 1 mapped linearly from 0 to -travel
  * - Last card ends flush with right edge; pin releases immediately after.
  * - Mobile / prefers-reduced-motion fallback to vertical stack.
@@ -152,11 +153,26 @@ export function EventZoneSequence() {
           padding: isFallback ? '4rem 1.5rem' : '1vh 0',
         }}
       >
-        {/* Subtle Top Telemetry Strip */}
+        {/* Top Dark Scrim (§10, C2) providing high contrast for top telemetry labels against bright photos */}
+        <div
+          style={{
+            position: 'absolute',
+            top: 0,
+            left: 0,
+            right: 0,
+            height: '180px',
+            background: 'linear-gradient(to bottom, rgba(7, 9, 19, 0.82) 0%, rgba(7, 9, 19, 0.42) 50%, transparent 100%)',
+            pointerEvents: 'none',
+            zIndex: 9,
+          }}
+          aria-hidden="true"
+        />
+
+        {/* Subtle Top Telemetry Strip — Positioned below fixed PULSE mark to eliminate C1 collision */}
         <div
           style={{
             position: isFallback ? 'relative' : 'absolute',
-            top: isFallback ? 'auto' : '2.5vh',
+            top: isFallback ? 'auto' : 'clamp(74px, 8.5vh, 90px)',
             left: '3.3vw',
             right: '3.3vw',
             marginBottom: isFallback ? '2rem' : 0,
@@ -181,9 +197,10 @@ export function EventZoneSequence() {
             <span
               style={{
                 fontSize: '0.72rem',
-                color: 'rgba(255, 255, 255, 0.55)',
+                color: 'rgba(255, 255, 255, 0.75)',
                 letterSpacing: '0.14em',
                 textTransform: 'uppercase',
+                textShadow: '0 2px 8px rgba(0, 0, 0, 0.8)',
               }}
             >
               CHAPTER 02 // SECTOR MONITORING & COVERAGE
@@ -193,11 +210,12 @@ export function EventZoneSequence() {
           <span
             style={{
               fontSize: '0.72rem',
-              color: 'rgba(255, 255, 255, 0.45)',
+              color: 'rgba(255, 255, 255, 0.75)',
               letterSpacing: '0.14em',
+              textShadow: '0 2px 8px rgba(0, 0, 0, 0.8)',
             }}
           >
-            05 ACTIVE SECTORS · ASYMMETRIC DEPLOYMENT
+            {`${String(eventZones.length).padStart(2, '0')} ACTIVE SECTORS · ASYMMETRIC DEPLOYMENT`}
           </span>
         </div>
 
@@ -343,53 +361,17 @@ export function EventZoneSequence() {
                     zIndex: 5,
                   }}
                 >
-                  {/* Left: Eyebrow + Huge Zone Name + Coverage Line */}
-                  <div style={{ maxWidth: '82%' }}>
-                    <span
-                      className="font-mono"
-                      style={{
-                        fontSize: '0.72rem',
-                        color: 'rgba(255, 255, 255, 0.75)',
-                        letterSpacing: '0.14em',
-                        textTransform: 'uppercase',
-                        display: 'block',
-                        marginBottom: '6px',
-                        fontWeight: 700,
-                      }}
-                    >
-                      ZONE {zone.index}
-                    </span>
-
-                    <h3
-                      style={{
-                        fontFamily: "'Archivo', 'Archivo Black', sans-serif",
-                        fontSize: 'clamp(2rem, 3.8vw, 3.8rem)',
-                        fontWeight: 900,
-                        letterSpacing: '-0.02em',
-                        lineHeight: 0.94,
-                        color: '#FFFFFF',
-                        margin: '0 0 10px 0',
-                        textTransform: 'uppercase',
-                        textWrap: 'balance',
-                      }}
-                    >
-                      {zone.name}
-                    </h3>
-
-                    <div
-                      className="font-mono"
-                      style={{
-                        fontSize: 'clamp(0.75rem, 0.9vw, 0.88rem)',
-                        color: isFull ? 'rgba(255, 255, 255, 0.9)' : '#ff6b55',
-                        letterSpacing: '0.08em',
-                        display: 'flex',
-                        alignItems: 'center',
-                        gap: '8px',
-                        fontWeight: 600,
-                      }}
-                    >
-                      <span>{zone.status}</span>
-                    </div>
+                  {/* Left: Shared ZoneCaption (§5.2, §10) */}
+                  <div style={{ maxWidth: '82%', width: '100%' }}>
+                    <ZoneCaption
+                      zoneIndex={zone.index}
+                      zoneName={zone.name}
+                      status={zone.status}
+                      fillPct={fillPct}
+                      isFull={isFull}
+                      titleFontSize="clamp(2rem, 3.8vw, 3.8rem)"
+                      showUnderline={false}
+                    />
                   </div>
 
                   {/* Right: Round White Arrow Button (Inset 3.3vw) */}

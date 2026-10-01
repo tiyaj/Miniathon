@@ -1,40 +1,38 @@
 import React, { useRef } from 'react';
 import { motion, useScroll, useTransform } from 'framer-motion';
 import CoordinationOrb from './CoordinationOrb';
-import FloatingEventMedia from './FloatingEventMedia';
+import HeroPhotoCards from './HeroPhotoCards';
 import LiveDot from './primitives/LiveDot';
 import { useReducedMotionSafe } from '../../hooks/useReducedMotionSafe';
+import { useFitText } from '../../hooks/useFitText';
+import { eventZones } from '../../data/eventZones';
 
 /**
- * TUNING CONFIG: Reference Hero (§4, §5.1, §5.4)
- * Background: Pure Black (#000000)
- * Tight stage height (~112vh) so the lead stage image of EventZoneSequence
- * enters the viewport while the headline and globe are still leaving.
- * Zero blank dark space.
- * Headline: (50vw, 62vh), Archivo 900
- * Globe: (49.7vw, 60vh), WebGL wireframe line loops & tilted orbit ring
+ * TUNING CONFIG: Reference Hero (§3, §4, §5, §7)
+ * Target hero composition (1440×900 reference):
+ * - Headline centered both horizontally and vertically (true center)
+ * - Widest line ≤ 58vw, block ≤ 42vh, text-wrap: balance, useFitText guard
+ * - Real photographic event cards in outer gutters/corners (no gradient/abstract art)
+ * - Wireframe CoordinationOrb centered on headline as quiet backdrop
+ * - Protected rectangles: [data-hero-ticker], [data-hero-stat], [data-hero-scroll], [data-menu], [data-hero-headline]
+ * - Clear >= 24px clearance between cards and all protected UI elements
  */
-export const HERO_CONFIG = {
-  headlineCenter: { x: '50vw', y: '62vh' },
-  fontSizeVw: 4.7,
-  lineHeight: 0.94,
-  letterSpacing: '-0.01em',
-  globeCenter: { x: '49.7vw', y: '60vh' },
-  globeDiameterVw: 27,
-  bgColor: '#0a0a10',
+const HERO_CONFIG = {
+  bgColor: '#070913',
   stageHeight: '112vh',
 };
 
 export function ReferenceHero() {
   const containerRef = useRef(null);
   const shouldReduceMotion = useReducedMotionSafe();
+  const { ref: headlineRef } = useFitText({ maxReductionSteps: 8, reductionRatio: 0.96 });
 
   const { scrollYProgress } = useScroll({
     target: containerRef,
     offset: ['start start', 'end start'],
   });
 
-  // 1:1 Natural scroll translation across the hero exit
+  // Smooth scroll exit transitions
   const masterY = useTransform(
     scrollYProgress,
     [0, 0.72],
@@ -53,12 +51,17 @@ export function ReferenceHero() {
     [1, 0]
   );
 
-  // Eyebrow and bottom meta exit early with headline
   const metaOpacity = useTransform(
     scrollYProgress,
     [0, 0.35],
     [1, 0]
   );
+
+  // Derive active zones and critical gap count directly from eventZones data (§2 H5, §7)
+  const totalZones = eventZones.length;
+  const criticalCount = eventZones.filter(
+    (z) => (z.gap || (z.required - z.staffed)) > 0
+  ).length;
 
   return (
     <div
@@ -67,7 +70,7 @@ export function ReferenceHero() {
       className="pulse-reference-hero-container"
       style={{
         position: 'relative',
-        backgroundColor: HERO_CONFIG.bgColor, // Pure Black (#000000)
+        backgroundColor: HERO_CONFIG.bgColor,
         color: '#FFFFFF',
         height: shouldReduceMotion ? '100vh' : HERO_CONFIG.stageHeight,
         width: '100%',
@@ -87,32 +90,91 @@ export function ReferenceHero() {
           backgroundColor: HERO_CONFIG.bgColor,
         }}
       >
-        {/* Layer 1: Background Wireframe Coordination Orb */}
+        {/* Layer 1: Background Wireframe Coordination Orb (centered on headline, quiet backdrop) */}
         <motion.div
           style={{
             y: shouldReduceMotion ? 0 : globeY,
             position: 'absolute',
             inset: 0,
             pointerEvents: 'none',
-            zIndex: 2,
+            zIndex: 1, // Layer 1
           }}
         >
           <CoordinationOrb />
         </motion.div>
 
-        {/* Layer 2: Scattered Floating Cream Cards & Bridge Media */}
-        <FloatingEventMedia scrollYProgress={scrollYProgress} />
+        {/* Layer 2: Real Documentary Photo Cards in outer gutters/corners (§5, §6) */}
+        <HeroPhotoCards />
 
-        {/* Top Eyebrow: LIVE EVENT COORDINATION · TECHFEST 2026 · EVENT ACTIVE */}
-        <motion.div
+        {/* Layer 4: Centered Headline Block (§4) */}
+        <div
           style={{
             position: 'absolute',
-            top: '7vh',
+            inset: 0,
+            display: 'flex',
+            alignItems: 'center',
+            justifyContent: 'center',
+            pointerEvents: 'none',
+            zIndex: 4, // Layer 4 (above cards layer 2, below HUD layer 5)
+          }}
+        >
+          <motion.div
+            style={{
+              width: '100%',
+              maxWidth: '58vw',
+              maxHeight: '42vh',
+              display: 'flex',
+              alignItems: 'center',
+              justifyContent: 'center',
+              textAlign: 'center',
+              y: shouldReduceMotion ? 0 : masterY,
+              opacity: shouldReduceMotion ? 1 : headlineOpacity,
+            }}
+            data-hero-headline="true"
+            className="pulse-hero-headline-wrap"
+          >
+            <h1
+              ref={headlineRef}
+              data-hero-headline="true"
+              style={{
+                fontFamily: "'Archivo', 'Archivo Black', 'Bricolage Grotesque', sans-serif",
+                fontVariationSettings: "'wdth' 125, 'wght' 900",
+                fontWeight: 900,
+                fontSize: 'min(6.4vw, 11vh)',
+                lineHeight: 0.94,
+                letterSpacing: '-0.01em',
+                textTransform: 'uppercase',
+                color: '#FFFFFF',
+                margin: 0,
+                padding: 0,
+                whiteSpace: 'pre-line',
+                textWrap: 'balance',
+                overflowWrap: 'normal',
+                hyphens: 'none',
+                maxWidth: '58vw',
+                textShadow: '0 2px 30px rgba(7, 9, 19, 0.55)',
+                display: 'inline-block',
+              }}
+              className="pulse-hero-display-h1"
+            >
+              {"EVERY PERSON.\nEVERY ZONE.\nIN SYNC."}
+            </h1>
+          </motion.div>
+        </div>
+
+        {/* Layer 5: HUD Elements (Protected Rectangles) */}
+
+        {/* Top Ticker: LIVE EVENT COORDINATION · TECHFEST 2026 · EVENT ACTIVE */}
+        <motion.div
+          data-hero-ticker="true"
+          style={{
+            position: 'absolute',
+            top: 'clamp(24px, 4.5vh, 40px)',
             left: '50%',
             transform: 'translateX(-50%)',
             opacity: shouldReduceMotion ? 1 : metaOpacity,
             y: shouldReduceMotion ? 0 : masterY,
-            zIndex: 15,
+            zIndex: 5, // Layer 5
             pointerEvents: 'auto',
           }}
         >
@@ -120,17 +182,19 @@ export function ReferenceHero() {
             className="font-mono pulse-hero-eyebrow"
             style={{
               fontSize: '0.72rem',
-              color: 'rgba(255, 255, 255, 0.65)',
+              color: 'rgba(255, 255, 255, 0.75)',
               letterSpacing: '0.14em',
               textTransform: 'uppercase',
               display: 'inline-flex',
               alignItems: 'center',
               gap: '10px',
               padding: '6px 14px',
-              border: '1px solid rgba(255, 255, 255, 0.1)',
-              backgroundColor: 'rgba(255, 255, 255, 0.03)',
+              border: '1px solid rgba(255, 255, 255, 0.12)',
+              backgroundColor: 'rgba(7, 9, 19, 0.65)',
+              backdropFilter: 'blur(8px)',
               borderRadius: '2px',
               userSelect: 'none',
+              whiteSpace: 'nowrap',
             }}
           >
             <LiveDot size={6} />
@@ -138,63 +202,20 @@ export function ReferenceHero() {
           </div>
         </motion.div>
 
-        {/* Layer 3: Lower-Center Display Headline (§4.2, §5.1) */}
+        {/* Bottom Stat Line: 128 ACTIVE VOLUNTEERS // 5 ZONES (Derived from eventZones) */}
         <motion.div
+          data-hero-stat="true"
           style={{
             position: 'absolute',
-            left: HERO_CONFIG.headlineCenter.x,
-            top: HERO_CONFIG.headlineCenter.y,
-            transform: 'translate(-50%, -50%)',
-            textAlign: 'center',
-            zIndex: 10,
-            y: shouldReduceMotion ? 0 : masterY,
-            opacity: shouldReduceMotion ? 1 : headlineOpacity,
-            pointerEvents: 'none',
-            width: '100%',
-            maxWidth: '1440px',
-            paddingLeft: '1.5rem',
-            paddingRight: '1.5rem',
-          }}
-          className="pulse-hero-headline-wrap"
-        >
-          <h1
-            style={{
-              fontFamily: "'Archivo', 'Archivo Black', 'Bricolage Grotesque', sans-serif",
-              fontVariationSettings: "'wdth' 125, 'wght' 900",
-              fontWeight: 900,
-              fontSize: 'clamp(2.6rem, 4.7vw, 5.2rem)',
-              lineHeight: HERO_CONFIG.lineHeight,
-              letterSpacing: HERO_CONFIG.letterSpacing,
-              textTransform: 'uppercase',
-              color: '#FFFFFF',
-              margin: 0,
-              padding: 0,
-              whiteSpace: 'pre-line',
-              textShadow: '0 4px 30px rgba(0, 0, 0, 0.9)',
-            }}
-            className="pulse-hero-display-h1"
-          >
-            {"EVERY PERSON.\nEVERY ZONE.\nIN SYNC."}
-          </h1>
-        </motion.div>
-
-        {/* Bottom Meta Line: 128 ACTIVE VOLUNTEERS // 5 CRITICAL ZONES */}
-        <motion.div
-          style={{
-            position: 'absolute',
-            bottom: '105px', // Above bottom menu pill
-            left: 'clamp(1.5rem, 4vw, 3.5rem)',
-            right: 'clamp(1.5rem, 4vw, 3.5rem)',
-            display: 'flex',
-            justifyContent: 'space-between',
-            alignItems: 'center',
-            zIndex: 12,
+            bottom: 'clamp(24px, 3.8vh, 36px)',
+            left: 'clamp(1.5rem, 3.5vw, 4rem)',
+            zIndex: 5, // Layer 5
             opacity: shouldReduceMotion ? 1 : metaOpacity,
             pointerEvents: 'none',
           }}
-          className="font-mono pulse-hero-meta-bar"
+          className="font-mono"
         >
-          <div style={{ display: 'flex', alignItems: 'center', gap: '10px' }}>
+          <div style={{ display: 'flex', alignItems: 'center', gap: '10px', whiteSpace: 'nowrap' }}>
             <span
               style={{
                 width: '6px',
@@ -204,12 +225,35 @@ export function ReferenceHero() {
                 boxShadow: '0 0 8px #10b981',
               }}
             />
-            <span style={{ fontSize: '0.72rem', color: 'rgba(255, 255, 255, 0.6)', letterSpacing: '0.12em' }}>
-              128 ACTIVE VOLUNTEERS // 5 CRITICAL ZONES
+            <span style={{ fontSize: '0.72rem', color: 'rgba(255, 255, 255, 0.75)', letterSpacing: '0.12em' }}>
+              {`128 ACTIVE VOLUNTEERS // ${totalZones} ACTIVE ZONES · ${criticalCount} CRITICAL`}
             </span>
           </div>
+        </motion.div>
 
-          <span style={{ fontSize: '0.72rem', color: 'rgba(255, 255, 255, 0.45)', letterSpacing: '0.12em' }}>
+        {/* Scroll Cue: SCROLL TO EXPLORE ZONES ↓ (Positioned cleanly above Menu pill) */}
+        <motion.div
+          data-hero-scroll="true"
+          style={{
+            position: 'absolute',
+            bottom: '82px',
+            left: '50%',
+            transform: 'translateX(-50%)',
+            zIndex: 5, // Layer 5
+            opacity: shouldReduceMotion ? 1 : metaOpacity,
+            pointerEvents: 'none',
+            whiteSpace: 'nowrap',
+          }}
+          className="font-mono"
+        >
+          <span
+            style={{
+              fontSize: '0.72rem',
+              color: 'rgba(255, 255, 255, 0.65)',
+              letterSpacing: '0.14em',
+              textShadow: '0 2px 8px rgba(0, 0, 0, 0.8)',
+            }}
+          >
             SCROLL TO EXPLORE ZONES ↓
           </span>
         </motion.div>

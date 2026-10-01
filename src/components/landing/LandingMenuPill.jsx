@@ -296,6 +296,7 @@ export function LandingMenuPill() {
 
         {/* Fixed Menu Pill (§4.4) */}
         <button
+          data-menu="true"
           onClick={() => setIsOpen((prev) => !prev)}
           style={{
             marginBottom: MENU_CONFIG.bottomOffset,

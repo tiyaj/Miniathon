@@ -12,15 +12,14 @@ import { useReducedMotionSafe } from '../../hooks/useReducedMotionSafe';
  * - Colors: Electric indigo #5a3cf0, PULSE red #f5452c for alert nodes
  * - Idle rotation: ~140s per revolution
  */
-export const ORB_CONFIG = {
-  center: { x: '49.7vw', y: '60vh' },
-  diameterVw: 27,
+const ORB_CONFIG = {
+  center: { x: '50%', y: '50%' },
   orbitAngleDeg: -23,
   axisTiltZDeg: 18,
   axisTiltXDeg: 12,
   indigoColor: '#5a3cf0',
   pulseColor: '#f5452c',
-  ringScale: 1.9,
+  ringScale: 1.8,
   ringSemiMinorFactor: 0.22,
 };
 
@@ -30,13 +29,10 @@ export function CoordinationOrb({ scrollRotation = 0 }) {
   const shouldReduceMotion = useReducedMotionSafe();
   const [hasWebGL, setHasWebGL] = useState(true);
 
-  // Sector labels with status
+  // Sector labels inside globe bounds (§4) - only ENTRY GATE and FOOD ZONE, aria-hidden
   const sectorLabels = [
-    { label: 'ENTRY GATE', x: '26vw', y: '52vh', isRed: true },
-    { label: 'MAIN STAGE', x: '66vw', y: '46vh', isRed: false },
-    { label: 'REGISTRATION', x: '48vw', y: '72vh', isRed: false },
-    { label: 'FOOD ZONE', x: '33vw', y: '70vh', isRed: true },
-    { label: 'BACKSTAGE', x: '68vw', y: '64vh', isRed: false },
+    { label: 'ENTRY GATE', x: '24%', y: '36%', isRed: true },
+    { label: 'FOOD ZONE', x: '62%', y: '64%', isRed: true },
   ];
 
   useEffect(() => {
@@ -85,17 +81,17 @@ export function CoordinationOrb({ scrollRotation = 0 }) {
     globeGroup.rotation.x = THREE.MathUtils.degToRad(ORB_CONFIG.axisTiltXDeg);
     scene.add(globeGroup);
 
-    // Line material in electric indigo (#5a3cf0)
+    // Line material in electric indigo (#5a3cf0) - quiet backdrop alpha (§4)
     const lineMaterial = new THREE.LineBasicMaterial({
       color: 0x5a3cf0,
       transparent: true,
-      opacity: 0.42,
+      opacity: 0.22,
     });
 
     const faintLineMaterial = new THREE.LineBasicMaterial({
       color: 0x5a3cf0,
       transparent: true,
-      opacity: 0.28,
+      opacity: 0.14,
     });
 
     const R = 1.05;
@@ -149,7 +145,7 @@ export function CoordinationOrb({ scrollRotation = 0 }) {
     const orbitMaterial = new THREE.LineBasicMaterial({
       color: 0x7c5cfc,
       transparent: true,
-      opacity: 0.38,
+      opacity: 0.22,
     });
     const orbitLine = new THREE.LineLoop(orbitGeom, orbitMaterial);
     orbitGroup.add(orbitLine);
@@ -238,13 +234,13 @@ export function CoordinationOrb({ scrollRotation = 0 }) {
       id="coordination-orb-container"
       style={{
         position: 'absolute',
-        top: '60vh',
-        left: '49.7vw',
+        top: '50%',
+        left: '50%',
         transform: 'translate(-50%, -50%)',
-        width: 'max(420px, 34vw)',
-        height: 'max(420px, 68vh)',
+        width: 'clamp(340px, 48vh, 520px)',
+        height: 'clamp(340px, 48vh, 520px)',
         pointerEvents: 'none',
-        zIndex: 2,
+        zIndex: 1,
         overflow: 'visible',
       }}
       aria-hidden="true"
@@ -285,10 +281,11 @@ export function CoordinationOrb({ scrollRotation = 0 }) {
         </svg>
       )}
 
-      {/* Atmospheric Sector Labels (§4.2) */}
+      {/* Atmospheric Sector Labels (§4) - inside globe bounds, >= 3:1 contrast */}
       {sectorLabels.map((item, idx) => (
         <div
           key={idx}
+          aria-hidden="true"
           style={{
             position: 'absolute',
             left: item.x,
@@ -296,19 +293,21 @@ export function CoordinationOrb({ scrollRotation = 0 }) {
             display: 'flex',
             alignItems: 'center',
             gap: '6px',
-            opacity: 0.42,
+            opacity: 0.75,
             fontFamily: 'var(--font-mono, monospace)',
-            fontSize: '9px',
-            color: '#c7d2fe',
-            letterSpacing: '0.12em',
+            fontSize: '9.5px',
+            fontWeight: 600,
+            color: '#e2e8f0',
+            letterSpacing: '0.14em',
             pointerEvents: 'none',
             whiteSpace: 'nowrap',
+            textShadow: '0 1px 4px rgba(0, 0, 0, 0.8)',
           }}
         >
           <span
             style={{
-              width: '4px',
-              height: '4px',
+              width: '4.5px',
+              height: '4.5px',
               borderRadius: '50%',
               backgroundColor: item.isRed ? '#f5452c' : '#c7d2fe',
               boxShadow: item.isRed ? '0 0 6px #f5452c' : '0 0 4px #818cf8',
