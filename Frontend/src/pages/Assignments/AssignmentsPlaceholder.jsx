@@ -20,7 +20,8 @@ import {
   dropoutAssignment,
   checkIn,
   checkOut,
-  simulateDisruption
+  simulateDisruption,
+  API_BASE_URL
 } from '../../lib/api';
 import {
   GitPullRequestDraft,
@@ -169,7 +170,7 @@ export function AssignmentsPlaceholder() {
       } else if (asg.role?._id || asg.roleId) {
         // Fallback to role-level suggestions
         const roleId = asg.role?._id || asg.roleId;
-        const roleRes = await fetch(`http://localhost:5000/api/events/${selectedEventId}/roles/${roleId}/suggestions`, {
+        const roleRes = await fetch(`${API_BASE_URL}/events/${selectedEventId}/roles/${roleId}/suggestions`, {
           headers: { Authorization: `Bearer ${localStorage.getItem('pulse_auth_token') || ''}` }
         }).then((r) => r.json());
         if (roleRes.data) {

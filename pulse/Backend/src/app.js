@@ -1,4 +1,4 @@
-﻿import express from 'express';
+import express from 'express';
 import cors from 'cors';
 import authRoutes from './routes/authRoutes.js';
 import userRoutes from './routes/userRoutes.js';
@@ -42,7 +42,6 @@ app.use('/api/users', userRoutes);
 
 // Operational API Routes
 app.use('/api/events', eventRoutes);
-app.use('/api', eventRoutes);
 app.use('/api', volunteerRoutes);
 app.use('/api', assignmentRoutes);
 app.use('/api', taskRoutes);
