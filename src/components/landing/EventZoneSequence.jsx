@@ -1,71 +1,125 @@
-import React, { useRef } from 'react';
-import { motion, useScroll, useTransform, useSpring } from 'framer-motion';
+import React, { useRef, useEffect, useState, useCallback } from 'react';
+import gsap from 'gsap';
+import { ScrollTrigger } from 'gsap/ScrollTrigger';
 import { ArrowUpRight } from 'lucide-react';
 import { eventZones } from '../../data/eventZones';
 import { useRouteWipe } from './RouteWipeTransition';
 import { useReducedMotionSafe } from '../../hooks/useReducedMotionSafe';
 
+// Register ScrollTrigger plugin
+if (typeof window !== 'undefined') {
+  gsap.registerPlugin(ScrollTrigger);
+}
+
 /**
- * TUNING CONFIG: EventZoneSequence (§5.4, §5.5, §6.3)
- * - Container height: 320vh (pinned stage for cinematic translation)
+ * TUNING CONFIG: EventZoneSequence (§5.4, §5.5, §6.3, Correction Patch §3)
+ * - Container height: travel + window.innerHeight (dynamically computed, zero guesswork)
  * - Cards: 5 varied asymmetric cards (lead 59vw landscape, portrait 38vw, landscape 52vw, portrait 36vw, landscape 50vw)
  * - Radius: 12px
- * - Card Height: ~86vh
- * - Coverage bar: 2px (red for gap, white for 100%)
- * - Arrow button: 42px round white button at bottom-right
- * - Inner Parallax: ±4% opposite to scroll direction
+ * - Card Height: clamp(520px, 84vh, 860px)
+ * - Gap: 1.5vw
+ * - Smoothness: GSAP ScrollTrigger scrub: 1 mapped linearly from 0 to -travel
+ * - Last card ends flush with right edge; pin releases immediately after.
+ * - Mobile / prefers-reduced-motion fallback to vertical stack.
  */
-export const STRIP_CONFIG = {
-  containerHeight: '320vh',
-  leadCardWidthVw: 59,
-  cardHeightVh: 86,
-  cardRadius: '12px',
-  gapVw: 1.5,
-  innerParallaxRange: ['-4%', '4%'],
-};
-
 export function EventZoneSequence() {
   const containerRef = useRef(null);
+  const stageRef = useRef(null);
+  const rowRef = useRef(null);
   const shouldReduceMotion = useReducedMotionSafe();
   const { wipeTo } = useRouteWipe();
 
-  const { scrollYProgress } = useScroll({
-    target: containerRef,
-    offset: ['start start', 'end end'],
-  });
+  const [travelDistance, setTravelDistance] = useState(0);
+  const [containerHeight, setContainerHeight] = useState('100vh');
+  const [isMobile, setIsMobile] = useState(false);
 
-  // Stage entrance: lead card rises centered (45vw -> left-anchored 59vw)
-  const leadCardX = useTransform(
-    scrollYProgress,
-    [0, 0.18],
-    ['calc(50vw - 22.5vw - 5vw)', '0vw']
-  );
+  // Exact measurement of travel distance: row.scrollWidth - window.innerWidth
+  const updateMetrics = useCallback(() => {
+    if (typeof window === 'undefined') return;
 
-  const leadCardWidth = useTransform(
-    scrollYProgress,
-    [0, 0.18],
-    ['45vw', '59vw']
-  );
+    const mobileCheck = window.innerWidth < 768;
+    setIsMobile(mobileCheck);
 
-  // Horizontal strip translation mapped across scroll progress
-  const rawX = useTransform(
-    scrollYProgress,
-    [0.1, 0.95],
-    ['0%', '-68%']
-  );
+    if (mobileCheck || shouldReduceMotion) {
+      setTravelDistance(0);
+      setContainerHeight('auto');
+      return;
+    }
 
-  const springX = useSpring(rawX, {
-    stiffness: 90,
-    damping: 24,
-    mass: 0.3,
-  });
+    if (!rowRef.current || !containerRef.current) return;
 
-  // Inner image parallax (translates opposite to the strip row)
-  const innerImgParallax = useTransform(
-    scrollYProgress,
-    [0, 1],
-    STRIP_CONFIG.innerParallaxRange
-  );
+    const rowWidth = rowRef.current.scrollWidth;
+    const windowW = window.innerWidth;
+    const windowH = window.innerHeight;
+
+    const travel = Math.max(0, rowWidth - windowW);
+    setTravelDistance(travel);
+    setContainerHeight(`${travel + windowH}px`);
+
+    ScrollTrigger.refresh();
+  }, [shouldReduceMotion]);
+
+  // Measure on mount, window resize, and row size changes
+  useEffect(() => {
+    updateMetrics();
+
+    const handleResize = () => {
+      updateMetrics();
+    };
+
+    window.addEventListener('resize', handleResize, { passive: true });
+
+    let resizeObserver = null;
+    if (typeof ResizeObserver !== 'undefined' && rowRef.current) {
+      resizeObserver = new ResizeObserver(() => {
+        updateMetrics();
+      });
+      resizeObserver.observe(rowRef.current);
+    }
+
+    // Secondary refresh after font & layout settling
+    const timer = setTimeout(updateMetrics, 250);
+
+    return () => {
+      window.removeEventListener('resize', handleResize);
+      if (resizeObserver) resizeObserver.disconnect();
+      clearTimeout(timer);
+    };
+  }, [updateMetrics]);
+
+  // GSAP ScrollTrigger animation for horizontal scrub
+  useEffect(() => {
+    if (shouldReduceMotion || isMobile || travelDistance <= 0) return;
+    if (!containerRef.current || !rowRef.current) return;
+
+    // Reset initial transform
+    gsap.set(rowRef.current, { x: 0, force3D: true });
+
+    const tween = gsap.fromTo(
+      rowRef.current,
+      { x: 0 },
+      {
+        x: -travelDistance,
+        ease: 'none',
+        scrollTrigger: {
+          trigger: containerRef.current,
+          start: 'top top',
+          end: () => `+=${travelDistance}`,
+          scrub: 1, // Smooth scrub: 1 with zero snapping
+          invalidateOnRefresh: true,
+        },
+      }
+    );
+
+    return () => {
+      tween.kill();
+      if (tween.scrollTrigger) {
+        tween.scrollTrigger.kill();
+      }
+    };
+  }, [travelDistance, isMobile, shouldReduceMotion]);
+
+  const isFallback = isMobile || shouldReduceMotion;
 
   return (
     <div
@@ -75,34 +129,37 @@ export function EventZoneSequence() {
       style={{
         position: 'relative',
         backgroundColor: '#000000',
-        height: shouldReduceMotion ? 'auto' : STRIP_CONFIG.containerHeight,
+        height: isFallback ? 'auto' : containerHeight,
         zIndex: 12,
+        willChange: isFallback ? 'auto' : 'scroll-position',
       }}
     >
-      {/* Sticky 100vh Stage */}
+      {/* Viewport Stage (Sticky in desktop mode, normal flow in fallback) */}
       <div
+        ref={stageRef}
         className="pulse-sticky-zone-stage"
         style={{
-          position: shouldReduceMotion ? 'relative' : 'sticky',
+          position: isFallback ? 'relative' : 'sticky',
           top: 0,
           left: 0,
           width: '100%',
-          height: shouldReduceMotion ? 'auto' : '100vh',
-          overflow: 'clip',
+          height: isFallback ? 'auto' : '100vh',
+          overflow: 'clip', // overflow: clip preserves position: sticky in all browsers
           display: 'flex',
           flexDirection: 'column',
           justifyContent: 'center',
           backgroundColor: '#000000',
-          padding: shouldReduceMotion ? '4rem 1.5rem' : 0,
+          padding: isFallback ? '4rem 1.5rem' : 0,
         }}
       >
         {/* Subtle Top Telemetry Strip */}
         <div
           style={{
-            position: 'absolute',
-            top: '3vh',
+            position: isFallback ? 'relative' : 'absolute',
+            top: isFallback ? 'auto' : '3.5vh',
             left: 'clamp(1.5rem, 5vw, 4rem)',
             right: 'clamp(1.5rem, 5vw, 4rem)',
+            marginBottom: isFallback ? '2rem' : 0,
             display: 'flex',
             justifyContent: 'space-between',
             alignItems: 'center',
@@ -111,38 +168,52 @@ export function EventZoneSequence() {
           }}
           className="font-mono"
         >
+          <div style={{ display: 'flex', alignItems: 'center', gap: '8px' }}>
+            <span
+              style={{
+                width: '6px',
+                height: '6px',
+                borderRadius: '50%',
+                backgroundColor: '#10b981',
+                boxShadow: '0 0 8px #10b981',
+              }}
+            />
+            <span
+              style={{
+                fontSize: '0.72rem',
+                color: 'rgba(255, 255, 255, 0.55)',
+                letterSpacing: '0.14em',
+                textTransform: 'uppercase',
+              }}
+            >
+              CHAPTER 02 // SECTOR MONITORING & COVERAGE
+            </span>
+          </div>
+
           <span
             style={{
               fontSize: '0.72rem',
               color: 'rgba(255, 255, 255, 0.45)',
               letterSpacing: '0.14em',
-              textTransform: 'uppercase',
             }}
           >
-            CHAPTER 02 // SECTOR MONITORING & COVERAGE
-          </span>
-          <span
-            style={{
-              fontSize: '0.72rem',
-              color: 'rgba(255, 255, 255, 0.45)',
-              letterSpacing: '0.14em',
-            }}
-          >
-            05 ACTIVE SECTORS
+            05 ACTIVE SECTORS · ASYMMETRIC DEPLOYMENT
           </span>
         </div>
 
         {/* Horizontal Film Strip Track */}
-        <motion.div
+        <div
+          ref={rowRef}
           style={{
-            x: shouldReduceMotion ? 0 : springX,
             display: 'flex',
-            alignItems: 'center',
-            gap: `${STRIP_CONFIG.gapVw}vw`,
-            paddingLeft: 'clamp(1.5rem, 5vw, 5rem)',
-            paddingRight: '15vw',
-            width: 'max-content',
-            willChange: 'transform',
+            flexDirection: isFallback ? 'column' : 'row',
+            alignItems: isFallback ? 'stretch' : 'center',
+            flexWrap: isFallback ? 'wrap' : 'nowrap',
+            gap: isFallback ? '2rem' : '1.5vw',
+            paddingLeft: isFallback ? 0 : 'clamp(2rem, 5vw, 4rem)',
+            paddingRight: isFallback ? 0 : 'clamp(2rem, 5vw, 4rem)',
+            width: isFallback ? '100%' : 'max-content',
+            willChange: isFallback ? 'auto' : 'transform',
           }}
           className="pulse-zone-strip-track"
         >
@@ -150,6 +221,15 @@ export function EventZoneSequence() {
             const isFull = zone.staffed >= zone.required;
             const fillPct = Math.min(Math.round((zone.staffed / zone.required) * 100), 100);
             const isLead = idx === 0;
+
+            // Card Widths: Lead 59vw landscape, others 36-52vw
+            const cardWidth = isFallback
+              ? '100%'
+              : isLead
+              ? 'clamp(320px, 59vw, 980px)'
+              : zone.type === 'portrait'
+              ? `clamp(280px, ${zone.widthVw}vw, 600px)`
+              : `clamp(320px, ${zone.widthVw}vw, 860px)`;
 
             return (
               <div
@@ -166,11 +246,9 @@ export function EventZoneSequence() {
                 }}
                 style={{
                   position: 'relative',
-                  width: isLead && !shouldReduceMotion
-                    ? `clamp(320px, ${zone.widthVw}vw, 980px)`
-                    : `clamp(300px, ${zone.widthVw}vw, ${zone.type === 'portrait' ? '600px' : '980px'})`,
-                  height: 'clamp(520px, 86vh, 880px)',
-                  borderRadius: STRIP_CONFIG.cardRadius,
+                  width: cardWidth,
+                  height: isFallback ? '500px' : 'clamp(520px, 84vh, 860px)',
+                  borderRadius: '12px',
                   overflow: 'hidden',
                   flexShrink: 0,
                   backgroundColor: '#0e0e18',
@@ -180,14 +258,14 @@ export function EventZoneSequence() {
                 }}
                 aria-label={`Open ${zone.name} zone: ${zone.status}`}
               >
-                {/* Background Zone Imagery with subtle inner parallax & hover scale */}
-                <motion.div
+                {/* Background Zone Imagery */}
+                <div
                   style={{
                     position: 'absolute',
-                    inset: '-5%',
-                    width: '110%',
-                    height: '110%',
-                    x: shouldReduceMotion ? 0 : innerImgParallax,
+                    inset: 0,
+                    width: '100%',
+                    height: '100%',
+                    overflow: 'hidden',
                   }}
                   className="pulse-zone-card-img-wrap"
                 >
@@ -196,6 +274,7 @@ export function EventZoneSequence() {
                     alt={zone.name}
                     loading={isLead ? 'eager' : 'lazy'}
                     decoding="async"
+                    onLoad={updateMetrics}
                     style={{
                       width: '100%',
                       height: '100%',
@@ -205,9 +284,9 @@ export function EventZoneSequence() {
                     }}
                     className="pulse-zone-card-img"
                   />
-                </motion.div>
+                </div>
 
-                {/* Dark Gradient Scrim (55%) for text legibility (§6.3) */}
+                {/* Dark Gradient Scrim (55%) for text legibility */}
                 <div
                   style={{
                     position: 'absolute',
@@ -217,7 +296,7 @@ export function EventZoneSequence() {
                   }}
                 />
 
-                {/* Card Content Overlay (§6.3) */}
+                {/* Card Content Overlay */}
                 <div
                   style={{
                     position: 'absolute',
@@ -279,7 +358,7 @@ export function EventZoneSequence() {
                     </div>
                   </div>
 
-                  {/* Right: Round White Arrow Button (§6.3) */}
+                  {/* Right: Round White Arrow Button */}
                   <div
                     style={{
                       width: 'clamp(38px, 3.5vw, 48px)',
@@ -301,7 +380,7 @@ export function EventZoneSequence() {
                   </div>
                 </div>
 
-                {/* 2px Coverage Bar at Card's Bottom Edge (§6.3) */}
+                {/* 2px Coverage Bar at Card's Bottom Edge */}
                 <div
                   style={{
                     position: 'absolute',
@@ -326,7 +405,7 @@ export function EventZoneSequence() {
               </div>
             );
           })}
-        </motion.div>
+        </div>
       </div>
     </div>
   );

@@ -4,21 +4,24 @@ import { useRouteWipe } from './RouteWipeTransition';
 import LiveDot from './primitives/LiveDot';
 
 /**
- * TUNING CONFIG: Menu Pill & Navigation Panel (§4.4, §6.1)
+ * TUNING CONFIG: Menu Pill & Navigation Panel (§4.4, §6.1, Correction Patch §4)
  * Measured reference values:
- * - Width: ~15.3vw (min 220px, max 300px)
+ * - Width: ~15.3vw (min 230px, max 290px)
  * - Height: 64px
  * - Bottom offset: 37px above viewport bottom
  * - Radius: 6px
- * - Color: solid #1b1b22
+ * - Dark mode: solid #1b1b22 with white text
+ * - Cream mode: solid #17150F with white text & crisp paper-contrast shadow
+ * - Top PULSE mark flips from #FFFFFF to #17150F via IntersectionObserver
  * - Handle: 50x10px, 1.5px border, 15px above bottom
  */
-export const MENU_CONFIG = {
+const MENU_CONFIG = {
   width: 'clamp(230px, 15.3vw, 290px)',
   height: '64px',
   bottomOffset: '37px',
   radius: '6px',
-  bg: '#1b1b22',
+  bgDark: '#1b1b22',
+  bgCream: '#17150F',
   handleWidth: '50px',
   handleHeight: '10px',
   handleBottom: '15px',
@@ -26,8 +29,28 @@ export const MENU_CONFIG = {
 
 export function LandingMenuPill({ onOpenEventPanel }) {
   const [isOpen, setIsOpen] = useState(false);
+  const [isCreamInView, setIsCreamInView] = useState(false);
   const pillRef = useRef(null);
   const { wipeTo } = useRouteWipe();
+
+  // IntersectionObserver to flip theme when cream section enters (§4)
+  useEffect(() => {
+    const creamEl = document.getElementById('cream-world') || document.getElementById('zone-coverage');
+    if (!creamEl) return;
+
+    const observer = new IntersectionObserver(
+      ([entry]) => {
+        setIsCreamInView(entry.isIntersecting);
+      },
+      {
+        threshold: 0.05,
+        rootMargin: '-60px 0px 0px 0px',
+      }
+    );
+
+    observer.observe(creamEl);
+    return () => observer.disconnect();
+  }, []);
 
   // Close on Escape or click outside
   useEffect(() => {
@@ -61,7 +84,7 @@ export function LandingMenuPill({ onOpenEventPanel }) {
     { label: 'STAFFING', target: '#zone-coverage' },
     { label: 'NETWORK', target: '#volunteer-flow' },
     { label: 'CONTROL', target: '#operations' },
-    { label: 'COMMAND CENTER', target: '#operational-command-center' },
+    { label: 'DISPATCH', target: '#enter-control' },
   ];
 
   const handleNavClick = (item) => {
@@ -85,7 +108,7 @@ export function LandingMenuPill({ onOpenEventPanel }) {
 
   return (
     <>
-      {/* Top-Left Fixed PULSE Mark (§4, §6.1) */}
+      {/* Top-Left Fixed PULSE Mark (§4, §6.1) - Theme flipped via IntersectionObserver */}
       <a
         href="#reference-hero"
         onClick={(e) => {
@@ -101,7 +124,7 @@ export function LandingMenuPill({ onOpenEventPanel }) {
           top: '32px',
           left: 'clamp(1.5rem, 4vw, 3.5rem)',
           zIndex: 80,
-          color: '#FFFFFF',
+          color: isCreamInView ? '#17150F' : '#FFFFFF',
           textDecoration: 'none',
           fontSize: '1.25rem',
           fontWeight: 900,
@@ -110,6 +133,7 @@ export function LandingMenuPill({ onOpenEventPanel }) {
           display: 'flex',
           alignItems: 'center',
           gap: '8px',
+          transition: 'color 0.3s ease',
         }}
         aria-label="PULSE Home"
       >
@@ -150,12 +174,12 @@ export function LandingMenuPill({ onOpenEventPanel }) {
               transition={{ duration: 0.24, ease: [0.16, 1, 0.3, 1] }}
               style={{
                 width: 'clamp(280px, 22vw, 340px)',
-                backgroundColor: '#16161e',
-                border: '1px solid rgba(255, 255, 255, 0.14)',
+                backgroundColor: isCreamInView ? '#17150F' : '#16161e',
+                border: isCreamInView ? '1px solid rgba(255, 255, 255, 0.15)' : '1px solid rgba(255, 255, 255, 0.14)',
                 borderRadius: '8px',
                 padding: '1.25rem',
                 marginBottom: '12px',
-                boxShadow: '0 20px 50px rgba(0, 0, 0, 0.85)',
+                boxShadow: isCreamInView ? '0 20px 50px rgba(23, 21, 15, 0.4)' : '0 20px 50px rgba(0, 0, 0, 0.85)',
                 pointerEvents: 'all',
               }}
               role="dialog"
@@ -222,7 +246,7 @@ export function LandingMenuPill({ onOpenEventPanel }) {
                     }}
                   >
                     <span>{item.label}</span>
-                    <span style={{ color: 'rgba(255, 255, 255, 0.3)', fontSize: '0.8rem' }} className="font-mono">
+                    <span style={{ color: 'rgba(255, 255, 255, 0.35)', fontSize: '0.8rem' }} className="font-mono">
                       0{idx + 1}
                     </span>
                   </button>
@@ -277,26 +301,26 @@ export function LandingMenuPill({ onOpenEventPanel }) {
             marginBottom: MENU_CONFIG.bottomOffset,
             width: MENU_CONFIG.width,
             height: MENU_CONFIG.height,
-            backgroundColor: MENU_CONFIG.bg,
+            backgroundColor: isCreamInView ? MENU_CONFIG.bgCream : MENU_CONFIG.bgDark,
             borderRadius: MENU_CONFIG.radius,
-            border: '1px solid rgba(255, 255, 255, 0.12)',
+            border: isCreamInView ? '1px solid rgba(23, 21, 15, 0.25)' : '1px solid rgba(255, 255, 255, 0.12)',
             display: 'flex',
             alignItems: 'center',
             justifyContent: 'space-between',
             paddingLeft: '26px',
             paddingRight: '22px',
             cursor: 'pointer',
-            boxShadow: '0 16px 36px rgba(0, 0, 0, 0.75)',
+            boxShadow: isCreamInView ? '0 12px 30px rgba(23, 21, 15, 0.22)' : '0 16px 36px rgba(0, 0, 0, 0.75)',
             pointerEvents: 'all',
-            transition: 'background-color 0.2s ease, border-color 0.2s ease',
+            transition: 'background-color 0.3s ease, border-color 0.3s ease, box-shadow 0.3s ease',
           }}
           aria-expanded={isOpen}
           aria-label="Toggle navigation menu"
           onMouseEnter={(e) => {
-            e.currentTarget.style.borderColor = 'rgba(255, 255, 255, 0.3)';
+            e.currentTarget.style.borderColor = isCreamInView ? 'rgba(23, 21, 15, 0.5)' : 'rgba(255, 255, 255, 0.3)';
           }}
           onMouseLeave={(e) => {
-            e.currentTarget.style.borderColor = 'rgba(255, 255, 255, 0.12)';
+            e.currentTarget.style.borderColor = isCreamInView ? 'rgba(23, 21, 15, 0.25)' : 'rgba(255, 255, 255, 0.12)';
           }}
         >
           {/* "Menu" label left */}
@@ -355,9 +379,10 @@ export function LandingMenuPill({ onOpenEventPanel }) {
             width: MENU_CONFIG.handleWidth,
             height: MENU_CONFIG.handleHeight,
             borderRadius: '999px',
-            border: '1.5px solid rgba(255, 255, 255, 0.6)',
+            border: isCreamInView ? '1.5px solid rgba(23, 21, 15, 0.45)' : '1.5px solid rgba(255, 255, 255, 0.6)',
             pointerEvents: 'none',
             zIndex: 91,
+            transition: 'border-color 0.3s ease',
           }}
           aria-hidden="true"
         />

@@ -2,17 +2,16 @@ import React, { useRef, useEffect, useState, useMemo } from 'react';
 import { motion, useInView } from 'framer-motion';
 import SectionIndex from './primitives/SectionIndex';
 import RevealText from './primitives/RevealText';
-import { eventZones } from '../../data/eventZones';
 import { useReducedMotionSafe } from '../../hooks/useReducedMotionSafe';
 
 /**
  * VolunteerFlow (§6.6) — Topology / Network Section ("PEOPLE MAKE THE EVENT MOVE.")
- * Restyled as a panel-less dark composition:
- * - Orbital motif returns here: indigo hairline orbits and arcs (#5a3cf0)
- * - 5 nodes with faint orbital rings echoing the globe
- * - Red traveling nodes looping slowly along curves
- * - Paths draw in on scroll
- * - Mono labels in identical visual language as the globe
+ * Restored to original PULSE Cream / Ink / Vermilion styling:
+ * - Cream background (#F3F0E8 / var(--paper))
+ * - Deep ink text (#17150F / var(--ink))
+ * - Vermilion accent (#F5452C / var(--pulse))
+ * - 5 nodes with hairline rings echoing the venue layout
+ * - Vermilion traveling dots looping smoothly along connection paths
  */
 export function VolunteerFlow({
   activeZone = null,
@@ -95,10 +94,10 @@ export function VolunteerFlow({
     <section
       ref={containerRef}
       id="volunteer-flow"
-      className="pulse-section pulse-dark-section"
+      className="pulse-section"
       style={{
-        backgroundColor: '#0a0a10',
-        color: '#FFFFFF',
+        backgroundColor: 'var(--paper, #F3F0E8)',
+        color: 'var(--ink, #17150F)',
         position: 'relative',
         zIndex: 14,
         paddingTop: 'clamp(5rem, 8vw, 8rem)',
@@ -106,24 +105,6 @@ export function VolunteerFlow({
       }}
       aria-labelledby="flow-title"
     >
-      {/* Indigo Divider Rule drawing from left */}
-      <motion.div
-        initial={shouldReduceMotion ? { scaleX: 1 } : { scaleX: 0 }}
-        whileInView={{ scaleX: 1 }}
-        viewport={{ once: true }}
-        transition={{ duration: 0.9, ease: [0.16, 1, 0.3, 1] }}
-        style={{
-          height: '1px',
-          backgroundColor: '#5a3cf0',
-          boxShadow: '0 0 8px rgba(90, 60, 240, 0.35)',
-          transformOrigin: 'left',
-          width: '100%',
-          position: 'absolute',
-          top: 0,
-          left: 0,
-        }}
-      />
-
       <div className="pulse-container">
         {/* Section Eyebrow */}
         <div style={{ marginBottom: 'clamp(1.5rem, 3vw, 2.5rem)' }}>
@@ -136,14 +117,14 @@ export function VolunteerFlow({
             as="h2"
             id="flow-title"
             style={{
-              fontFamily: "'Archivo', 'Archivo Black', sans-serif",
+              fontFamily: "'Archivo', 'Archivo Black', 'Bricolage Grotesque', sans-serif",
               fontVariationSettings: "'wdth' 125, 'wght' 900",
               fontWeight: 900,
               fontSize: 'clamp(2.4rem, 6.5vw, 6rem)',
               lineHeight: 0.92,
               letterSpacing: '-0.02em',
               textTransform: 'uppercase',
-              color: '#FFFFFF',
+              color: 'var(--ink, #17150F)',
               margin: 0,
             }}
           >
@@ -151,7 +132,7 @@ export function VolunteerFlow({
           </RevealText>
         </div>
 
-        {/* Panel-less Dark Topology Set-Piece (§6.6) */}
+        {/* Topology Set-Piece */}
         <div
           style={{
             position: 'relative',
@@ -165,17 +146,17 @@ export function VolunteerFlow({
               display: 'flex',
               justifyContent: 'space-between',
               alignItems: 'center',
-              borderBottom: '1px solid rgba(90, 60, 240, 0.25)',
+              borderBottom: '1px solid var(--hairline, rgba(23, 21, 15, 0.14))',
               paddingBottom: '14px',
               marginBottom: '20px',
             }}
             className="font-mono"
           >
-            <span style={{ fontSize: '0.72rem', color: 'rgba(255, 255, 255, 0.55)', letterSpacing: '0.12em' }}>
+            <span style={{ fontSize: '0.72rem', color: 'var(--ink-70, rgba(23, 21, 15, 0.70))', letterSpacing: '0.12em' }}>
               TOPOLOGY // 05 ACTIVE SECTORS · {TOKEN_COUNT} IN TRANSIT
             </span>
-            <span style={{ fontSize: '0.72rem', color: '#818cf8', letterSpacing: '0.12em' }}>
-              ORBITAL MESH
+            <span style={{ fontSize: '0.72rem', color: 'var(--pulse, #F5452C)', letterSpacing: '0.12em', fontWeight: 700 }}>
+              LIVE MESH DISPATCH
             </span>
           </div>
 
@@ -192,8 +173,8 @@ export function VolunteerFlow({
             aria-label="Active volunteer flow graph connecting event zones"
           >
             <defs>
-              <filter id="nodeGlow" x="-50%" y="-50%" width="200%" height="200%">
-                <feGaussianBlur stdDeviation="4" result="blur" />
+              <filter id="nodeGlowCream" x="-50%" y="-50%" width="200%" height="200%">
+                <feGaussianBlur stdDeviation="3" result="blur" />
                 <feMerge>
                   <feMergeNode in="blur" />
                   <feMergeNode in="SourceGraphic" />
@@ -201,17 +182,16 @@ export function VolunteerFlow({
               </filter>
             </defs>
 
-            {/* Background Faint Ambient Orbits Echoing Globe Motif (§6.6) */}
+            {/* Background Faint Ambient Orbits */}
             <ellipse
               cx="500"
               cy="250"
               rx="460"
               ry="190"
               fill="none"
-              stroke="#5a3cf0"
+              stroke="rgba(23, 21, 15, 0.08)"
               strokeWidth="1"
               strokeDasharray="4 6"
-              opacity="0.18"
             />
             <ellipse
               cx="500"
@@ -219,12 +199,11 @@ export function VolunteerFlow({
               rx="320"
               ry="130"
               fill="none"
-              stroke="#5a3cf0"
+              stroke="rgba(23, 21, 15, 0.08)"
               strokeWidth="0.8"
-              opacity="0.14"
             />
 
-            {/* Connecting Paths with draw-on-scroll */}
+            {/* Connecting Paths */}
             {paths.map((p) => {
               const isConnected = currentHighlighted === p.from || currentHighlighted === p.to;
 
@@ -235,10 +214,10 @@ export function VolunteerFlow({
                   ref={(el) => (pathDOMElements.current[p.id] = el)}
                   d={p.d}
                   fill="none"
-                  stroke={isConnected ? '#F5452C' : '#5a3cf0'}
+                  stroke={isConnected ? '#F5452C' : 'rgba(23, 21, 15, 0.20)'}
                   strokeWidth={isConnected ? 2.5 : 1.2}
                   strokeDasharray={isConnected ? 'none' : '4 6'}
-                  opacity={isConnected ? 0.95 : 0.42}
+                  opacity={isConnected ? 1 : 0.65}
                   style={{
                     transition: 'stroke 0.3s ease, stroke-width 0.3s ease, opacity 0.3s ease',
                   }}
@@ -246,7 +225,7 @@ export function VolunteerFlow({
               );
             })}
 
-            {/* Traveling Red Dots (§6.6) */}
+            {/* Traveling Vermilion Dots */}
             {!shouldReduceMotion &&
               Array.from({ length: TOKEN_COUNT }).map((_, i) => (
                 <circle
@@ -256,7 +235,7 @@ export function VolunteerFlow({
                   cx="-20"
                   cy="-20"
                   fill="#F5452C"
-                  filter="drop-shadow(0 0 6px #F5452C)"
+                  filter="drop-shadow(0 0 4px rgba(245, 69, 44, 0.5))"
                 />
               ))}
 
@@ -282,13 +261,12 @@ export function VolunteerFlow({
                   role="button"
                   aria-label={`${node.label}: ${node.count} of ${node.capacity} staff`}
                 >
-                  {/* Concentric Orbital Rings */}
+                  {/* Concentric Node Base Ring */}
                   <circle
                     r={isSelected ? 26 : 20}
-                    fill="#0a0a10"
-                    stroke={isSelected ? '#F5452C' : hasGap ? '#F5452C' : '#5a3cf0'}
+                    fill="var(--paper-raised, #ECE8DD)"
+                    stroke={isSelected ? '#F5452C' : hasGap ? '#F5452C' : 'var(--hairline-bold, rgba(23, 21, 15, 0.28))'}
                     strokeWidth={isSelected ? 2 : 1}
-                    opacity={isSelected ? 1 : 0.75}
                   />
 
                   {/* Pulsing ring on gap nodes */}
@@ -298,7 +276,7 @@ export function VolunteerFlow({
                       fill="none"
                       stroke="#F5452C"
                       strokeWidth="1"
-                      opacity="0.4"
+                      opacity="0.35"
                       className="pulse-live-ring"
                     />
                   )}
@@ -306,15 +284,14 @@ export function VolunteerFlow({
                   {/* Center Node Core */}
                   <circle
                     r={isSelected ? 5.5 : 4}
-                    fill={hasGap ? '#F5452C' : '#FFFFFF'}
-                    filter={hasGap ? 'url(#nodeGlow)' : 'none'}
+                    fill={hasGap ? '#F5452C' : 'var(--ink, #17150F)'}
                   />
 
                   {/* Node Mono Label */}
                   <text
                     y={node.y > 280 ? -32 : 36}
                     textAnchor="middle"
-                    fill={isSelected ? '#F5452C' : '#FFFFFF'}
+                    fill={isSelected ? '#F5452C' : 'var(--ink, #17150F)'}
                     fontFamily="var(--font-mono, monospace)"
                     fontSize="10px"
                     fontWeight="700"
@@ -328,7 +305,7 @@ export function VolunteerFlow({
                   <text
                     y={node.y > 280 ? -18 : 50}
                     textAnchor="middle"
-                    fill={hasGap ? '#F5452C' : 'rgba(255, 255, 255, 0.6)'}
+                    fill={hasGap ? '#F5452C' : 'var(--ink-70, rgba(23, 21, 15, 0.70))'}
                     fontFamily="var(--font-mono, monospace)"
                     fontSize="9px"
                     fontWeight="600"

@@ -8,12 +8,12 @@ import { useReducedMotionSafe } from '../../hooks/useReducedMotionSafe';
 
 /**
  * OperationsIndex (§6.7) — 05 Operational Architecture ("CONTROL THE CHAOS.")
- * Hairline two-column info layout:
- * - Left column: sticky heading and operational metadata
- * - Right column: hairline-ruled rows (ASSIGNMENTS, TASKS, INCIDENTS, ANNOUNCEMENTS)
- *   with '+' icons that expand to existing descriptions
- * - Active / alert row receives PULSE red highlight
- * - Triggers wipeTo on navigation
+ * Restored to original PULSE Cream / Ink / Vermilion styling:
+ * - Cream background (#F3F0E8 / var(--paper))
+ * - Deep ink text (#17150F / var(--ink))
+ * - Vermilion alert tag (#F5452C / var(--pulse))
+ * - Hairline-ruled two-column info layout
+ * - Interactive expandable rows with route wipe navigation
  */
 export function OperationsIndex() {
   const shouldReduceMotion = useReducedMotionSafe();
@@ -58,10 +58,10 @@ export function OperationsIndex() {
   return (
     <section
       id="operations"
-      className="pulse-section pulse-dark-section"
+      className="pulse-section"
       style={{
-        backgroundColor: '#0a0a10',
-        color: '#FFFFFF',
+        backgroundColor: 'var(--paper, #F3F0E8)',
+        color: 'var(--ink, #17150F)',
         position: 'relative',
         zIndex: 14,
         paddingTop: 'clamp(5rem, 8vw, 8rem)',
@@ -69,24 +69,6 @@ export function OperationsIndex() {
       }}
       aria-labelledby="operations-title"
     >
-      {/* Indigo Divider Rule drawing from left */}
-      <motion.div
-        initial={shouldReduceMotion ? { scaleX: 1 } : { scaleX: 0 }}
-        whileInView={{ scaleX: 1 }}
-        viewport={{ once: true }}
-        transition={{ duration: 0.9, ease: [0.16, 1, 0.3, 1] }}
-        style={{
-          height: '1px',
-          backgroundColor: '#5a3cf0',
-          boxShadow: '0 0 8px rgba(90, 60, 240, 0.35)',
-          transformOrigin: 'left',
-          width: '100%',
-          position: 'absolute',
-          top: 0,
-          left: 0,
-        }}
-      />
-
       <div className="pulse-container">
         {/* Hairline Two-Column Layout (§6.7) */}
         <div
@@ -107,14 +89,14 @@ export function OperationsIndex() {
               as="h2"
               id="operations-title"
               style={{
-                fontFamily: "'Archivo', 'Archivo Black', sans-serif",
+                fontFamily: "'Archivo', 'Archivo Black', 'Bricolage Grotesque', sans-serif",
                 fontVariationSettings: "'wdth' 125, 'wght' 900",
                 fontWeight: 900,
                 fontSize: 'clamp(2.4rem, 5.2vw, 5rem)',
                 lineHeight: 0.94,
                 letterSpacing: '-0.02em',
                 textTransform: 'uppercase',
-                color: '#FFFFFF',
+                color: 'var(--ink, #17150F)',
                 margin: '0 0 1.5rem 0',
               }}
             >
@@ -123,7 +105,7 @@ export function OperationsIndex() {
 
             <p
               style={{
-                color: 'rgba(255, 255, 255, 0.65)',
+                color: 'var(--ink-70, rgba(23, 21, 15, 0.70))',
                 fontSize: '0.95rem',
                 lineHeight: 1.6,
                 maxWidth: '440px',
@@ -139,12 +121,12 @@ export function OperationsIndex() {
               style={{
                 marginTop: '2.5rem',
                 paddingTop: '1.5rem',
-                borderTop: '1px solid rgba(90, 60, 240, 0.25)',
+                borderTop: '1px solid var(--hairline, rgba(23, 21, 15, 0.14))',
                 display: 'flex',
                 flexDirection: 'column',
                 gap: '8px',
                 fontSize: '0.75rem',
-                color: 'rgba(255, 255, 255, 0.45)',
+                color: 'var(--ink-45, rgba(23, 21, 15, 0.45))',
               }}
             >
               <div>SYSTEM: PULSE CORE v2.4</div>
@@ -154,7 +136,7 @@ export function OperationsIndex() {
           </div>
 
           {/* Right Column: Hairline-Ruled Rows with '+' Icons */}
-          <div style={{ borderTop: '1px solid rgba(90, 60, 240, 0.35)' }}>
+          <div style={{ borderTop: '1px solid var(--hairline, rgba(23, 21, 15, 0.14))' }}>
             {operations.map((op) => {
               const isExpanded = expandedKey === op.key;
               const isAlert = Boolean(op.isAlert);
@@ -163,7 +145,7 @@ export function OperationsIndex() {
                 <div
                   key={op.key}
                   style={{
-                    borderBottom: '1px solid rgba(90, 60, 240, 0.35)',
+                    borderBottom: '1px solid var(--hairline, rgba(23, 21, 15, 0.14))',
                     padding: 'clamp(1.5rem, 2.8vw, 2.2rem) 0',
                     transition: 'background-color 0.25s ease',
                   }}
@@ -184,7 +166,7 @@ export function OperationsIndex() {
                           fontFamily: "'Space Grotesk', sans-serif",
                           fontSize: 'clamp(1.3rem, 2.2vw, 1.9rem)',
                           fontWeight: 700,
-                          color: isAlert ? '#F5452C' : '#FFFFFF',
+                          color: isAlert ? 'var(--pulse, #F5452C)' : 'var(--ink, #17150F)',
                           letterSpacing: '-0.01em',
                         }}
                       >
@@ -199,9 +181,9 @@ export function OperationsIndex() {
                           fontWeight: 700,
                           padding: '3px 8px',
                           borderRadius: '2px',
-                          backgroundColor: isAlert ? 'rgba(245, 69, 44, 0.15)' : 'rgba(255, 255, 255, 0.05)',
-                          border: isAlert ? '1px solid rgba(245, 69, 44, 0.4)' : '1px solid rgba(255, 255, 255, 0.14)',
-                          color: isAlert ? '#F5452C' : 'rgba(255, 255, 255, 0.8)',
+                          backgroundColor: isAlert ? 'rgba(245, 69, 44, 0.12)' : 'var(--paper-raised, #ECE8DD)',
+                          border: isAlert ? '1px solid rgba(245, 69, 44, 0.35)' : '1px solid var(--hairline-bold, rgba(23, 21, 15, 0.28))',
+                          color: isAlert ? 'var(--pulse, #F5452C)' : 'var(--ink-70, rgba(23, 21, 15, 0.70))',
                           letterSpacing: '0.08em',
                         }}
                       >
@@ -214,11 +196,12 @@ export function OperationsIndex() {
                         width: '32px',
                         height: '32px',
                         borderRadius: '50%',
-                        border: '1px solid rgba(255, 255, 255, 0.2)',
+                        border: '1px solid var(--hairline-bold, rgba(23, 21, 15, 0.25))',
                         display: 'flex',
                         alignItems: 'center',
                         justifyContent: 'center',
-                        color: isAlert ? '#F5452C' : '#FFFFFF',
+                        color: isAlert ? 'var(--pulse, #F5452C)' : 'var(--ink, #17150F)',
+                        backgroundColor: 'var(--paper-raised, #ECE8DD)',
                       }}
                     >
                       {isExpanded ? <Minus size={16} /> : <Plus size={16} />}
@@ -237,7 +220,7 @@ export function OperationsIndex() {
                       >
                         <p
                           style={{
-                            color: 'rgba(255, 255, 255, 0.72)',
+                            color: 'var(--ink-70, rgba(23, 21, 15, 0.70))',
                             fontSize: '0.95rem',
                             lineHeight: 1.6,
                             marginTop: '16px',
@@ -251,8 +234,8 @@ export function OperationsIndex() {
                           onClick={() => wipeTo(op.route)}
                           style={{
                             backgroundColor: 'transparent',
-                            color: isAlert ? '#F5452C' : '#FFFFFF',
-                            border: isAlert ? '1px solid #F5452C' : '1px solid rgba(255, 255, 255, 0.3)',
+                            color: isAlert ? 'var(--pulse, #F5452C)' : 'var(--ink, #17150F)',
+                            border: isAlert ? '1px solid var(--pulse, #F5452C)' : '1px solid var(--ink, #17150F)',
                             padding: '10px 18px',
                             borderRadius: '4px',
                             fontFamily: 'var(--font-mono, monospace)',
@@ -266,12 +249,12 @@ export function OperationsIndex() {
                             transition: 'all 0.2s ease',
                           }}
                           onMouseEnter={(e) => {
-                            e.currentTarget.style.backgroundColor = isAlert ? '#F5452C' : '#FFFFFF';
-                            e.currentTarget.style.color = '#0a0a10';
+                            e.currentTarget.style.backgroundColor = isAlert ? 'var(--pulse, #F5452C)' : 'var(--ink, #17150F)';
+                            e.currentTarget.style.color = '#FFFFFF';
                           }}
                           onMouseLeave={(e) => {
                             e.currentTarget.style.backgroundColor = 'transparent';
-                            e.currentTarget.style.color = isAlert ? '#F5452C' : '#FFFFFF';
+                            e.currentTarget.style.color = isAlert ? 'var(--pulse, #F5452C)' : 'var(--ink, #17150F)';
                           }}
                         >
                           <span>OPEN {op.label}</span>

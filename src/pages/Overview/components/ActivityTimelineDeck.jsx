@@ -61,7 +61,7 @@ export function ActivityTimelineDeck({ activities = [], shifts = [] }) {
           </div>
 
           <div className="activity-nodes-list">
-            {activities.map((act, index) => {
+            {(activities || []).map((act, index) => {
               const cfg = categoryConfig[act.category] || categoryConfig.checkin;
               const Icon = cfg.icon;
 
@@ -118,7 +118,7 @@ export function ActivityTimelineDeck({ activities = [], shifts = [] }) {
           </div>
 
           <div className="shift-cards-stack">
-            {shifts.map((shift, idx) => {
+            {(shifts || []).map((shift, idx) => {
               const isHealthy = shift.percent >= 80;
               const statusColor = isHealthy ? '#34d399' : '#fbbf24';
 

@@ -55,7 +55,7 @@ export function AttentionDeck({ items = [] }) {
       </div>
 
       <div className="attention-deck-list">
-        {items.map((item, idx) => {
+        {(items || []).map((item, idx) => {
           const cfg = severityConfigs[item.severity] || severityConfigs.warning;
           const Icon = cfg.icon;
 

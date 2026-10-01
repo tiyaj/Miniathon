@@ -3,15 +3,15 @@ import { motion } from 'framer-motion';
 import { ArrowRight, Terminal } from 'lucide-react';
 import { useRouteWipe } from './RouteWipeTransition';
 import LiveDot from './primitives/LiveDot';
-import { useReducedMotionSafe } from '../../hooks/useReducedMotionSafe';
 
 /**
- * EnterControl (§6.9) — Closing CTA & Orbital Finale
- * - Huge centered heavy white statement in Archivo 900
- * - Single rounded pill CTA below it (white circular icon + text linking to Live Control via route wipe)
- * - Large thin indigo orbital arcs (#5a3cf0) bleeding in from bottom-left and right edges
- * - Small mono credit line bottom-left
- * - Compact pill of existing footer links bottom-right
+ * EnterControl (§6.9) — Closing CTA & Editorial Finale
+ * Restored to original PULSE Cream / Ink / Vermilion styling:
+ * - Cream background (#F3F0E8 / var(--paper))
+ * - Huge centered heavy display headline in deep ink (#17150F)
+ * - Single rounded pill CTA button: solid near-black (#17150F) hovering to vermilion red (#F5452C)
+ * - Subtle warm orbital arcs bleeding in from bottom edges
+ * - Editorial metadata credit line & navigation links pill
  */
 export function EnterControl() {
   const { wipeTo } = useRouteWipe();
@@ -26,10 +26,10 @@ export function EnterControl() {
   return (
     <section
       id="enter-control"
-      className="pulse-section pulse-dark-section"
+      className="pulse-section"
       style={{
-        backgroundColor: '#0a0a10',
-        color: '#FFFFFF',
+        backgroundColor: 'var(--paper, #F3F0E8)',
+        color: 'var(--ink, #17150F)',
         position: 'relative',
         zIndex: 14,
         minHeight: '85vh',
@@ -42,7 +42,7 @@ export function EnterControl() {
       }}
       aria-labelledby="enter-control-title"
     >
-      {/* Large Thin Indigo Orbital Arcs Bleeding in From Edges (§6.9) */}
+      {/* Subtle Orbital Arcs Bleeding in From Edges (§6.9) */}
       <svg
         style={{
           position: 'absolute',
@@ -62,9 +62,8 @@ export function EnterControl() {
           rx="520"
           ry="320"
           fill="none"
-          stroke="#5a3cf0"
+          stroke="rgba(23, 21, 15, 0.08)"
           strokeWidth="1.2"
-          opacity="0.32"
           transform="rotate(-15, 0, 800)"
         />
         <ellipse
@@ -73,10 +72,9 @@ export function EnterControl() {
           rx="680"
           ry="440"
           fill="none"
-          stroke="#5a3cf0"
+          stroke="rgba(245, 69, 44, 0.18)"
           strokeWidth="0.8"
           strokeDasharray="4 8"
-          opacity="0.22"
         />
 
         {/* Bottom-Right Orbital Arc */}
@@ -86,9 +84,8 @@ export function EnterControl() {
           rx="560"
           ry="340"
           fill="none"
-          stroke="#5a3cf0"
+          stroke="rgba(23, 21, 15, 0.08)"
           strokeWidth="1.2"
-          opacity="0.32"
           transform="rotate(18, 1200, 800)"
         />
         <ellipse
@@ -97,10 +94,9 @@ export function EnterControl() {
           rx="720"
           ry="460"
           fill="none"
-          stroke="#5a3cf0"
+          stroke="rgba(23, 21, 15, 0.06)"
           strokeWidth="0.8"
           strokeDasharray="4 8"
-          opacity="0.2"
         />
       </svg>
 
@@ -111,14 +107,14 @@ export function EnterControl() {
             className="font-mono"
             style={{
               fontSize: '0.72rem',
-              color: 'rgba(255, 255, 255, 0.6)',
+              color: 'var(--ink-70, rgba(23, 21, 15, 0.70))',
               letterSpacing: '0.14em',
               display: 'inline-flex',
               alignItems: 'center',
               gap: '8px',
               padding: '6px 14px',
-              border: '1px solid rgba(90, 60, 240, 0.3)',
-              backgroundColor: 'rgba(90, 60, 240, 0.08)',
+              border: '1px solid var(--hairline-bold, rgba(23, 21, 15, 0.22))',
+              backgroundColor: 'var(--paper-raised, #ECE8DD)',
               borderRadius: '2px',
             }}
           >
@@ -127,19 +123,19 @@ export function EnterControl() {
           </div>
         </div>
 
-        {/* Huge Centered Heavy White Statement (§6.9) */}
+        {/* Huge Centered Heavy Display Headline */}
         <div style={{ maxWidth: '1300px', margin: '0 auto clamp(2.5rem, 5vw, 4rem) auto' }}>
           <h2
             id="enter-control-title"
             style={{
-              fontFamily: "'Archivo', 'Archivo Black', sans-serif",
+              fontFamily: "'Archivo', 'Archivo Black', 'Bricolage Grotesque', sans-serif",
               fontVariationSettings: "'wdth' 125, 'wght' 900",
               fontWeight: 900,
               fontSize: 'clamp(2.8rem, 7.5vw, 7.8rem)',
               lineHeight: 0.9,
               letterSpacing: '-0.02em',
               textTransform: 'uppercase',
-              color: '#FFFFFF',
+              color: 'var(--ink, #17150F)',
               margin: 0,
             }}
           >
@@ -156,22 +152,11 @@ export function EnterControl() {
           style={{ display: 'inline-block' }}
         >
           <button
-            onClick={() => {
-              const commandCenterEl = document.getElementById('operational-command-center');
-              if (commandCenterEl) {
-                if (window.__pulse_lenis) {
-                  window.__pulse_lenis.scrollTo(commandCenterEl, { offset: -20, duration: 1.2 });
-                } else {
-                  commandCenterEl.scrollIntoView({ behavior: 'smooth' });
-                }
-              } else {
-                wipeTo('/dashboard');
-              }
-            }}
+            onClick={() => wipeTo('/dashboard')}
             id="enter-control-cta-pill"
             style={{
-              backgroundColor: '#FFFFFF',
-              color: '#0a0a10',
+              backgroundColor: 'var(--ink, #17150F)',
+              color: '#FFFFFF',
               border: 'none',
               borderRadius: '999px',
               padding: 'clamp(14px, 1.8vw, 20px) clamp(28px, 3.5vw, 44px)',
@@ -183,18 +168,16 @@ export function EnterControl() {
               fontWeight: 700,
               fontSize: 'clamp(0.95rem, 1.2vw, 1.2rem)',
               letterSpacing: '0.02em',
-              boxShadow: '0 12px 35px rgba(0, 0, 0, 0.6), 0 0 24px rgba(255, 255, 255, 0.25)',
-              transition: 'background-color 0.2s ease, color 0.2s ease, box-shadow 0.2s ease',
+              boxShadow: '0 12px 35px rgba(23, 21, 15, 0.35)',
+              transition: 'background-color 0.2s ease, box-shadow 0.2s ease',
             }}
             onMouseEnter={(e) => {
-              e.currentTarget.style.backgroundColor = '#F5452C';
-              e.currentTarget.style.color = '#FFFFFF';
-              e.currentTarget.style.boxShadow = '0 12px 35px rgba(245, 69, 44, 0.5), 0 0 24px rgba(245, 69, 44, 0.4)';
+              e.currentTarget.style.backgroundColor = 'var(--pulse, #F5452C)';
+              e.currentTarget.style.boxShadow = '0 14px 40px rgba(245, 69, 44, 0.45)';
             }}
             onMouseLeave={(e) => {
-              e.currentTarget.style.backgroundColor = '#FFFFFF';
-              e.currentTarget.style.color = '#0a0a10';
-              e.currentTarget.style.boxShadow = '0 12px 35px rgba(0, 0, 0, 0.6), 0 0 24px rgba(255, 255, 255, 0.25)';
+              e.currentTarget.style.backgroundColor = 'var(--ink, #17150F)';
+              e.currentTarget.style.boxShadow = '0 12px 35px rgba(23, 21, 15, 0.35)';
             }}
           >
             {/* White Circular Icon */}
@@ -203,7 +186,7 @@ export function EnterControl() {
                 width: '32px',
                 height: '32px',
                 borderRadius: '50%',
-                backgroundColor: '#0a0a10',
+                backgroundColor: 'rgba(255, 255, 255, 0.15)',
                 color: '#FFFFFF',
                 display: 'flex',
                 alignItems: 'center',
@@ -219,7 +202,7 @@ export function EnterControl() {
         </motion.div>
       </div>
 
-      {/* Bottom Footer Line: Credit Left + Compact Links Pill Right (§6.9) */}
+      {/* Bottom Footer Line: Credit Left + Compact Links Pill Right */}
       <div
         className="pulse-container font-mono"
         style={{
@@ -235,7 +218,7 @@ export function EnterControl() {
         }}
       >
         {/* Credit Line Bottom-Left */}
-        <div style={{ fontSize: '0.75rem', color: 'rgba(255, 255, 255, 0.5)', letterSpacing: '0.12em' }}>
+        <div style={{ fontSize: '0.75rem', color: 'var(--ink-45, rgba(23, 21, 15, 0.45))', letterSpacing: '0.12em' }}>
           <span>THADOMAL SHAHANI ENGINEERING COLLEGE</span>
           <span style={{ margin: '0 8px', opacity: 0.3 }}>·</span>
           <span>MUMBAI</span>
@@ -243,15 +226,15 @@ export function EnterControl() {
           <span>TECHFEST 2026</span>
         </div>
 
-        {/* Compact Pill of Existing Footer Links Bottom-Right */}
+        {/* Compact Pill of Footer Links Bottom-Right */}
         <div
           style={{
             display: 'inline-flex',
             alignItems: 'center',
             gap: '8px',
             padding: '6px 14px',
-            backgroundColor: 'rgba(255, 255, 255, 0.04)',
-            border: '1px solid rgba(90, 60, 240, 0.3)',
+            backgroundColor: 'var(--paper-raised, #ECE8DD)',
+            border: '1px solid var(--hairline-bold, rgba(23, 21, 15, 0.22))',
             borderRadius: '999px',
           }}
         >
@@ -262,7 +245,7 @@ export function EnterControl() {
                 style={{
                   background: 'none',
                   border: 'none',
-                  color: 'rgba(255, 255, 255, 0.75)',
+                  color: 'var(--ink-70, rgba(23, 21, 15, 0.70))',
                   fontSize: '0.72rem',
                   letterSpacing: '0.1em',
                   cursor: 'pointer',
@@ -272,16 +255,16 @@ export function EnterControl() {
                   transition: 'color 0.2s ease',
                 }}
                 onMouseEnter={(e) => {
-                  e.currentTarget.style.color = '#FFFFFF';
+                  e.currentTarget.style.color = 'var(--pulse, #F5452C)';
                 }}
                 onMouseLeave={(e) => {
-                  e.currentTarget.style.color = 'rgba(255, 255, 255, 0.75)';
+                  e.currentTarget.style.color = 'var(--ink-70, rgba(23, 21, 15, 0.70))';
                 }}
               >
                 {link.label}
               </button>
               {idx < footerLinks.length - 1 && (
-                <span style={{ color: 'rgba(255, 255, 255, 0.2)', fontSize: '0.7rem' }}>/</span>
+                <span style={{ color: 'var(--ink-25, rgba(23, 21, 15, 0.25))', fontSize: '0.7rem' }}>/</span>
               )}
             </React.Fragment>
           ))}

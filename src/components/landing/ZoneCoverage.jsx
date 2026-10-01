@@ -8,12 +8,12 @@ import { ledgerRow } from '../../utils/motion';
 
 /**
  * ZoneCoverage (§6.5) — 03 Vector Staffing ("EVERY ZONE. VISIBLE.")
- * Restyled dark:
- * - Data sourced directly from eventZones so numbers always match the strip
- * - Headline revealed line by line in Archivo font
- * - Meter bars fill on entry (red for gaps, white for 100%)
- * - Staggered rise on rows
- * - Thin indigo dividers (#5a3cf0)
+ * Restored to original PULSE Cream / Ink / Vermilion styling:
+ * - Cream background (#F3F0E8 / var(--paper))
+ * - Deep ink text (#17150F / var(--ink))
+ * - Vermilion accent (#F5452C / var(--pulse)) for gaps
+ * - 1px hairline rules and clean ledger table layout
+ * - Synchronized live data from eventZones
  */
 export function ZoneCoverage({
   activeZone = null,
@@ -29,10 +29,10 @@ export function ZoneCoverage({
   return (
     <section
       id="zone-coverage"
-      className="pulse-section pulse-dark-section"
+      className="pulse-section"
       style={{
-        backgroundColor: '#0a0a10',
-        color: '#FFFFFF',
+        backgroundColor: 'var(--paper, #F3F0E8)',
+        color: 'var(--ink, #17150F)',
         position: 'relative',
         zIndex: 14,
         paddingTop: 'clamp(5rem, 8vw, 8rem)',
@@ -40,24 +40,6 @@ export function ZoneCoverage({
       }}
       aria-labelledby="zone-coverage-title"
     >
-      {/* Indigo Divider Rule drawing from left */}
-      <motion.div
-        initial={shouldReduceMotion ? { scaleX: 1 } : { scaleX: 0 }}
-        whileInView={{ scaleX: 1 }}
-        viewport={{ once: true }}
-        transition={{ duration: 0.9, ease: [0.16, 1, 0.3, 1] }}
-        style={{
-          height: '1px',
-          backgroundColor: '#5a3cf0',
-          boxShadow: '0 0 8px rgba(90, 60, 240, 0.35)',
-          transformOrigin: 'left',
-          width: '100%',
-          position: 'absolute',
-          top: 0,
-          left: 0,
-        }}
-      />
-
       <div className="pulse-container">
         {/* Section Eyebrow */}
         <div style={{ marginBottom: 'clamp(1.5rem, 3vw, 2.5rem)' }}>
@@ -70,14 +52,14 @@ export function ZoneCoverage({
             as="h2"
             id="zone-coverage-title"
             style={{
-              fontFamily: "'Archivo', 'Archivo Black', sans-serif",
+              fontFamily: "'Archivo', 'Archivo Black', 'Bricolage Grotesque', sans-serif",
               fontVariationSettings: "'wdth' 125, 'wght' 900",
               fontWeight: 900,
               fontSize: 'clamp(2.4rem, 6.5vw, 6rem)',
               lineHeight: 0.92,
               letterSpacing: '-0.02em',
               textTransform: 'uppercase',
-              color: '#FFFFFF',
+              color: 'var(--ink, #17150F)',
               margin: 0,
             }}
           >
@@ -114,13 +96,13 @@ export function ZoneCoverage({
                   }
                 }}
                 style={{
-                  borderBottom: '1px solid rgba(90, 60, 240, 0.25)',
+                  borderBottom: '1px solid var(--hairline, rgba(23, 21, 15, 0.14))',
                   padding: 'clamp(1.25rem, 2.2vw, 2rem) 0',
                   cursor: 'pointer',
-                  backgroundColor: isSelected ? 'rgba(90, 60, 240, 0.06)' : 'transparent',
+                  backgroundColor: isSelected ? 'rgba(23, 21, 15, 0.04)' : 'transparent',
                   transition: 'background-color 0.2s ease',
                 }}
-                className={`pulse-dark-zone-row ${isSelected ? 'is-selected' : ''}`}
+                className={`pulse-zone-ledger-row ${isSelected ? 'is-selected' : ''}`}
                 aria-expanded={isExpanded}
                 aria-label={`${zone.name}: ${zone.staffed} of ${zone.required} volunteers`}
               >
@@ -139,7 +121,7 @@ export function ZoneCoverage({
                         fontFamily: "'Space Grotesk', sans-serif",
                         fontSize: 'clamp(1.4rem, 2.5vw, 2.2rem)',
                         fontWeight: 700,
-                        color: '#FFFFFF',
+                        color: 'var(--ink, #17150F)',
                         letterSpacing: '-0.02em',
                       }}
                     >
@@ -152,22 +134,24 @@ export function ZoneCoverage({
                         className="font-mono"
                         style={{
                           fontSize: '0.72rem',
-                          color: 'rgba(255, 255, 255, 0.65)',
-                          border: '1px solid rgba(255, 255, 255, 0.2)',
+                          color: 'var(--ink-70, rgba(23, 21, 15, 0.70))',
+                          border: '1px solid var(--hairline-bold, rgba(23, 21, 15, 0.28))',
+                          backgroundColor: 'var(--paper-raised, #ECE8DD)',
                           padding: '3px 8px',
                           borderRadius: '2px',
+                          fontWeight: 600,
                         }}
                       >
-                        ✓ 100%
+                        ✓ 100% COVERED
                       </span>
                     ) : (
                       <span
                         className="font-mono"
                         style={{
                           fontSize: '0.72rem',
-                          color: '#F5452C',
+                          color: 'var(--pulse, #F5452C)',
                           border: '1px solid rgba(245, 69, 44, 0.35)',
-                          backgroundColor: 'rgba(245, 69, 44, 0.12)',
+                          backgroundColor: 'rgba(245, 69, 44, 0.10)',
                           padding: '3px 8px',
                           borderRadius: '2px',
                           fontWeight: 700,
@@ -187,10 +171,10 @@ export function ZoneCoverage({
                       letterSpacing: '0.04em',
                     }}
                   >
-                    <span style={{ color: isFull ? '#FFFFFF' : '#F5452C' }}>
+                    <span style={{ color: isFull ? 'var(--ink, #17150F)' : 'var(--pulse, #F5452C)' }}>
                       {String(zone.staffed).padStart(2, '0')}
                     </span>
-                    <span style={{ color: 'rgba(255, 255, 255, 0.4)' }}>
+                    <span style={{ color: 'var(--ink-45, rgba(23, 21, 15, 0.45))' }}>
                       {' '}/ {String(zone.required).padStart(2, '0')}
                     </span>
                   </div>
@@ -201,7 +185,7 @@ export function ZoneCoverage({
                   style={{
                     width: '100%',
                     height: '2px',
-                    backgroundColor: 'rgba(255, 255, 255, 0.12)',
+                    backgroundColor: 'rgba(23, 21, 15, 0.10)',
                     position: 'relative',
                     overflow: 'hidden',
                   }}
@@ -214,8 +198,8 @@ export function ZoneCoverage({
                     transition={{ duration: 1.1, delay: idx * 0.1, ease: [0.16, 1, 0.3, 1] }}
                     style={{
                       height: '100%',
-                      backgroundColor: isFull ? '#FFFFFF' : '#F5452C',
-                      boxShadow: isFull ? 'none' : '0 0 8px #F5452C',
+                      backgroundColor: isFull ? 'var(--ink, #17150F)' : 'var(--pulse, #F5452C)',
+                      boxShadow: isFull ? 'none' : '0 0 6px rgba(245, 69, 44, 0.35)',
                     }}
                   />
                 </div>
@@ -234,17 +218,17 @@ export function ZoneCoverage({
                         gridTemplateColumns: 'repeat(auto-fit, minmax(200px, 1fr))',
                         gap: '12px',
                         fontSize: '0.82rem',
-                        color: 'rgba(255, 255, 255, 0.7)',
+                        color: 'var(--ink-70, rgba(23, 21, 15, 0.70))',
                       }}
                       className="font-mono"
                     >
                       <div>
-                        <span style={{ color: 'rgba(255, 255, 255, 0.4)' }}>SCOPE: </span>
+                        <span style={{ color: 'var(--ink-45, rgba(23, 21, 15, 0.45))' }}>SCOPE: </span>
                         <span>{zone.caption}</span>
                       </div>
                       <div>
-                        <span style={{ color: 'rgba(255, 255, 255, 0.4)' }}>STATUS: </span>
-                        <span style={{ color: isFull ? '#FFFFFF' : '#F5452C', fontWeight: 700 }}>
+                        <span style={{ color: 'var(--ink-45, rgba(23, 21, 15, 0.45))' }}>STATUS: </span>
+                        <span style={{ color: isFull ? 'var(--ink, #17150F)' : 'var(--pulse, #F5452C)', fontWeight: 700 }}>
                           {zone.status}
                         </span>
                       </div>

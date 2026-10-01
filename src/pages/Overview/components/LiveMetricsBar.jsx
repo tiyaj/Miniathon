@@ -13,12 +13,13 @@ import { useNavigate } from 'react-router-dom';
 
 export function LiveMetricsBar({ data = {} }) {
   const navigate = useNavigate();
+  const safeData = data || {};
 
   const metrics = [
     {
       id: 'reg',
       label: 'Registered Volunteers',
-      value: data.volunteersRegistered ?? 16,
+      value: safeData.volunteersRegistered ?? 16,
       sub: 'Verified roster',
       icon: Users,
       route: '/volunteers',
@@ -27,7 +28,7 @@ export function LiveMetricsBar({ data = {} }) {
     {
       id: 'asg',
       label: 'Active Allocations',
-      value: data.volunteersAssigned ?? 12,
+      value: safeData.volunteersAssigned ?? 12,
       sub: '75% workforce assigned',
       icon: UserCheck,
       route: '/volunteers',
@@ -36,8 +37,8 @@ export function LiveMetricsBar({ data = {} }) {
     {
       id: 'cov',
       label: 'Event Coverage',
-      value: `${data.coverage?.filled ?? 12}/${data.coverage?.required ?? 18}`,
-      sub: `${data.coverage?.percent ?? 67}% total capacity`,
+      value: `${safeData.coverage?.filled ?? 12}/${safeData.coverage?.required ?? 18}`,
+      sub: `${safeData.coverage?.percent ?? 67}% total capacity`,
       icon: ShieldCheck,
       route: '/assignments',
       highlight: 'warning'
@@ -45,7 +46,7 @@ export function LiveMetricsBar({ data = {} }) {
     {
       id: 'chk',
       label: 'On-Ground Checked In',
-      value: data.checkedIn ?? 7,
+      value: safeData.checkedIn ?? 7,
       sub: 'Shift 1 headcount active',
       icon: Activity,
       route: '/volunteers',
@@ -54,7 +55,7 @@ export function LiveMetricsBar({ data = {} }) {
     {
       id: 'inc',
       label: 'Critical Incident',
-      value: data.criticalIncidents ?? 1,
+      value: safeData.criticalIncidents ?? 1,
       sub: 'Entry Gate surge triage',
       icon: AlertOctagon,
       route: '/live-ops',
@@ -63,7 +64,7 @@ export function LiveMetricsBar({ data = {} }) {
     {
       id: 'tsk',
       label: 'Setup Tasks Resolved',
-      value: `${data.tasks?.completed ?? 5}/${data.tasks?.total ?? 8}`,
+      value: `${safeData.tasks?.completed ?? 5}/${safeData.tasks?.total ?? 8}`,
       sub: '62% logistics ready',
       icon: CheckSquare,
       route: '/live-ops',

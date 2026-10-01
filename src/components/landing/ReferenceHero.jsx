@@ -6,9 +6,11 @@ import LiveDot from './primitives/LiveDot';
 import { useReducedMotionSafe } from '../../hooks/useReducedMotionSafe';
 
 /**
- * TUNING CONFIG: Reference Hero
+ * TUNING CONFIG: Reference Hero (§4, §5.1, §5.4)
  * Background: Pure Black (#000000)
- * Extended vertical scroll area (260vh) to provide ample room for enlarged floating cream cards
+ * Tight stage height (~112vh) so the lead stage image of EventZoneSequence
+ * enters the viewport while the headline and globe are still leaving.
+ * Zero blank dark space.
  * Headline: (50vw, 62vh), Archivo 900
  * Globe: (49.7vw, 60vh), WebGL wireframe line loops & tilted orbit ring
  */
@@ -20,7 +22,7 @@ export const HERO_CONFIG = {
   globeCenter: { x: '49.7vw', y: '60vh' },
   globeDiameterVw: 27,
   bgColor: '#000000',
-  stageHeight: '260vh',
+  stageHeight: '112vh',
 };
 
 export function ReferenceHero({ onOpenEventPanel }) {
@@ -32,29 +34,29 @@ export function ReferenceHero({ onOpenEventPanel }) {
     offset: ['start start', 'end start'],
   });
 
-  // 1:1 Natural scroll translation across the extended scrollable area
+  // 1:1 Natural scroll translation across the hero exit
   const masterY = useTransform(
     scrollYProgress,
-    [0, 0.52],
-    ['0vh', '-60vh']
+    [0, 0.72],
+    ['0vh', '-65vh']
   );
 
   const globeY = useTransform(
     scrollYProgress,
-    [0, 0.52],
-    ['0vh', '-58vh']
+    [0, 0.72],
+    ['0vh', '-62vh']
   );
 
   const headlineOpacity = useTransform(
     scrollYProgress,
-    [0, 0.36],
+    [0, 0.52],
     [1, 0]
   );
 
   // Eyebrow and bottom meta exit early with headline
   const metaOpacity = useTransform(
     scrollYProgress,
-    [0, 0.22],
+    [0, 0.35],
     [1, 0]
   );
 
@@ -72,7 +74,7 @@ export function ReferenceHero({ onOpenEventPanel }) {
         zIndex: 10,
       }}
     >
-      {/* Sticky 100vh Viewport Stage */}
+      {/* Viewport Stage */}
       <div
         className="pulse-dark-stage"
         style={{
@@ -98,7 +100,7 @@ export function ReferenceHero({ onOpenEventPanel }) {
           <CoordinationOrb />
         </motion.div>
 
-        {/* Layer 2: Scattered Enlarged Floating Cream Cards */}
+        {/* Layer 2: Scattered Floating Cream Cards & Bridge Media */}
         <FloatingEventMedia scrollYProgress={scrollYProgress} />
 
         {/* Top Eyebrow: LIVE EVENT COORDINATION · TECHFEST 2026 · EVENT ACTIVE */}
@@ -140,101 +142,87 @@ export function ReferenceHero({ onOpenEventPanel }) {
               e.currentTarget.style.backgroundColor = 'rgba(255, 255, 255, 0.03)';
               e.currentTarget.style.borderColor = 'rgba(255, 255, 255, 0.1)';
             }}
-            title="Click to view Live Event dossier"
+            aria-label="View event timetable and status drawer"
           >
-            <span>LIVE EVENT COORDINATION</span>
-            <span style={{ opacity: 0.3 }}>·</span>
-            <span>TECHFEST 2026</span>
-            <span style={{ opacity: 0.3 }}>·</span>
-            <span style={{ color: '#F5452C', display: 'inline-flex', alignItems: 'center', gap: '6px' }}>
-              <LiveDot size={6} />
-              EVENT ACTIVE
-            </span>
+            <LiveDot size={6} />
+            <span>LIVE EVENT COORDINATION · TECHFEST 2026 · EVENT ACTIVE</span>
           </button>
         </motion.div>
 
-        {/* Layer 3: Centered 3-Line Headline at (50vw, 62vh) */}
+        {/* Layer 3: Lower-Center Display Headline (§4.2, §5.1) */}
         <motion.div
           style={{
             position: 'absolute',
-            top: HERO_CONFIG.headlineCenter.y,
             left: HERO_CONFIG.headlineCenter.x,
+            top: HERO_CONFIG.headlineCenter.y,
             transform: 'translate(-50%, -50%)',
+            textAlign: 'center',
+            zIndex: 10,
             y: shouldReduceMotion ? 0 : masterY,
             opacity: shouldReduceMotion ? 1 : headlineOpacity,
-            zIndex: 10,
-            textAlign: 'center',
-            width: 'max-content',
-            maxWidth: '92vw',
-            userSelect: 'none',
             pointerEvents: 'none',
+            width: '100%',
+            maxWidth: '1440px',
+            paddingLeft: '1.5rem',
+            paddingRight: '1.5rem',
           }}
+          className="pulse-hero-headline-wrap"
         >
           <h1
             style={{
-              fontFamily: "'Archivo', 'Archivo Black', sans-serif",
+              fontFamily: "'Archivo', 'Archivo Black', 'Bricolage Grotesque', sans-serif",
               fontVariationSettings: "'wdth' 125, 'wght' 900",
               fontWeight: 900,
-              fontSize: 'clamp(2.4rem, 4.7vw, 5.6rem)',
-              lineHeight: 0.94,
-              letterSpacing: '-0.01em',
+              fontSize: 'clamp(2.6rem, 4.7vw, 5.2rem)',
+              lineHeight: HERO_CONFIG.lineHeight,
+              letterSpacing: HERO_CONFIG.letterSpacing,
+              textTransform: 'uppercase',
               color: '#FFFFFF',
               margin: 0,
-              textTransform: 'uppercase',
+              padding: 0,
+              whiteSpace: 'pre-line',
+              textShadow: '0 4px 30px rgba(0, 0, 0, 0.9)',
             }}
-            className="pulse-reference-headline"
+            className="pulse-hero-display-h1"
           >
-            <span style={{ display: 'block' }}>EVERY PERSON.</span>
-            <span style={{ display: 'block' }}>EVERY ZONE.</span>
-            <span style={{ display: 'block' }}>IN SYNC.</span>
+            {"EVERY PERSON.\nEVERY ZONE.\nIN SYNC."}
           </h1>
         </motion.div>
 
-        {/* Bottom Line: THADOMAL SHAHANI ENGINEERING COLLEGE · MUMBAI + LIVE */}
+        {/* Bottom Meta Line: 128 ACTIVE VOLUNTEERS // 5 CRITICAL ZONES */}
         <motion.div
           style={{
             position: 'absolute',
-            bottom: '12vh',
-            left: '50%',
-            transform: 'translateX(-50%)',
-            opacity: shouldReduceMotion ? 1 : metaOpacity,
-            y: shouldReduceMotion ? 0 : masterY,
-            zIndex: 15,
-            width: '100%',
-            maxWidth: '1440px',
-            paddingLeft: 'clamp(1.5rem, 5vw, 4rem)',
-            paddingRight: 'clamp(1.5rem, 5vw, 4rem)',
+            bottom: '105px', // Above bottom menu pill
+            left: 'clamp(1.5rem, 4vw, 3.5rem)',
+            right: 'clamp(1.5rem, 4vw, 3.5rem)',
             display: 'flex',
             justifyContent: 'space-between',
             alignItems: 'center',
-            boxSizing: 'border-box',
+            zIndex: 12,
+            opacity: shouldReduceMotion ? 1 : metaOpacity,
             pointerEvents: 'none',
           }}
-          className="font-mono pulse-hero-bottom-meta"
+          className="font-mono pulse-hero-meta-bar"
         >
-          <div style={{ fontSize: '0.75rem', color: 'rgba(255, 255, 255, 0.55)', letterSpacing: '0.12em' }}>
-            <span>THADOMAL SHAHANI ENGINEERING COLLEGE</span>
-            <span style={{ margin: '0 8px', opacity: 0.35 }}>·</span>
-            <span>MUMBAI</span>
+          <div style={{ display: 'flex', alignItems: 'center', gap: '10px' }}>
+            <span
+              style={{
+                width: '6px',
+                height: '6px',
+                borderRadius: '50%',
+                backgroundColor: '#10b981',
+                boxShadow: '0 0 8px #10b981',
+              }}
+            />
+            <span style={{ fontSize: '0.72rem', color: 'rgba(255, 255, 255, 0.6)', letterSpacing: '0.12em' }}>
+              128 ACTIVE VOLUNTEERS // 5 CRITICAL ZONES
+            </span>
           </div>
 
-          <div
-            style={{
-              display: 'inline-flex',
-              alignItems: 'center',
-              gap: '6px',
-              padding: '4px 10px',
-              border: '1px solid rgba(255, 255, 255, 0.14)',
-              backgroundColor: 'rgba(255, 255, 255, 0.04)',
-              borderRadius: '2px',
-              fontSize: '0.72rem',
-              color: '#FFFFFF',
-              fontWeight: 700,
-            }}
-          >
-            <LiveDot size={6} />
-            <span>LIVE</span>
-          </div>
+          <span style={{ fontSize: '0.72rem', color: 'rgba(255, 255, 255, 0.45)', letterSpacing: '0.12em' }}>
+            SCROLL TO EXPLORE ZONES ↓
+          </span>
         </motion.div>
       </div>
     </div>
