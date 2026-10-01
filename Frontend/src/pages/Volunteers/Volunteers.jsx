@@ -687,6 +687,59 @@ export function Volunteers() {
               </span>
             </div>
           </div>
+
+          {/* Mobile Card List (< 900px) */}
+          <div className="volunteers-mobile-cards">
+            {processedVolunteers.map((vol) => (
+              <div
+                key={vol.id}
+                className="volunteers-card-item"
+                onClick={() => handleOpenDrawer(vol)}
+                role="button"
+                tabIndex={0}
+              >
+                <div style={{ display: 'flex', alignItems: 'center', justifyContent: 'space-between' }}>
+                  <div style={{ display: 'flex', alignItems: 'center', gap: '10px' }}>
+                    <Avatar name={vol.name} initials={vol.avatar} size={38} />
+                    <div>
+                      <div style={{ fontWeight: 700, color: 'var(--ink)', fontSize: '14px' }}>
+                        {vol.name}
+                      </div>
+                      <div style={{ fontSize: '12px', color: 'var(--ink-3)' }}>
+                        {vol.email}
+                      </div>
+                    </div>
+                  </div>
+                  <StatusBadge status={vol.status} size="sm" />
+                </div>
+
+                <div style={{ display: 'flex', alignItems: 'center', justifyContent: 'space-between', fontSize: '12px', color: 'var(--ink-2)' }}>
+                  <span style={{ display: 'flex', alignItems: 'center', gap: '5px' }}>
+                    <MapPin size={12} color="var(--vermilion)" />
+                    {vol.assignedZone || 'Unassigned'}
+                  </span>
+                  <span style={{ fontFamily: 'var(--font-mono)', fontWeight: 700 }}>
+                    {vol.hours}h logged
+                  </span>
+                </div>
+
+                <div style={{ display: 'flex', alignItems: 'center', justifyContent: 'space-between' }}>
+                  {renderShiftPips(vol.availableShifts)}
+                  <Button
+                    variant="ghost"
+                    size="sm"
+                    onClick={(e) => {
+                      e.stopPropagation();
+                      handleOpenDrawer(vol);
+                    }}
+                  >
+                    <span>Profile</span>
+                    <ChevronRight size={12} />
+                  </Button>
+                </div>
+              </div>
+            ))}
+          </div>
         </>
       )}
 
