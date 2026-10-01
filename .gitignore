@@ -1,0 +1,31 @@
+# Dependencies
+node_modules/
+Frontend/node_modules/
+Backend/node_modules/
+pulse/Backend/node_modules/
+
+# Production build artifacts
+dist/
+dist-ssr/
+Frontend/dist/
+
+# Local Environment & Secrets
+.env
+.env*.local
+*.local
+pulse/Backend/.env
+Backend/.env
+
+# Local directory junctions / symlinks
+/Backend
+
+# Logs
+*.log
+npm-debug.log*
+yarn-debug.log*
+
+# Editor & OS files
+.DS_Store
+Thumbs.db
+.vscode/
+.idea/
