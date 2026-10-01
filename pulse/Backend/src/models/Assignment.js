@@ -27,6 +27,7 @@ const assignmentSchema = new mongoose.Schema(
     },
     shiftId: {
       type: String,
+      index: true,
     },
     role: {
       type: mongoose.Schema.Types.Mixed,
@@ -35,11 +36,17 @@ const assignmentSchema = new mongoose.Schema(
     },
     roleId: {
       type: String,
+      index: true,
     },
     status: {
       type: String,
       enum: ['assigned', 'checked_in', 'completed', 'dropped', 'no_show', 'cancelled'],
       default: 'assigned',
+      index: true,
+    },
+    assignedAt: {
+      type: Date,
+      default: Date.now,
     },
     checkedInAt: {
       type: Date,
@@ -52,6 +59,7 @@ const assignmentSchema = new mongoose.Schema(
     hoursWorked: {
       type: Number,
       default: 0,
+      min: [0, 'Hours worked cannot be negative'],
     },
   },
   {
@@ -60,6 +68,8 @@ const assignmentSchema = new mongoose.Schema(
       virtuals: true,
       transform: (doc, ret) => {
         ret.id = ret._id.toString();
+        ret.checkInAt = ret.checkedInAt;
+        ret.checkOutAt = ret.checkedOutAt;
         delete ret.__v;
         return ret;
       },
@@ -68,12 +78,29 @@ const assignmentSchema = new mongoose.Schema(
       virtuals: true,
       transform: (doc, ret) => {
         ret.id = ret._id.toString();
+        ret.checkInAt = ret.checkedInAt;
+        ret.checkOutAt = ret.checkedOutAt;
         delete ret.__v;
         return ret;
       },
     },
   }
 );
+
+assignmentSchema.virtual('checkInAt').get(function () {
+  return this.checkedInAt;
+}).set(function (val) {
+  this.checkedInAt = val;
+});
+
+assignmentSchema.virtual('checkOutAt').get(function () {
+  return this.checkedOutAt;
+}).set(function (val) {
+  this.checkedOutAt = val;
+});
+
+assignmentSchema.index({ shift: 1, role: 1, status: 1 });
+assignmentSchema.index({ volunteer: 1, status: 1 });
 
 const Assignment = mongoose.models.Assignment || mongoose.model('Assignment', assignmentSchema);
 

@@ -1,5 +1,7 @@
-import express from 'express';
+﻿import express from 'express';
 import cors from 'cors';
+import authRoutes from './routes/authRoutes.js';
+import userRoutes from './routes/userRoutes.js';
 import taskRoutes from './routes/taskRoutes.js';
 import incidentRoutes from './routes/incidentRoutes.js';
 import announcementRoutes from './routes/announcementRoutes.js';
@@ -24,7 +26,7 @@ app.use(
 app.use(express.json());
 app.use(express.urlencoded({ extended: true }));
 
-// Health Check Endpoint
+// Health Check Endpoint (Public)
 app.get('/api/health', (req, res) => {
   res.status(200).json({
     data: {
@@ -34,7 +36,11 @@ app.get('/api/health', (req, res) => {
   });
 });
 
-// API Routes
+// Authentication & User Management Routes
+app.use('/api/auth', authRoutes);
+app.use('/api/users', userRoutes);
+
+// Operational API Routes
 app.use('/api/events', eventRoutes);
 app.use('/api', eventRoutes);
 app.use('/api', volunteerRoutes);
@@ -49,4 +55,3 @@ app.use('/api', dashboardRoutes);
 app.use(errorHandler);
 
 export default app;
-

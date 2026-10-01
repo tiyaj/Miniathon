@@ -7,6 +7,28 @@ const roleSchema = new mongoose.Schema(
       required: true,
       ref: 'Event',
     },
+    eventId: {
+      type: String,
+      index: true,
+    },
+    zone: {
+      type: mongoose.Schema.Types.Mixed,
+      ref: 'Zone',
+      default: null,
+    },
+    zoneId: {
+      type: String,
+      default: null,
+    },
+    shift: {
+      type: mongoose.Schema.Types.Mixed,
+      ref: 'Shift',
+      default: null,
+    },
+    shiftId: {
+      type: String,
+      default: null,
+    },
     name: {
       type: String,
       required: [true, 'Role name is required'],
@@ -24,10 +46,17 @@ const roleSchema = new mongoose.Schema(
     capacity: {
       type: Number,
       default: 1,
+      min: [1, 'Capacity must be at least 1'],
     },
     requiredCount: {
       type: Number,
       default: 1,
+      min: [1, 'Required count must be at least 1'],
+    },
+    priority: {
+      type: String,
+      default: 'Medium',
+      trim: true,
     },
   },
   {

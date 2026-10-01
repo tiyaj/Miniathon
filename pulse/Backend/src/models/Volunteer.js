@@ -37,13 +37,21 @@ const volunteerSchema = new mongoose.Schema(
       type: [mongoose.Schema.Types.Mixed],
       default: [],
     },
+    preferredZoneId: {
+      type: mongoose.Schema.Types.Mixed,
+      default: null,
+    },
     availableShiftIds: {
       type: [mongoose.Schema.Types.Mixed],
       default: [],
     },
+    maxHours: {
+      type: Number,
+      default: 40,
+    },
     status: {
       type: String,
-      enum: ['available', 'assigned', 'dropped', 'checked_in', 'completed'],
+      enum: ['available', 'assigned', 'checked_in', 'checked_out', 'completed', 'dropout', 'no_show', 'dropped'],
       default: 'available',
     },
     totalHours: {

@@ -1,24 +1,35 @@
-import express from 'express';
+﻿import express from 'express';
 import {
   getVolunteers,
   createVolunteer,
+  getVolunteerById,
+  updateVolunteer,
+  deleteVolunteer,
 } from '../controllers/volunteerController.js';
+import { authenticate, authorize } from '../middleware/auth.js';
+import { ROLES } from '../utils/constants.js';
 
 const router = express.Router({ mergeParams: true });
 
-// Standard routes mounted at /api/events/:eventId/volunteers
+const coordinatorOnly = authorize(ROLES.COORDINATOR, ROLES.ADMIN, ROLES.SUPER_ADMIN);
+
+// Event nested routes
 router.route('/events/:eventId/volunteers')
-  .get(getVolunteers)
-  .post(createVolunteer);
+  .get(authenticate, getVolunteers)
+  .post(authenticate, coordinatorOnly, createVolunteer);
 
-// Support if mounted at /api/events
 router.route('/:eventId/volunteers')
-  .get(getVolunteers)
-  .post(createVolunteer);
+  .get(authenticate, getVolunteers)
+  .post(authenticate, coordinatorOnly, createVolunteer);
 
-// Support if mounted at /api/events/:eventId/volunteers
-router.route('/')
-  .get(getVolunteers)
-  .post(createVolunteer);
+// Direct volunteer collection routes
+router.route('/volunteers')
+  .get(authenticate, getVolunteers)
+  .post(authenticate, coordinatorOnly, createVolunteer);
+
+router.route('/volunteers/:volunteerId')
+  .get(authenticate, getVolunteerById)
+  .patch(authenticate, coordinatorOnly, updateVolunteer)
+  .delete(authenticate, coordinatorOnly, deleteVolunteer);
 
 export default router;

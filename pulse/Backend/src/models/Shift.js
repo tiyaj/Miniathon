@@ -7,9 +7,17 @@ const shiftSchema = new mongoose.Schema(
       required: true,
       ref: 'Event',
     },
+    eventId: {
+      type: String,
+      index: true,
+    },
     zone: {
       type: mongoose.Schema.Types.Mixed,
       ref: 'Zone',
+      default: null,
+    },
+    zoneId: {
+      type: String,
     },
     name: {
       type: String,
@@ -18,11 +26,11 @@ const shiftSchema = new mongoose.Schema(
     },
     startTime: {
       type: Date,
-      required: true,
+      required: [true, 'Shift start time is required'],
     },
     endTime: {
       type: Date,
-      required: true,
+      required: [true, 'Shift end time is required'],
     },
   },
   {
@@ -31,6 +39,8 @@ const shiftSchema = new mongoose.Schema(
       virtuals: true,
       transform: (doc, ret) => {
         ret.id = ret._id.toString();
+        ret.startAt = ret.startTime;
+        ret.endAt = ret.endTime;
         delete ret.__v;
         return ret;
       },
@@ -39,12 +49,26 @@ const shiftSchema = new mongoose.Schema(
       virtuals: true,
       transform: (doc, ret) => {
         ret.id = ret._id.toString();
+        ret.startAt = ret.startTime;
+        ret.endAt = ret.endTime;
         delete ret.__v;
         return ret;
       },
     },
   }
 );
+
+shiftSchema.virtual('startAt').get(function () {
+  return this.startTime;
+}).set(function (val) {
+  this.startTime = val;
+});
+
+shiftSchema.virtual('endAt').get(function () {
+  return this.endTime;
+}).set(function (val) {
+  this.endTime = val;
+});
 
 const Shift = mongoose.models.Shift || mongoose.model('Shift', shiftSchema);
 

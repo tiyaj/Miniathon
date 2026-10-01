@@ -1,3 +1,4 @@
+import { enableTestAuthInterceptor } from './testAuthHelper.js';
 import dotenv from 'dotenv';
 dotenv.config();
 
@@ -31,6 +32,7 @@ const runTests = async () => {
   try {
     console.log('Connecting to database...');
     await connectDB();
+    await enableTestAuthInterceptor();
 
     await new Promise((resolve) => {
       server = app.listen(0, () => {

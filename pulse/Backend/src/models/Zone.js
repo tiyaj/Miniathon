@@ -7,6 +7,10 @@ const zoneSchema = new mongoose.Schema(
       required: true,
       ref: 'Event',
     },
+    eventId: {
+      type: String,
+      index: true,
+    },
     name: {
       type: String,
       required: [true, 'Zone name is required'],

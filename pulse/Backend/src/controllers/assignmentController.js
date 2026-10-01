@@ -3,13 +3,21 @@ import Assignment from '../models/Assignment.js';
 import Volunteer from '../models/Volunteer.js';
 import Role from '../models/Role.js';
 import Shift from '../models/Shift.js';
-import Zone from '../models/Zone.js';
+import Event from '../models/Event.js';
 import { logActivity } from '../models/Activity.js';
 import { sendSuccess, sendError } from '../utils/response.js';
+import {
+  checkInAssignment,
+  checkOutAssignment,
+  dropoutAssignment,
+  populateAssignment,
+} from '../services/attendanceService.js';
+import { checkHardConstraints, findCandidateRecommendations } from '../services/matchingService.js';
+import { getVacancySuggestions, replaceDroppedAssignment } from '../services/reassignmentService.js';
+import { calculateEventCoverage } from '../services/coverageService.js';
 
-/**
- * Safely find assignment by ID supporting both ObjectId and string ID formats.
- */
+const INACTIVE_STATUSES = ['dropped', 'cancelled', 'no_show'];
+
 const findAssignmentById = async (assignmentId) => {
   if (!assignmentId) return null;
   const isObjectId = mongoose.Types.ObjectId.isValid(assignmentId);
@@ -22,33 +30,39 @@ const findAssignmentById = async (assignmentId) => {
 };
 
 /**
- * GET /api/events/:eventId/assignments
- * List assignments for an event.
+ * GET /api/events/:eventId/assignments & GET /api/assignments
  */
 export const getAssignments = async (req, res, next) => {
   try {
-    const { eventId } = req.params;
-    const isObjectId = mongoose.Types.ObjectId.isValid(eventId);
+    const eventId = req.params.eventId || req.query.event || req.query.eventId;
+    const filter = {};
 
-    const filter = {
-      $or: [
+    if (eventId) {
+      const isObjectId = mongoose.Types.ObjectId.isValid(eventId);
+      filter.$or = [
         { event: eventId },
         { eventId },
         ...(isObjectId ? [{ event: new mongoose.Types.ObjectId(eventId) }] : []),
-      ],
-    };
+      ];
+    }
 
     if (req.query.status) {
       filter.status = req.query.status;
     }
-    if (req.query.roleId) {
-      filter.role = req.query.roleId;
+    if (req.query.roleId || req.query.role) {
+      const rId = req.query.roleId || req.query.role;
+      filter.$or = [{ role: rId }, { roleId: rId }];
     }
-    if (req.query.shiftId) {
-      filter.shift = req.query.shiftId;
+    if (req.query.shiftId || req.query.shift) {
+      const sId = req.query.shiftId || req.query.shift;
+      filter.$or = [{ shift: sId }, { shiftId: sId }];
+    }
+    if (req.query.volunteerId || req.query.volunteer) {
+      const vId = req.query.volunteerId || req.query.volunteer;
+      filter.$or = [{ volunteer: vId }, { volunteerId: vId }];
     }
 
-    const assignments = await Assignment.find(filter).sort({ createdAt: -1 });
+    const assignments = await populateAssignment(Assignment.find(filter).sort({ createdAt: -1 }));
     return sendSuccess(res, assignments, 200);
   } catch (error) {
     next(error);
@@ -56,13 +70,30 @@ export const getAssignments = async (req, res, next) => {
 };
 
 /**
- * POST /api/events/:eventId/assignments
- * Assign a volunteer to a role and shift with conflict prevention.
+ * GET single assignment
+ */
+export const getAssignmentById = async (req, res, next) => {
+  try {
+    const { assignmentId } = req.params;
+    const assignment = await populateAssignment(Assignment.findById(assignmentId));
+    if (!assignment) {
+      return sendError(res, 'Assignment not found', 'ASSIGNMENT_NOT_FOUND', 404);
+    }
+    return sendSuccess(res, assignment, 200);
+  } catch (error) {
+    next(error);
+  }
+};
+
+/**
+ * POST /api/events/:eventId/assignments & POST /api/assignments
  */
 export const createAssignment = async (req, res, next) => {
   try {
-    const { eventId } = req.params;
-    const { volunteerId, roleId, shiftId } = req.body || {};
+    const eventId = req.params.eventId || req.body?.eventId || req.body?.event;
+    const volunteerId = req.body?.volunteerId || req.body?.volunteer;
+    const roleId = req.body?.roleId || req.body?.role;
+    const shiftId = req.body?.shiftId || req.body?.shift;
 
     if (!volunteerId) {
       return sendError(res, 'Volunteer ID is required', 'VALIDATION_ERROR', 400);
@@ -71,6 +102,7 @@ export const createAssignment = async (req, res, next) => {
       return sendError(res, 'Role ID is required', 'VALIDATION_ERROR', 400);
     }
 
+    // 1. Fetch referenced entities
     const isVolObjectId = mongoose.Types.ObjectId.isValid(volunteerId);
     const volunteer = await Volunteer.findOne({
       $or: [
@@ -83,61 +115,121 @@ export const createAssignment = async (req, res, next) => {
       return sendError(res, 'Volunteer not found', 'VOLUNTEER_NOT_FOUND', 404);
     }
 
-    // Conflict prevention: check if volunteer already has an active assignment for this shift
+    const isRoleObjectId = mongoose.Types.ObjectId.isValid(roleId);
+    const role = await Role.findOne({
+      $or: [
+        { _id: roleId },
+        ...(isRoleObjectId ? [{ _id: new mongoose.Types.ObjectId(roleId) }] : []),
+      ],
+    });
+
+    if (!role) {
+      return sendError(res, 'Role not found', 'ROLE_NOT_FOUND', 404);
+    }
+
+    let shift = null;
     if (shiftId) {
       const isShiftObjectId = mongoose.Types.ObjectId.isValid(shiftId);
-      const conflict = await Assignment.findOne({
-        volunteer: volunteer._id,
+      shift = await Shift.findOne({
         $or: [
-          { shift: shiftId },
-          ...(isShiftObjectId ? [{ shift: new mongoose.Types.ObjectId(shiftId) }] : []),
+          { _id: shiftId },
+          ...(isShiftObjectId ? [{ _id: new mongoose.Types.ObjectId(shiftId) }] : []),
         ],
-        status: { $in: ['assigned', 'checked_in'] },
       });
-
-      if (conflict) {
-        return sendError(
-          res,
-          'Volunteer already has an active assignment for this shift',
-          'SCHEDULE_CONFLICT',
-          400
-        );
+      if (!shift) {
+        return sendError(res, 'Shift not found', 'SHIFT_NOT_FOUND', 404);
       }
     }
 
-    const isEventObjectId = mongoose.Types.ObjectId.isValid(eventId);
-    const isRoleObjectId = mongoose.Types.ObjectId.isValid(roleId);
-    const isShiftObjectId = shiftId && mongoose.Types.ObjectId.isValid(shiftId);
+    // 2. Validate Event Mismatch if event is provided
+    if (eventId) {
+      const eventIdStr = eventId.toString().trim();
+      const roleEventStr = (role.event?._id || role.event || role.eventId)?.toString();
+      if (roleEventStr && roleEventStr !== eventIdStr) {
+        return sendError(res, 'Role does not belong to the specified event', 'EVENT_MISMATCH', 400);
+      }
+      if (shift) {
+        const shiftEventStr = (shift.event?._id || shift.event || shift.eventId)?.toString();
+        if (shiftEventStr && shiftEventStr !== eventIdStr) {
+          return sendError(res, 'Shift does not belong to the specified event', 'EVENT_MISMATCH', 400);
+        }
+      }
+    }
 
+    // 3. Role capacity check
+    const roleIdStr = (role.id || role._id).toString();
+    const shiftIdStr = shift ? (shift.id || shift._id).toString() : null;
+
+    const capacityQuery = {
+      $and: [
+        {
+          $or: [
+            { role: role._id },
+            { roleId: roleIdStr },
+          ],
+        },
+        ...(shift ? [{
+          $or: [
+            { shift: shift._id },
+            { shiftId: shiftIdStr },
+          ],
+        }] : []),
+        {
+          status: { $nin: INACTIVE_STATUSES },
+        },
+      ],
+    };
+
+    const activeRoleAssignments = await Assignment.countDocuments(capacityQuery);
+
+    const maxCapacity = Number(role.requiredCount || role.capacity) || 1;
+    if (activeRoleAssignments >= maxCapacity) {
+      return sendError(res, 'Role capacity is full for this shift', 'ROLE_FULL', 409);
+    }
+
+    // 4. Hard constraints & Overlap check
+    const constraintCheck = await checkHardConstraints(volunteer, shift, role, eventId);
+    if (!constraintCheck.eligible) {
+      if (constraintCheck.isOverlap || constraintCheck.reason.includes('overlapping')) {
+        return sendError(res, constraintCheck.reason, 'VOLUNTEER_DOUBLE_BOOKED', 409);
+      }
+      return sendError(res, `Volunteer is ineligible: ${constraintCheck.reason}`, 'INELIGIBLE_VOLUNTEER', 400);
+    }
+
+    const isEventObjectId = eventId && mongoose.Types.ObjectId.isValid(eventId);
     const assignment = await Assignment.create({
-      event: isEventObjectId ? new mongoose.Types.ObjectId(eventId) : eventId,
-      eventId,
+      event: isEventObjectId ? new mongoose.Types.ObjectId(eventId) : (eventId || role.event),
+      eventId: eventId ? eventId.toString() : (role.eventId || (role.event?._id || role.event)?.toString()),
       volunteer: volunteer._id,
-      volunteerId: volunteer._id.toString(),
-      role: isRoleObjectId ? new mongoose.Types.ObjectId(roleId) : roleId,
-      roleId,
-      shift: isShiftObjectId ? new mongoose.Types.ObjectId(shiftId) : shiftId || null,
-      shiftId: shiftId || null,
+      volunteerId: (volunteer.id || volunteer._id).toString(),
+      role: role._id,
+      roleId: (role.id || role._id).toString(),
+      shift: shift ? shift._id : null,
+      shiftId: shift ? (shift.id || shift._id).toString() : null,
       status: 'assigned',
     });
 
-    // Mark volunteer status
+    // Update volunteer status
     volunteer.status = 'assigned';
     await volunteer.save();
 
-    await logActivity(
-      eventId,
-      'assignment_created',
-      `Volunteer ${volunteer.name} assigned to role`,
-      {
-        assignmentId: assignment.id,
-        volunteerId: volunteer.id,
-        roleId,
-        shiftId,
-      }
-    );
+    const evtId = eventId || assignment.eventId;
+    if (evtId) {
+      await logActivity(
+        evtId,
+        'assignment_created',
+        `Volunteer ${volunteer.name} assigned to role ${role.name}`,
+        {
+          assignmentId: assignment.id || assignment._id.toString(),
+          volunteerId: volunteer.id || volunteer._id.toString(),
+          roleId: role.id || role._id.toString(),
+          shiftId: shift ? (shift.id || shift._id).toString() : null,
+        }
+      );
+    }
 
-    return sendSuccess(res, assignment, 201);
+    const populated = await populateAssignment(Assignment.findById(assignment._id));
+    return sendSuccess(res, populated, 201);
   } catch (error) {
     next(error);
   }
@@ -145,7 +237,6 @@ export const createAssignment = async (req, res, next) => {
 
 /**
  * DELETE /api/events/:eventId/assignments/:assignmentId
- * Remove an assignment.
  */
 export const removeAssignment = async (req, res, next) => {
   try {
@@ -155,238 +246,130 @@ export const removeAssignment = async (req, res, next) => {
       return sendError(res, 'Assignment not found', 'ASSIGNMENT_NOT_FOUND', 404);
     }
 
-    await Assignment.deleteOne({ _id: assignment._id });
-    return sendSuccess(res, { message: 'Assignment removed successfully' }, 200);
+    if (assignment.status === 'completed') {
+      return sendError(res, 'Cannot cancel an assignment that has already been completed', 'INVALID_ATTENDANCE_STATE', 400);
+    }
+    if (assignment.status === 'dropped') {
+      return sendError(res, 'Cannot cancel an assignment that has already been marked as dropped', 'INVALID_ATTENDANCE_STATE', 400);
+    }
+    if (assignment.status === 'cancelled') {
+      return sendError(res, 'Assignment is already cancelled', 'INVALID_ATTENDANCE_STATE', 400);
+    }
+
+    assignment.status = 'cancelled';
+    await assignment.save();
+
+    const populated = await populateAssignment(Assignment.findById(assignment._id));
+    return sendSuccess(res, { message: 'Assignment removed successfully', assignment: populated }, 200);
   } catch (error) {
     next(error);
   }
 };
 
 /**
- * POST /api/events/:eventId/assignments/:assignmentId/check-in
- * Check in a volunteer for an assignment.
+ * Check-in
  */
 export const checkIn = async (req, res, next) => {
   try {
-    const { eventId, assignmentId } = req.params;
-    const assignment = await findAssignmentById(assignmentId);
-    if (!assignment) {
-      return sendError(res, 'Assignment not found', 'ASSIGNMENT_NOT_FOUND', 404);
-    }
-
-    if (assignment.status === 'checked_in') {
-      return sendSuccess(res, assignment, 200);
-    }
-
-    assignment.status = 'checked_in';
-    assignment.checkedInAt = new Date();
-    await assignment.save();
-
-    await logActivity(
-      eventId,
-      'volunteer_check_in',
-      `Volunteer checked in for assignment`,
-      { assignmentId: assignment.id }
-    );
-
+    const eventId = req.params.eventId;
+    const assignmentId = req.params.assignmentId;
+    const assignment = await checkInAssignment(eventId, assignmentId);
     return sendSuccess(res, assignment, 200);
   } catch (error) {
+    if (error.statusCode) {
+      return sendError(res, error.message, error.code || 'BAD_REQUEST', error.statusCode);
+    }
     next(error);
   }
 };
 
 /**
- * POST /api/events/:eventId/assignments/:assignmentId/check-out
- * Check out a volunteer, calculate hours worked, and update total hours.
+ * Check-out
  */
 export const checkOut = async (req, res, next) => {
   try {
-    const { eventId, assignmentId } = req.params;
-    const assignment = await findAssignmentById(assignmentId);
-    if (!assignment) {
-      return sendError(res, 'Assignment not found', 'ASSIGNMENT_NOT_FOUND', 404);
-    }
-
-    if (!assignment.checkedInAt) {
-      return sendError(res, 'Cannot check out without prior check-in', 'INVALID_ACTION', 400);
-    }
-
-    assignment.checkedOutAt = new Date();
-    assignment.status = 'completed';
-
-    const diffHours =
-      (assignment.checkedOutAt.getTime() - new Date(assignment.checkedInAt).getTime()) /
-      (1000 * 60 * 60);
-    assignment.hoursWorked = Math.max(0, Math.round(diffHours * 10) / 10);
-    await assignment.save();
-
-    // Update volunteer total hours
-    await Volunteer.updateOne(
-      { _id: assignment.volunteer },
-      { $inc: { totalHours: assignment.hoursWorked } }
-    );
-
-    await logActivity(
-      eventId,
-      'volunteer_check_out',
-      `Volunteer checked out, worked ${assignment.hoursWorked} hours`,
-      { assignmentId: assignment.id, hoursWorked: assignment.hoursWorked }
-    );
-
+    const eventId = req.params.eventId;
+    const assignmentId = req.params.assignmentId;
+    const assignment = await checkOutAssignment(eventId, assignmentId);
     return sendSuccess(res, assignment, 200);
   } catch (error) {
+    if (error.statusCode) {
+      return sendError(res, error.message, error.code || 'BAD_REQUEST', error.statusCode);
+    }
     next(error);
   }
 };
 
 /**
- * POST /api/events/:eventId/assignments/:assignmentId/dropout
- * Mark volunteer as dropped out and vacate slot.
+ * Dropout
  */
 export const markDropout = async (req, res, next) => {
   try {
-    const { eventId, assignmentId } = req.params;
-    const assignment = await findAssignmentById(assignmentId);
-    if (!assignment) {
-      return sendError(res, 'Assignment not found', 'ASSIGNMENT_NOT_FOUND', 404);
-    }
-
-    assignment.status = 'dropped';
-    await assignment.save();
-
-    await Volunteer.updateOne({ _id: assignment.volunteer }, { status: 'dropped' });
-
-    await logActivity(
-      eventId,
-      'volunteer_dropout',
-      `Volunteer dropped out from assignment`,
-      { assignmentId: assignment.id }
-    );
-
+    const eventId = req.params.eventId;
+    const assignmentId = req.params.assignmentId;
+    const assignment = await dropoutAssignment(eventId, assignmentId);
     return sendSuccess(res, assignment, 200);
   } catch (error) {
+    if (error.statusCode) {
+      return sendError(res, error.message, error.code || 'BAD_REQUEST', error.statusCode);
+    }
     next(error);
   }
 };
 
 /**
- * GET /api/events/:eventId/roles/:roleId/suggestions
- * Recommend ranked eligible replacement candidates.
+ * Suggestions for Role vacancy or Dropped Assignment
  */
 export const getSuggestions = async (req, res, next) => {
   try {
-    const { eventId, roleId } = req.params;
-    const isObjectId = mongoose.Types.ObjectId.isValid(roleId);
+    const eventId = req.params.eventId;
+    const targetId = req.params.roleId || req.params.assignmentId;
 
-    const role = await Role.findOne({
-      $or: [
-        { _id: roleId },
-        ...(isObjectId ? [{ _id: new mongoose.Types.ObjectId(roleId) }] : []),
-      ],
-    });
-
-    if (!role) {
-      return sendError(res, 'Role not found', 'ROLE_NOT_FOUND', 404);
-    }
-
-    const requiredSkills = role.requiredSkills || [];
-
-    // Find available volunteers
-    const volunteers = await Volunteer.find({
-      status: { $ne: 'dropped' },
-    });
-
-    const scoredCandidates = volunteers.map((vol) => {
-      let score = 50;
-      const reasons = [];
-
-      // Skill match
-      const matchingSkills = (vol.skills || []).filter((s) => requiredSkills.includes(s));
-      if (matchingSkills.length > 0) {
-        score += 30;
-        reasons.push(`Matching skills: ${matchingSkills.join(', ')}`);
-      }
-
-      // Workload fairness: lower hours scores higher
-      const hours = vol.totalHours || 0;
-      if (hours <= 5) {
-        score += 20;
-        reasons.push('Low current workload');
-      } else if (hours <= 10) {
-        score += 10;
-        reasons.push('Moderate workload');
-      }
-
-      return {
-        volunteerId: vol.id || vol._id.toString(),
-        name: vol.name,
-        score: Math.min(100, score),
-        reasons,
-      };
-    });
-
-    scoredCandidates.sort((a, b) => b.score - a.score);
-    return sendSuccess(res, scoredCandidates.slice(0, 3), 200);
+    const result = await getVacancySuggestions(eventId, targetId);
+    return sendSuccess(res, result, 200);
   } catch (error) {
+    if (error.statusCode) {
+      return sendError(res, error.message, error.code || 'BAD_REQUEST', error.statusCode);
+    }
     next(error);
   }
 };
 
 /**
- * GET /api/events/:eventId/coverage
- * Coverage calculations by zone and role.
+ * Replace Dropped Assignment
+ */
+export const replaceAssignment = async (req, res, next) => {
+  try {
+    const eventId = req.params.eventId;
+    const assignmentId = req.params.assignmentId;
+    const volunteerId = req.body?.volunteerId;
+
+    if (!volunteerId) {
+      return sendError(res, 'Valid volunteerId is required', 'VALIDATION_ERROR', 400);
+    }
+
+    const result = await replaceDroppedAssignment(eventId, assignmentId, volunteerId);
+    return sendSuccess(res, result, 201);
+  } catch (error) {
+    if (error.statusCode) {
+      return sendError(res, error.message, error.code || 'BAD_REQUEST', error.statusCode);
+    }
+    next(error);
+  }
+};
+
+/**
+ * Coverage
  */
 export const getCoverage = async (req, res, next) => {
   try {
-    const { eventId } = req.params;
-    const isObjectId = mongoose.Types.ObjectId.isValid(eventId);
-
-    const refQuery = {
-      $or: [
-        { event: eventId },
-        { eventId },
-        ...(isObjectId ? [{ event: new mongoose.Types.ObjectId(eventId) }] : []),
-      ],
-    };
-
-    const [zones, roles, assignments] = await Promise.all([
-      Zone.find(refQuery),
-      Role.find(refQuery),
-      Assignment.find({
-        ...refQuery,
-        status: { $in: ['assigned', 'checked_in', 'completed'] },
-      }),
-    ]);
-
-    const requiredTotal = roles.reduce(
-      (sum, r) => sum + (Number(r.requiredCount || r.capacity) || 0),
-      0
-    );
-    const filledTotal = assignments.length;
-    const coveragePercent =
-      requiredTotal > 0 ? Math.round((filledTotal / requiredTotal) * 100) : 0;
-
-    const zoneCoverage = zones.map((zone) => {
-      return {
-        zoneId: zone.id,
-        name: zone.name,
-        capacity: zone.capacity,
-      };
-    });
-
-    return sendSuccess(
-      res,
-      {
-        overall: {
-          filled: filledTotal,
-          required: requiredTotal,
-          percent: coveragePercent,
-        },
-        zones: zoneCoverage,
-      },
-      200
-    );
+    const eventId = req.params.eventId;
+    const coverage = await calculateEventCoverage(eventId, req.query?.shiftId);
+    return sendSuccess(res, coverage, 200);
   } catch (error) {
+    if (error.statusCode) {
+      return sendError(res, error.message, error.code || 'BAD_REQUEST', error.statusCode);
+    }
     next(error);
   }
 };
