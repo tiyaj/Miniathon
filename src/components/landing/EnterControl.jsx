@@ -98,6 +98,18 @@ export function EnterControl() {
           strokeWidth="0.8"
           strokeDasharray="4 8"
         />
+        {/* Center Hairline Globe Arc Echo (§5) */}
+        <ellipse
+          cx="50%"
+          cy="48%"
+          rx="580"
+          ry="260"
+          fill="none"
+          stroke="rgba(23, 21, 15, 0.06)"
+          strokeWidth="0.8"
+          strokeDasharray="4 8"
+          transform="rotate(-5, 600, 350)"
+        />
       </svg>
 
       <div className="pulse-container" style={{ position: 'relative', zIndex: 10, textAlign: 'center' }}>
@@ -137,11 +149,12 @@ export function EnterControl() {
               textTransform: 'uppercase',
               color: 'var(--ink, #17150F)',
               margin: 0,
+              textWrap: 'balance',
             }}
           >
-            READY WHEN THE
+            READY WHEN
             <br />
-            EVENT STARTS.
+            THE EVENT STARTS.
           </h2>
         </div>
 

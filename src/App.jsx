@@ -2,8 +2,9 @@ import React from 'react';
 import { Routes, Route, Navigate } from 'react-router-dom';
 import { AppShell } from './components/layout/AppShell';
 
-// Layer 1: Cinematic Editorial Landing Experience
+// Layer 1: Cinematic Editorial Landing Experience & Standalone Auth UI
 import { Landing } from './pages/Landing';
+import { Login } from './pages/Login/Login';
 
 // Layer 2: Operations Application
 import { Overview } from './pages/Overview/Overview';
@@ -19,8 +20,9 @@ import { NotFound } from './pages/NotFound/NotFound';
 export function App() {
   return (
     <Routes>
-      {/* Layer 1: Landing Experience — rendered WITHOUT app chrome (no Sidebar/Topbar) */}
+      {/* Layer 1: Landing Experience & Standalone Auth UI — rendered WITHOUT app chrome */}
       <Route path="/" element={<Landing />} />
+      <Route path="/login" element={<Login />} />
 
       {/* Layer 2: Operations Application — rendered INSIDE AppShell */}
       <Route

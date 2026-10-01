@@ -8,7 +8,7 @@ export function Drawer({
   subtitle,
   children,
   footer,
-  width = '480px'
+  width = '520px'
 }) {
   useEffect(() => {
     function handleKeyDown(e) {
@@ -34,9 +34,7 @@ export function Drawer({
         position: 'fixed',
         inset: 0,
         zIndex: 998,
-        background: 'var(--bg-overlay)',
-        backdropFilter: 'blur(8px)',
-        WebkitBackdropFilter: 'blur(8px)',
+        backgroundColor: 'rgba(21, 19, 15, 0.5)',
         display: 'flex',
         justifyContent: 'flex-end',
         animation: 'fadeIn 180ms ease-out forwards'
@@ -52,9 +50,9 @@ export function Drawer({
           width: '100%',
           maxWidth: width,
           height: '100%',
-          background: 'var(--bg-surface-elevated)',
-          borderLeft: '1px solid var(--border-medium)',
-          boxShadow: 'var(--shadow-lg), -10px 0 40px rgba(0, 0, 0, 0.7)',
+          backgroundColor: 'var(--paper-raised)',
+          borderLeft: '1px solid var(--line-strong)',
+          boxShadow: 'var(--shadow-float)',
           display: 'flex',
           flexDirection: 'column',
           animation: 'fadeUp 240ms cubic-bezier(0.16, 1, 0.3, 1) forwards',
@@ -64,21 +62,38 @@ export function Drawer({
         {/* Drawer Header */}
         <div
           style={{
-            padding: 'var(--space-5) var(--space-6)',
-            borderBottom: '1px solid var(--border-subtle)',
+            padding: '20px 24px',
+            borderBottom: '1px solid var(--line)',
             display: 'flex',
             alignItems: 'flex-start',
             justifyContent: 'space-between',
-            gap: 'var(--space-4)',
-            background: 'rgba(15, 22, 38, 0.5)'
+            gap: '16px',
+            backgroundColor: 'var(--paper-raised)'
           }}
         >
           <div>
-            <h3 style={{ fontSize: '1.2rem', fontWeight: 700, margin: 0, color: 'var(--text-primary)' }}>
+            <h3
+              style={{
+                fontSize: '1.25rem',
+                fontWeight: 700,
+                margin: 0,
+                color: 'var(--ink)',
+                fontFamily: 'var(--font-display)',
+                letterSpacing: '-0.02em'
+              }}
+            >
               {title}
             </h3>
             {subtitle && (
-              <p style={{ fontSize: '0.825rem', color: 'var(--text-secondary)', marginTop: '4px', margin: 0 }}>
+              <p
+                style={{
+                  fontSize: '0.8125rem',
+                  color: 'var(--ink-2)',
+                  fontFamily: 'var(--font-mono)',
+                  marginTop: '4px',
+                  margin: 0
+                }}
+              >
                 {subtitle}
               </p>
             )}
@@ -87,24 +102,16 @@ export function Drawer({
             onClick={onClose}
             aria-label="Close drawer"
             style={{
-              background: 'rgba(255, 255, 255, 0.06)',
-              border: '1px solid var(--border-subtle)',
-              borderRadius: 'var(--radius-sm)',
-              color: 'var(--text-secondary)',
+              backgroundColor: 'var(--paper-sunken)',
+              border: '1px solid var(--line-strong)',
+              borderRadius: 'var(--radius)',
+              color: 'var(--ink)',
               padding: '6px',
               cursor: 'pointer',
               display: 'flex',
               alignItems: 'center',
               justifyContent: 'center',
-              transition: 'all var(--transition-fast)'
-            }}
-            onMouseEnter={(e) => {
-              e.currentTarget.style.color = 'var(--text-primary)';
-              e.currentTarget.style.background = 'rgba(255, 255, 255, 0.12)';
-            }}
-            onMouseLeave={(e) => {
-              e.currentTarget.style.color = 'var(--text-secondary)';
-              e.currentTarget.style.background = 'rgba(255, 255, 255, 0.06)';
+              transition: 'all var(--dur-fast) var(--ease-out)'
             }}
           >
             <X size={18} />
@@ -114,9 +121,10 @@ export function Drawer({
         {/* Drawer Content */}
         <div
           style={{
-            padding: 'var(--space-6)',
+            padding: '24px',
             overflowY: 'auto',
-            flex: 1
+            flex: 1,
+            backgroundColor: 'var(--paper-raised)'
           }}
         >
           {children}
@@ -126,10 +134,13 @@ export function Drawer({
         {footer && (
           <div
             style={{
-              padding: 'var(--space-4) var(--space-6)',
-              borderTop: '1px solid var(--border-subtle)',
-              background: 'rgba(11, 16, 28, 0.85)',
-              backdropFilter: 'blur(8px)'
+              padding: '16px 24px',
+              borderTop: '1px solid var(--line)',
+              backgroundColor: 'var(--paper-sunken)',
+              display: 'flex',
+              alignItems: 'center',
+              justifyContent: 'flex-end',
+              gap: '12px'
             }}
           >
             {footer}
@@ -139,3 +150,5 @@ export function Drawer({
     </div>
   );
 }
+
+export default Drawer;

@@ -99,6 +99,30 @@ export function AddVolunteerModal({ isOpen, onClose, onSubmit }) {
     }
   };
 
+  const inputStyle = {
+    width: '100%',
+    padding: '10px 14px',
+    borderRadius: 'var(--radius)',
+    backgroundColor: 'var(--paper-raised)',
+    border: '1px solid var(--line-strong)',
+    color: 'var(--ink)',
+    fontSize: '13px',
+    fontFamily: 'var(--font-ui)',
+    outline: 'none',
+    boxSizing: 'border-box'
+  };
+
+  const labelStyle = {
+    display: 'block',
+    fontSize: '11px',
+    fontFamily: 'var(--font-mono)',
+    fontWeight: 700,
+    letterSpacing: '0.08em',
+    textTransform: 'uppercase',
+    color: 'var(--ink-2)',
+    marginBottom: '6px'
+  };
+
   return (
     <Modal
       isOpen={isOpen}
@@ -126,11 +150,11 @@ export function AddVolunteerModal({ isOpen, onClose, onSubmit }) {
           <div
             style={{
               padding: '10px 14px',
-              borderRadius: 'var(--radius-sm)',
-              background: 'rgba(244, 63, 94, 0.12)',
-              border: '1px solid rgba(244, 63, 94, 0.35)',
-              color: '#fb7185',
-              fontSize: '0.85rem',
+              borderRadius: 'var(--radius)',
+              backgroundColor: 'var(--coral-bg)',
+              border: '1px solid var(--coral)',
+              color: 'var(--coral-ink)',
+              fontSize: '13px',
               display: 'flex',
               alignItems: 'center',
               gap: '8px'
@@ -144,8 +168,8 @@ export function AddVolunteerModal({ isOpen, onClose, onSubmit }) {
         {/* Name & Email Row */}
         <div style={{ display: 'grid', gridTemplateColumns: '1fr 1fr', gap: '14px' }}>
           <div>
-            <label style={{ display: 'block', fontSize: '0.8125rem', fontWeight: 600, color: 'var(--text-secondary)', marginBottom: '6px' }}>
-              Full Name <span style={{ color: '#fb7185' }}>*</span>
+            <label style={labelStyle}>
+              Full Name <span style={{ color: 'var(--coral)' }}>*</span>
             </label>
             <input
               type="text"
@@ -153,22 +177,13 @@ export function AddVolunteerModal({ isOpen, onClose, onSubmit }) {
               value={name}
               onChange={(e) => setName(e.target.value)}
               required
-              style={{
-                width: '100%',
-                padding: '10px 14px',
-                borderRadius: 'var(--radius-sm)',
-                background: 'rgba(255, 255, 255, 0.04)',
-                border: '1px solid var(--border-medium)',
-                color: 'var(--text-primary)',
-                fontSize: '0.9rem',
-                outline: 'none'
-              }}
+              style={inputStyle}
             />
           </div>
 
           <div>
-            <label style={{ display: 'block', fontSize: '0.8125rem', fontWeight: 600, color: 'var(--text-secondary)', marginBottom: '6px' }}>
-              Email Contact <span style={{ color: '#fb7185' }}>*</span>
+            <label style={labelStyle}>
+              Email Contact <span style={{ color: 'var(--coral)' }}>*</span>
             </label>
             <input
               type="email"
@@ -176,16 +191,7 @@ export function AddVolunteerModal({ isOpen, onClose, onSubmit }) {
               value={email}
               onChange={(e) => setEmail(e.target.value)}
               required
-              style={{
-                width: '100%',
-                padding: '10px 14px',
-                borderRadius: 'var(--radius-sm)',
-                background: 'rgba(255, 255, 255, 0.04)',
-                border: '1px solid var(--border-medium)',
-                color: 'var(--text-primary)',
-                fontSize: '0.9rem',
-                outline: 'none'
-              }}
+              style={inputStyle}
             />
           </div>
         </div>
@@ -193,7 +199,7 @@ export function AddVolunteerModal({ isOpen, onClose, onSubmit }) {
         {/* Phone & Max Hours */}
         <div style={{ display: 'grid', gridTemplateColumns: '1fr 1fr', gap: '14px' }}>
           <div>
-            <label style={{ display: 'block', fontSize: '0.8125rem', fontWeight: 600, color: 'var(--text-secondary)', marginBottom: '6px' }}>
+            <label style={labelStyle}>
               Phone Number
             </label>
             <input
@@ -201,21 +207,12 @@ export function AddVolunteerModal({ isOpen, onClose, onSubmit }) {
               placeholder="+91 98200 11223"
               value={phone}
               onChange={(e) => setPhone(e.target.value)}
-              style={{
-                width: '100%',
-                padding: '10px 14px',
-                borderRadius: 'var(--radius-sm)',
-                background: 'rgba(255, 255, 255, 0.04)',
-                border: '1px solid var(--border-medium)',
-                color: 'var(--text-primary)',
-                fontSize: '0.9rem',
-                outline: 'none'
-              }}
+              style={inputStyle}
             />
           </div>
 
           <div>
-            <label style={{ display: 'block', fontSize: '0.8125rem', fontWeight: 600, color: 'var(--text-secondary)', marginBottom: '6px' }}>
+            <label style={labelStyle}>
               Max Working Hours
             </label>
             <input
@@ -224,26 +221,17 @@ export function AddVolunteerModal({ isOpen, onClose, onSubmit }) {
               max="14"
               value={maxHours}
               onChange={(e) => setMaxHours(e.target.value)}
-              style={{
-                width: '100%',
-                padding: '10px 14px',
-                borderRadius: 'var(--radius-sm)',
-                background: 'rgba(255, 255, 255, 0.04)',
-                border: '1px solid var(--border-medium)',
-                color: 'var(--text-primary)',
-                fontSize: '0.9rem',
-                outline: 'none'
-              }}
+              style={inputStyle}
             />
           </div>
         </div>
 
         {/* Skills Multi-select */}
         <div>
-          <label style={{ display: 'block', fontSize: '0.8125rem', fontWeight: 600, color: 'var(--text-secondary)', marginBottom: '8px' }}>
-            Skills & Competencies <span style={{ color: '#fb7185' }}>*</span>
+          <label style={labelStyle}>
+            Skills & Competencies <span style={{ color: 'var(--coral)' }}>*</span>
           </label>
-          <div style={{ display: 'flex', flexWrap: 'wrap', gap: '8px' }}>
+          <div style={{ display: 'flex', flexWrap: 'wrap', gap: '6px' }}>
             {AVAILABLE_SKILLS.map((skill) => {
               const selected = selectedSkills.includes(skill);
               return (
@@ -252,21 +240,23 @@ export function AddVolunteerModal({ isOpen, onClose, onSubmit }) {
                   key={skill}
                   onClick={() => toggleSkill(skill)}
                   style={{
-                    padding: '6px 12px',
-                    borderRadius: 'var(--radius-full)',
-                    fontSize: '0.8125rem',
-                    fontWeight: 600,
+                    padding: '5px 12px',
+                    borderRadius: 'var(--radius)',
+                    fontSize: '11px',
+                    fontFamily: 'var(--font-mono)',
+                    fontWeight: 700,
+                    textTransform: 'uppercase',
                     cursor: 'pointer',
-                    display: 'flex',
+                    display: 'inline-flex',
                     alignItems: 'center',
                     gap: '6px',
-                    transition: 'all var(--transition-fast)',
-                    background: selected ? 'rgba(99, 102, 241, 0.25)' : 'rgba(255, 255, 255, 0.05)',
-                    color: selected ? '#c7d2fe' : 'var(--text-secondary)',
-                    border: selected ? '1px solid #6366f1' : '1px solid var(--border-subtle)'
+                    transition: 'all var(--dur-fast) var(--ease-out)',
+                    backgroundColor: selected ? 'var(--ink)' : 'var(--paper-sunken)',
+                    color: selected ? 'var(--ink-inverse)' : 'var(--ink)',
+                    border: `1px solid ${selected ? 'var(--line-strong)' : 'var(--line)'}`
                   }}
                 >
-                  {selected && <Check size={12} color="#a5b4fc" />}
+                  {selected && <Check size={12} color="var(--ink-inverse)" />}
                   {skill}
                 </button>
               );
@@ -276,8 +266,8 @@ export function AddVolunteerModal({ isOpen, onClose, onSubmit }) {
 
         {/* Shifts Multi-select */}
         <div>
-          <label style={{ display: 'block', fontSize: '0.8125rem', fontWeight: 600, color: 'var(--text-secondary)', marginBottom: '8px' }}>
-            Available Shifts <span style={{ color: '#fb7185' }}>*</span>
+          <label style={labelStyle}>
+            Available Shifts <span style={{ color: 'var(--coral)' }}>*</span>
           </label>
           <div style={{ display: 'flex', gap: '10px' }}>
             {AVAILABLE_SHIFTS.map((shift) => {
@@ -290,14 +280,16 @@ export function AddVolunteerModal({ isOpen, onClose, onSubmit }) {
                   style={{
                     flex: 1,
                     padding: '8px 12px',
-                    borderRadius: 'var(--radius-sm)',
-                    fontSize: '0.85rem',
-                    fontWeight: 600,
+                    borderRadius: 'var(--radius)',
+                    fontSize: '12px',
+                    fontFamily: 'var(--font-mono)',
+                    fontWeight: 700,
+                    textTransform: 'uppercase',
                     cursor: 'pointer',
                     textAlign: 'center',
-                    background: selected ? 'rgba(56, 189, 248, 0.15)' : 'rgba(255, 255, 255, 0.04)',
-                    color: selected ? '#38bdf8' : 'var(--text-secondary)',
-                    border: selected ? '1px solid rgba(56, 189, 248, 0.45)' : '1px solid var(--border-subtle)'
+                    backgroundColor: selected ? 'var(--ink)' : 'var(--paper-sunken)',
+                    color: selected ? 'var(--ink-inverse)' : 'var(--ink)',
+                    border: `1px solid ${selected ? 'var(--line-strong)' : 'var(--line)'}`
                   }}
                 >
                   {shift}
@@ -309,25 +301,20 @@ export function AddVolunteerModal({ isOpen, onClose, onSubmit }) {
 
         {/* Preferred Zone */}
         <div>
-          <label style={{ display: 'block', fontSize: '0.8125rem', fontWeight: 600, color: 'var(--text-secondary)', marginBottom: '6px' }}>
+          <label style={labelStyle}>
             Preferred Zone
           </label>
           <select
             value={preferredZone}
             onChange={(e) => setPreferredZone(e.target.value)}
             style={{
-              width: '100%',
-              padding: '10px 14px',
-              borderRadius: 'var(--radius-sm)',
-              background: 'rgba(20, 28, 48, 0.9)',
-              border: '1px solid var(--border-medium)',
-              color: 'var(--text-primary)',
-              fontSize: '0.9rem',
-              outline: 'none'
+              ...inputStyle,
+              height: '42px',
+              cursor: 'pointer'
             }}
           >
             {AVAILABLE_ZONES.map((zone) => (
-              <option key={zone} value={zone} style={{ background: '#0e1526', color: '#f8fafc' }}>
+              <option key={zone} value={zone} style={{ background: '#fbfaf5', color: '#15130f' }}>
                 {zone}
               </option>
             ))}
@@ -336,7 +323,7 @@ export function AddVolunteerModal({ isOpen, onClose, onSubmit }) {
 
         {/* Notes */}
         <div>
-          <label style={{ display: 'block', fontSize: '0.8125rem', fontWeight: 600, color: 'var(--text-secondary)', marginBottom: '6px' }}>
+          <label style={labelStyle}>
             Operational Notes / Certifications
           </label>
           <textarea
@@ -345,14 +332,7 @@ export function AddVolunteerModal({ isOpen, onClose, onSubmit }) {
             value={notes}
             onChange={(e) => setNotes(e.target.value)}
             style={{
-              width: '100%',
-              padding: '10px 14px',
-              borderRadius: 'var(--radius-sm)',
-              background: 'rgba(255, 255, 255, 0.04)',
-              border: '1px solid var(--border-medium)',
-              color: 'var(--text-primary)',
-              fontSize: '0.9rem',
-              outline: 'none',
+              ...inputStyle,
               resize: 'vertical'
             }}
           />
@@ -361,3 +341,5 @@ export function AddVolunteerModal({ isOpen, onClose, onSubmit }) {
     </Modal>
   );
 }
+
+export default AddVolunteerModal;

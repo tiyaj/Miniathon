@@ -20,26 +20,30 @@
 }
 
 .setup-field-label {
-  font-size: 0.8125rem;
-  font-weight: 600;
-  color: var(--text-secondary);
+  font-size: 11px;
+  font-family: var(--font-mono);
+  font-weight: 700;
+  letter-spacing: 0.08em;
+  text-transform: uppercase;
+  color: var(--ink-2);
 }
 
 .setup-field-input {
   width: 100%;
   padding: 10px 14px;
-  border-radius: var(--radius-sm);
-  background: rgba(255, 255, 255, 0.04);
-  border: 1px solid var(--border-medium);
-  color: var(--text-primary);
-  font-size: 0.875rem;
+  border-radius: var(--radius);
+  background-color: var(--paper-raised);
+  border: 1px solid var(--line-strong);
+  color: var(--ink);
+  font-size: 13px;
+  font-family: var(--font-ui);
   outline: none;
-  transition: all var(--transition-fast);
+  transition: all var(--dur-fast) var(--ease-out);
 }
 
 .setup-field-input:focus {
-  border-color: var(--color-primary-light);
-  box-shadow: 0 0 12px var(--color-primary-glow);
+  border-color: var(--vermilion);
+  box-shadow: 0 0 0 1px var(--vermilion);
 }
 
 .setup-zones-grid {
@@ -50,9 +54,9 @@
 
 .setup-zone-card {
   padding: 14px 16px;
-  border-radius: var(--radius-md);
-  background: rgba(255, 255, 255, 0.03);
-  border: 1px solid var(--border-subtle);
+  border-radius: var(--radius);
+  background-color: var(--paper-raised);
+  border: 1px solid var(--line);
   display: flex;
   align-items: center;
   justifyContent: space-between;
@@ -67,9 +71,9 @@
 
 .setup-role-item {
   padding: 14px 16px;
-  border-radius: var(--radius-md);
-  background: rgba(255, 255, 255, 0.03);
-  border: 1px solid var(--border-subtle);
+  border-radius: var(--radius);
+  background-color: var(--paper-raised);
+  border: 1px solid var(--line);
   display: flex;
   flex-direction: column;
   gap: 8px;

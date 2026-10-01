@@ -182,33 +182,53 @@ export function VolunteerFlow({
               </filter>
             </defs>
 
-            {/* Background Faint Ambient Orbits */}
+            {/* Background Faint Ambient Orbits (Hero Globe Hairline Motif §5) */}
             <ellipse
               cx="500"
-              cy="250"
+              cy="240"
+              rx="480"
+              ry="210"
+              fill="none"
+              stroke="rgba(23, 21, 15, 0.08)"
+              strokeWidth="0.8"
+              transform="rotate(-8, 500, 240)"
+            />
+            <ellipse
+              cx="500"
+              cy="240"
               rx="460"
               ry="190"
               fill="none"
-              stroke="rgba(23, 21, 15, 0.08)"
+              stroke="rgba(23, 21, 15, 0.07)"
               strokeWidth="1"
               strokeDasharray="4 6"
             />
             <ellipse
               cx="500"
-              cy="250"
-              rx="320"
-              ry="130"
+              cy="240"
+              rx="330"
+              ry="135"
               fill="none"
-              stroke="rgba(23, 21, 15, 0.08)"
+              stroke="rgba(23, 21, 15, 0.07)"
               strokeWidth="0.8"
             />
+            <ellipse
+              cx="500"
+              cy="240"
+              rx="210"
+              ry="85"
+              fill="none"
+              stroke="rgba(245, 69, 44, 0.14)"
+              strokeWidth="0.8"
+              strokeDasharray="2 4"
+            />
 
-            {/* Connecting Paths */}
-            {paths.map((p) => {
+            {/* Connecting Paths (Draw on scroll §5) */}
+            {paths.map((p, idx) => {
               const isConnected = currentHighlighted === p.from || currentHighlighted === p.to;
 
               return (
-                <path
+                <motion.path
                   key={p.id}
                   id={p.id}
                   ref={(el) => (pathDOMElements.current[p.id] = el)}
@@ -218,6 +238,10 @@ export function VolunteerFlow({
                   strokeWidth={isConnected ? 2.5 : 1.2}
                   strokeDasharray={isConnected ? 'none' : '4 6'}
                   opacity={isConnected ? 1 : 0.65}
+                  initial={shouldReduceMotion ? { pathLength: 1 } : { pathLength: 0 }}
+                  whileInView={{ pathLength: 1 }}
+                  viewport={{ once: true, margin: '-50px' }}
+                  transition={{ duration: 1.2, delay: idx * 0.08, ease: [0.16, 1, 0.3, 1] }}
                   style={{
                     transition: 'stroke 0.3s ease, stroke-width 0.3s ease, opacity 0.3s ease',
                   }}

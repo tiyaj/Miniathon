@@ -3,7 +3,7 @@ import React from 'react';
 export function Skeleton({
   width = '100%',
   height = '16px',
-  borderRadius = 'var(--radius-xs)',
+  borderRadius = 'var(--radius)',
   variant = 'text', // 'text' | 'rect' | 'circle'
   className = '',
   style = {}
@@ -11,7 +11,7 @@ export function Skeleton({
   const getRadius = () => {
     if (variant === 'circle') return '50%';
     if (borderRadius) return borderRadius;
-    return 'var(--radius-xs)';
+    return 'var(--radius)';
   };
 
   return (
@@ -20,9 +20,11 @@ export function Skeleton({
         width,
         height,
         borderRadius: getRadius(),
-        background: 'linear-gradient(90deg, rgba(255, 255, 255, 0.04) 25%, rgba(255, 255, 255, 0.08) 50%, rgba(255, 255, 255, 0.04) 75%)',
+        backgroundColor: 'var(--paper-sunken)',
+        backgroundImage: 'linear-gradient(90deg, var(--paper-sunken) 0%, var(--paper-raised) 50%, var(--paper-sunken) 100%)',
         backgroundSize: '200% 100%',
-        animation: 'pulseGlow 2s infinite ease-in-out',
+        animation: 'skeletonShimmer 1.5s infinite ease-in-out',
+        border: '1px solid var(--line)',
         ...style
       }}
       className={`pulse-skeleton ${className}`}
@@ -35,10 +37,10 @@ export function StatCardSkeleton() {
   return (
     <div
       style={{
-        background: 'rgba(15, 22, 38, 0.6)',
-        border: '1px solid var(--border-subtle)',
-        borderRadius: 'var(--radius-lg)',
-        padding: 'var(--space-5)',
+        backgroundColor: 'var(--paper-raised)',
+        border: '1px solid var(--line-strong)',
+        borderRadius: 'var(--radius)',
+        padding: '16px',
         display: 'flex',
         flexDirection: 'column',
         gap: '12px'
@@ -53,3 +55,5 @@ export function StatCardSkeleton() {
     </div>
   );
 }
+
+export default Skeleton;

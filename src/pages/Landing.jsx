@@ -7,7 +7,6 @@ import { RouteWipeProvider } from '../components/landing/RouteWipeTransition';
 // Preloader & Navigation
 import Preloader from '../components/landing/Preloader';
 import LandingMenuPill from '../components/landing/LandingMenuPill';
-import EventPanel from '../components/landing/EventPanel';
 import DemoConsole from '../components/demo/DemoConsole';
 
 // Section 1 & 2: Dark World (Hero, Horizontal Zone Strip, 02 Telemetry Pulse)
@@ -34,7 +33,6 @@ import EnterControl from '../components/landing/EnterControl';
 export function Landing() {
   const [activeZone, setActiveZone] = useState(null);
   const [showPreloader, setShowPreloader] = useState(true);
-  const [isEventPanelOpen, setIsEventPanelOpen] = useState(false);
 
   // Initialize smooth scrolling strictly scoped to landing page
   useLandingScroll(true);
@@ -51,14 +49,7 @@ export function Landing() {
         )}
 
         {/* Floating Menu Pill Navigation (Theme-flipped via IntersectionObserver on cream entry) */}
-        <LandingMenuPill onOpenEventPanel={() => setIsEventPanelOpen(true)} />
-
-        {/* Sliding Event Panel Drawer */}
-        <EventPanel
-          isOpen={isEventPanelOpen}
-          onClose={() => setIsEventPanelOpen(false)}
-          eventData={activeEvent}
-        />
+        <LandingMenuPill />
 
         <main id="main-content">
           {/* =========================================================================
@@ -68,7 +59,6 @@ export function Landing() {
             {/* HERO: Pure black background, headline over globe, floating cream cards */}
             <ReferenceHero
               eventData={activeEvent}
-              onOpenEventPanel={() => setIsEventPanelOpen(true)}
             />
 
             {/* PINNED HORIZONTAL ZONE STRIP: Exact travel, scrub:1, peeking neighbors */}

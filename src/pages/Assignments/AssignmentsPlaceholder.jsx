@@ -73,33 +73,33 @@ export function AssignmentsPlaceholder() {
         {/* Workflow Diagram */}
         <div
           style={{
-            padding: '16px',
-            borderRadius: 'var(--radius-md)',
-            background: 'rgba(9, 13, 24, 0.8)',
-            border: '1px solid var(--border-medium)',
+            padding: '16px 20px',
+            borderRadius: 'var(--radius)',
+            backgroundColor: 'var(--paper-raised)',
+            border: '1px solid var(--line-strong)',
             marginBottom: '20px'
           }}
         >
-          <div style={{ fontSize: '0.75rem', fontWeight: 700, textTransform: 'uppercase', color: 'var(--color-accent-cyan)', marginBottom: '8px' }}>
-            Core Event Workflow:
+          <div style={{ fontSize: '11px', fontFamily: 'var(--font-mono)', fontWeight: 800, textTransform: 'uppercase', color: 'var(--ink-2)', marginBottom: '10px', letterSpacing: '0.1em' }}>
+            CORE EVENT REPLACEMENT WORKFLOW:
           </div>
-          <div style={{ display: 'flex', flexWrap: 'wrap', alignItems: 'center', gap: '10px', fontSize: '0.875rem', color: 'var(--text-primary)' }}>
-            <span style={{ color: '#fb7185', fontWeight: 600 }}>Volunteer Dropout</span>
-            <ArrowRight size={14} color="var(--text-muted)" />
-            <span style={{ color: '#fbbf24', fontWeight: 600 }}>Slot Becomes Vacant</span>
-            <ArrowRight size={14} color="var(--text-muted)" />
-            <span style={{ color: '#fb7185', fontWeight: 600 }}>Coverage Gap Appears</span>
-            <ArrowRight size={14} color="var(--text-muted)" />
-            <span style={{ color: 'var(--color-primary-light)', fontWeight: 600 }}>Eligible Replacements Ranked</span>
-            <ArrowRight size={14} color="var(--text-muted)" />
-            <span style={{ color: '#34d399', fontWeight: 600 }}>Coordinator Confirms</span>
-            <ArrowRight size={14} color="var(--text-muted)" />
-            <span style={{ color: '#34d399', fontWeight: 700 }}>Coverage Instantly Updates</span>
+          <div style={{ display: 'flex', flexWrap: 'wrap', alignItems: 'center', gap: '10px', fontSize: '13px', color: 'var(--ink)' }}>
+            <span style={{ color: 'var(--coral)', fontWeight: 700 }}>Volunteer Dropout</span>
+            <ArrowRight size={14} color="var(--ink-3)" />
+            <span style={{ color: 'var(--amber-ink)', fontWeight: 700 }}>Slot Becomes Vacant</span>
+            <ArrowRight size={14} color="var(--ink-3)" />
+            <span style={{ color: 'var(--coral)', fontWeight: 700 }}>Coverage Gap Appears</span>
+            <ArrowRight size={14} color="var(--ink-3)" />
+            <span style={{ color: 'var(--ink)', fontWeight: 700 }}>Eligible Replacements Ranked</span>
+            <ArrowRight size={14} color="var(--ink-3)" />
+            <span style={{ color: 'var(--mint-ink)', fontWeight: 700 }}>Coordinator Confirms</span>
+            <ArrowRight size={14} color="var(--ink-3)" />
+            <span style={{ color: 'var(--mint-ink)', fontWeight: 800 }}>Coverage Instantly Updates</span>
           </div>
         </div>
 
         {/* Rule Criteria List */}
-        <h4 style={{ fontSize: '0.925rem', fontWeight: 700, color: 'var(--text-primary)', marginBottom: '12px' }}>
+        <h4 style={{ fontSize: '14px', fontWeight: 800, color: 'var(--ink)', marginBottom: '12px' }}>
           Rule-Based Ranking Criteria:
         </h4>
         <div style={{ display: 'grid', gridTemplateColumns: 'repeat(auto-fit, minmax(240px, 1fr))', gap: '12px' }}>
@@ -107,17 +107,17 @@ export function AssignmentsPlaceholder() {
             <div
               key={i}
               style={{
-                padding: '12px 14px',
-                borderRadius: 'var(--radius-sm)',
-                background: 'rgba(255, 255, 255, 0.03)',
-                border: '1px solid var(--border-subtle)'
+                padding: '14px',
+                borderRadius: 'var(--radius)',
+                backgroundColor: 'var(--paper-raised)',
+                border: '1px solid var(--line)'
               }}
             >
-              <div style={{ display: 'flex', alignItems: 'center', gap: '6px', fontWeight: 600, color: 'var(--text-primary)', fontSize: '0.875rem' }}>
-                <CheckCircle2 size={14} color="#34d399" />
+              <div style={{ display: 'flex', alignItems: 'center', gap: '6px', fontWeight: 700, color: 'var(--ink)', fontSize: '13px' }}>
+                <CheckCircle2 size={14} color="var(--mint)" />
                 {r.rule}
               </div>
-              <div style={{ fontSize: '0.78rem', color: 'var(--text-secondary)', marginTop: '4px', lineHeight: 1.4 }}>
+              <div style={{ fontSize: '12px', color: 'var(--ink-2)', marginTop: '4px', lineHeight: 1.4 }}>
                 {r.desc}
               </div>
             </div>

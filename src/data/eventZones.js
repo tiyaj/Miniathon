@@ -10,12 +10,12 @@
  * - Hero scattered media: Aspect ratios indicated per item in heroMedia.
  */
 
-// Zone Card Images
-import entryGateImg from '../assets/event/entry-gate.svg';
-import mainStageImg from '../assets/event/main-stage.svg';
-import registrationImg from '../assets/event/registration.svg';
-import foodZoneImg from '../assets/event/food-zone.svg';
-import backstageImg from '../assets/event/backstage.svg';
+// Zone Card Images (Photographic)
+import entryGateImg from '../assets/event/entry-gate.jpg';
+import mainStageImg from '../assets/event/main-stage.jpg';
+import registrationImg from '../assets/event/registration.jpg';
+import foodZoneImg from '../assets/event/food-zone.jpg';
+import backstageImg from '../assets/event/backstage.jpg';
 
 // Hero Scattered Media
 import heroLeftTop from '../assets/event/hero-left-top.svg';

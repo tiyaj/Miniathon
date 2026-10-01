@@ -4,19 +4,8 @@ import { Plus, Minus, ArrowUpRight } from 'lucide-react';
 import SectionIndex from './primitives/SectionIndex';
 import RevealText from './primitives/RevealText';
 import { useRouteWipe } from './RouteWipeTransition';
-import { useReducedMotionSafe } from '../../hooks/useReducedMotionSafe';
 
-/**
- * OperationsIndex (§6.7) — 05 Operational Architecture ("CONTROL THE CHAOS.")
- * Restored to original PULSE Cream / Ink / Vermilion styling:
- * - Cream background (#F3F0E8 / var(--paper))
- * - Deep ink text (#17150F / var(--ink))
- * - Vermilion alert tag (#F5452C / var(--pulse))
- * - Hairline-ruled two-column info layout
- * - Interactive expandable rows with route wipe navigation
- */
 export function OperationsIndex() {
-  const shouldReduceMotion = useReducedMotionSafe();
   const { wipeTo } = useRouteWipe();
   const [expandedKey, setExpandedKey] = useState('assignments');
 

@@ -1,1153 +1,173 @@
 /* ==========================================================================
-   PULSE — CINEMATIC OVERVIEW & COMMAND CENTER
-   Liquid Ink Design Aesthetic: Spatial depth, large typography, dark elegance
+   PULSE — COMMAND OVERVIEW STYLES
+   High-contrast paper & ink operational command center
    ========================================================================== */
 
 .overview-page-wrapper {
-  position: relative;
   display: flex;
   flex-direction: column;
-  gap: var(--space-16);
-  padding-bottom: var(--space-16);
-  overflow-x: hidden;
-}
-
-/* ==========================================================================
-   HERO SECTION: Full Spatial Canvas
-   ========================================================================== */
-
-.cinematic-hero-section {
-  position: relative;
-  min-height: calc(100vh - var(--topbar-height) - 48px);
-  display: flex;
-  align-items: center;
-  justifyContent: center;
-  border-radius: var(--radius-xl);
-  overflow: hidden;
-  background: radial-gradient(circle at 50% 45%, rgba(99, 102, 241, 0.08) 0%, rgba(9, 13, 24, 0.95) 75%);
-  border: 1px solid rgba(255, 255, 255, 0.06);
-  box-shadow: 0 30px 60px -20px rgba(0, 0, 0, 0.8), inset 0 1px 0 rgba(255, 255, 255, 0.1);
-}
-
-.spatial-atmosphere-layer {
-  position: absolute;
-  inset: 0;
-  pointer-events: none;
-  background: 
-    radial-gradient(ellipse 60% 40% at 50% 50%, rgba(99, 102, 241, 0.12), transparent 70%),
-    radial-gradient(circle 320px at 20% 30%, rgba(244, 63, 94, 0.05), transparent 70%),
-    radial-gradient(circle 320px at 80% 30%, rgba(245, 158, 11, 0.05), transparent 70%);
-  z-index: 1;
-}
-
-/* Fullscreen SVG Network Vector Canvas */
-.spatial-network-svg {
-  position: absolute;
-  inset: 0;
+  gap: 24px;
   width: 100%;
-  height: 100%;
-  pointer-events: none;
-  z-index: 2;
 }
 
-.spatial-hero-content {
-  position: relative;
-  z-index: 5;
+/* Operational First Viewport Grid */
+.overview-command-grid {
+  display: grid;
+  grid-template-columns: minmax(0, 1.85fr) minmax(0, 1fr);
+  gap: 24px;
+  align-items: stretch;
   width: 100%;
-  height: 100%;
-  min-height: 580px;
-  display: flex;
-  flex-direction: column;
-  align-items: center;
-  justifyContent: center;
-  text-align: center;
-  padding: var(--space-8);
 }
 
-/* Top Operational Status Pill */
-.hero-status-pill {
-  display: inline-flex;
-  align-items: center;
-  gap: 10px;
-  padding: 6px 16px;
-  border-radius: var(--radius-full);
-  background: rgba(15, 22, 38, 0.8);
-  border: 1px solid rgba(255, 255, 255, 0.1);
-  font-size: 0.78rem;
-  font-weight: 600;
-  color: var(--text-primary);
-  margin-bottom: var(--space-6);
-  backdrop-filter: blur(12px);
-  box-shadow: 0 4px 16px rgba(0, 0, 0, 0.4);
-}
-
-.live-status-ping {
-  width: 8px;
-  height: 8px;
-  border-radius: 50%;
-  background-color: #10b981;
-  box-shadow: 0 0 10px #10b981;
-  animation: beaconPing 2s infinite ease-out;
-}
-
-.pill-highlight {
-  color: #34d399;
-  letter-spacing: 0.05em;
-}
-
-.pill-divider {
-  color: var(--text-dim);
-}
-
-.pill-muted {
-  color: var(--text-secondary);
-}
-
-/* Centered Editorial Typography */
-.hero-editorial-center {
-  max-width: 840px;
-  margin: 0 auto;
-  pointer-events: none;
-}
-
-.hero-brand-pulse {
-  font-family: var(--font-display);
-  font-size: clamp(3.5rem, 8vw, 6.5rem);
-  font-weight: 800;
-  line-height: 0.95;
-  letter-spacing: -0.04em;
-  background: linear-gradient(180deg, #ffffff 40%, rgba(255, 255, 255, 0.5) 100%);
-  -webkit-background-clip: text;
-  -webkit-text-fill-color: transparent;
-  margin-bottom: 8px;
-}
-
-.hero-editorial-statement {
-  display: flex;
-  flex-direction: column;
-  align-items: center;
-  font-family: var(--font-display);
-  font-size: clamp(1.6rem, 3.2vw, 2.5rem);
-  font-weight: 600;
-  line-height: 1.18;
-  letter-spacing: -0.025em;
-  color: var(--text-primary);
-  margin: 0 0 var(--space-4) 0;
-}
-
-.editorial-line {
-  display: block;
-}
-
-.editorial-accent {
-  color: #a5b4fc;
-  font-weight: 700;
-}
-
-.hero-editorial-subtext {
-  font-size: clamp(0.95rem, 1.4vw, 1.15rem);
-  color: var(--text-secondary);
-  line-height: 1.6;
-  max-width: 600px;
-  margin: 0 auto;
-}
-
-/* Peripheral Orbital Zone Nodes */
-.orbital-zone-node {
-  position: absolute;
-  transform: translate(-50%, -50%);
-  cursor: pointer;
-  z-index: 10;
-  transition: transform 0.25s cubic-bezier(0.16, 1, 0.3, 1);
-}
-
-.orbital-zone-node:hover {
-  transform: translate(-50%, -50%) scale(1.06);
-  z-index: 20;
-}
-
-.zone-node-card {
-  padding: 10px 14px;
-  border-radius: var(--radius-md);
-  background: rgba(14, 20, 36, 0.94);
-  backdrop-filter: blur(16px);
-  border: 1px solid rgba(255, 255, 255, 0.08);
-  display: flex;
-  align-items: center;
-  gap: 12px;
-  transition: all 0.22s ease-out;
-  user-select: none;
-}
-
-.zone-node-pip {
-  width: 8px;
-  height: 8px;
-  border-radius: 50%;
-  flex-shrink: 0;
-}
-
-.zone-node-text {
-  text-align: left;
-}
-
-.zone-node-title {
-  font-weight: 700;
-  font-size: 0.85rem;
-  color: var(--text-primary);
-  line-height: 1.15;
-  white-space: nowrap;
-}
-
-.zone-node-meta {
-  font-size: 0.72rem;
-  font-weight: 600;
-  margin-top: 2px;
-  white-space: nowrap;
-  font-family: var(--font-mono);
-}
-
-.zone-node-ratio {
-  padding-left: 10px;
-  border-left: 1px solid rgba(255, 255, 255, 0.08);
-  font-family: var(--font-mono);
-  font-weight: 700;
-  font-size: 0.85rem;
-  color: var(--text-primary);
-  display: flex;
-  align-items: baseline;
-  gap: 2px;
-}
-
-.ratio-sep {
-  color: var(--text-dim);
-  font-weight: 400;
-}
-
-.ratio-req {
-  color: var(--text-secondary);
-  font-size: 0.75rem;
-}
-
-/* Hover popover for nodes */
-.zone-hover-popover {
-  position: absolute;
-  top: 100%;
-  left: 50%;
-  transform: translateX(-50%);
-  margin-top: 8px;
-  width: 220px;
-  padding: 10px 12px;
-  border-radius: var(--radius-sm);
-  background: rgba(9, 13, 24, 0.96);
-  border: 1px solid var(--border-medium);
-  box-shadow: 0 10px 25px rgba(0, 0, 0, 0.6);
-  text-align: left;
-  z-index: 30;
-  pointer-events: none;
-}
-
-.popover-desc {
-  font-size: 0.75rem;
-  color: var(--text-secondary);
-  line-height: 1.4;
-  margin-bottom: 6px;
-}
-
-.popover-action {
-  font-size: 0.72rem;
-  color: var(--color-primary-light);
-  font-weight: 700;
-  display: flex;
-  align-items: center;
-  gap: 4px;
-}
-
-/* Central PULSE Heartbeat Core */
-.pulse-core-beacon {
-  position: absolute;
-  top: 50%;
-  left: 50%;
-  transform: translate(-50%, -50%);
-  width: 72px;
-  height: 72px;
-  display: flex;
-  flex-direction: column;
-  align-items: center;
-  justifyContent: center;
-  pointer-events: none;
-  z-index: 4;
-}
-
-.core-beacon-glow {
-  position: absolute;
-  inset: -12px;
-  border-radius: 50%;
-  background: radial-gradient(circle, rgba(99, 102, 241, 0.5) 0%, transparent 70%);
-  animation: pulseGlow 3s infinite ease-in-out;
-}
-
-.core-beacon-inner {
-  position: relative;
-  width: 44px;
-  height: 44px;
-  border-radius: 50%;
-  background: linear-gradient(135deg, #6366f1 0%, #4f46e5 100%);
-  display: flex;
-  align-items: center;
-  justifyContent: center;
-  box-shadow: 0 0 20px rgba(99, 102, 241, 0.6);
-}
-
-.core-beacon-label {
-  position: relative;
-  margin-top: 6px;
-  font-size: 0.62rem;
-  font-weight: 800;
-  letter-spacing: 0.08em;
-  color: #a5b4fc;
-}
-
-/* Scroll Cue */
-.hero-scroll-cue {
-  position: absolute;
-  bottom: 24px;
-  left: 50%;
-  transform: translateX(-50%);
-  display: flex;
-  flex-direction: column;
-  align-items: center;
-  gap: 6px;
-  cursor: pointer;
-  z-index: 10;
-  opacity: 0.8;
-  transition: opacity 0.2s;
-}
-
-.hero-scroll-cue:hover {
-  opacity: 1;
-}
-
-.cue-label {
-  font-size: 0.6875rem;
-  font-weight: 700;
-  letter-spacing: 0.12em;
-  color: var(--text-muted);
-}
-
-/* ==========================================================================
-   OPERATIONAL DECK HEADLINES & SECTIONS
-   ========================================================================== */
-
-.section-container {
-  display: flex;
-  flex-direction: column;
-  gap: var(--space-6);
-  position: relative;
-}
-
-.section-headline-group {
-  margin-bottom: var(--space-2);
-}
-
-.section-kicker {
-  display: block;
-  font-family: var(--font-mono);
-  font-size: 0.72rem;
-  font-weight: 700;
-  letter-spacing: 0.12em;
-  color: var(--color-primary-light);
-  margin-bottom: 6px;
-}
-
-.section-title {
-  font-size: 1.85rem;
-  font-weight: 700;
-  color: var(--text-primary);
-  letter-spacing: -0.025em;
-  margin: 0;
-}
-
-.section-lead {
-  font-size: 0.95rem;
-  color: var(--text-secondary);
-  max-width: 680px;
-  margin: 6px 0 0 0;
-}
-
-.deck-action-link {
-  background: none;
-  border: none;
-  color: var(--color-primary-light);
-  font-size: 0.85rem;
-  font-weight: 600;
-  display: flex;
-  align-items: center;
-  gap: 6px;
-  cursor: pointer;
-  transition: color 0.15s;
-}
-
-.deck-action-link:hover {
-  color: var(--text-primary);
-}
-
-/* ==========================================================================
-   SECTION 2: LIVE METRICS TELEMETRY STRIP
-   ========================================================================== */
-
-.telemetry-strip-wrapper {
-  border-radius: var(--radius-lg);
-  border: 1px solid var(--border-subtle);
-  background: rgba(15, 22, 38, 0.7);
-  backdrop-filter: blur(16px);
-  box-shadow: var(--shadow-md);
-  overflow: hidden;
-}
-
-.telemetry-strip {
-  display: grid;
-  grid-template-columns: repeat(6, 1fr);
-  divide-x: 1px solid var(--border-subtle);
-}
-
-.telemetry-cell {
-  padding: var(--space-5) var(--space-4);
-  display: flex;
-  flex-direction: column;
-  justifyContent: space-between;
-  min-height: 120px;
-  cursor: pointer;
-  transition: background 0.2s, transform 0.2s;
-  border-right: 1px solid var(--border-subtle);
-}
-
-.telemetry-cell:last-child {
-  border-right: none;
-}
-
-.telemetry-cell:hover {
-  background: rgba(255, 255, 255, 0.03);
-}
-
-.telemetry-cell.cell-critical {
-  background: rgba(244, 63, 94, 0.04);
-}
-
-.cell-top {
-  display: flex;
-  align-items: center;
-  justifyContent: space-between;
-  gap: 8px;
-}
-
-.cell-label {
-  font-size: 0.75rem;
-  font-weight: 600;
-  color: var(--text-secondary);
-  text-transform: uppercase;
-  letter-spacing: 0.04em;
-}
-
-.cell-icon-wrap {
-  width: 26px;
-  height: 26px;
-  border-radius: var(--radius-xs);
-  display: flex;
-  align-items: center;
-  justifyContent: center;
-  background: rgba(255, 255, 255, 0.05);
-  color: var(--text-secondary);
-}
-
-.cell-icon-wrap.healthy {
-  background: rgba(16, 185, 129, 0.15);
-  color: #34d399;
-}
-
-.cell-icon-wrap.warning {
-  background: rgba(245, 158, 11, 0.15);
-  color: #fbbf24;
-}
-
-.cell-icon-wrap.critical {
-  background: rgba(244, 63, 94, 0.15);
-  color: #fb7185;
-}
-
-.cell-icon-wrap.info {
-  background: rgba(56, 189, 248, 0.15);
-  color: #38bdf8;
-}
-
-.cell-value {
-  font-family: var(--font-display);
-  font-size: 2.1rem;
-  font-weight: 700;
-  line-height: 1.1;
-  letter-spacing: -0.03em;
-  margin: 10px 0 6px 0;
-}
-
-.cell-sub {
-  display: flex;
-  align-items: center;
-  justifyContent: space-between;
-  font-size: 0.75rem;
-  color: var(--text-muted);
-}
-
-.cell-arrow {
-  opacity: 0;
-  transition: opacity 0.2s, transform 0.2s;
-}
-
-.telemetry-cell:hover .cell-arrow {
-  opacity: 1;
-  transform: translate(2px, -2px);
-}
-
-@media (max-width: 1100px) {
-  .telemetry-strip {
-    grid-template-columns: repeat(3, 1fr);
-  }
-}
-
-@media (max-width: 640px) {
-  .telemetry-strip {
-    grid-template-columns: 1fr;
-  }
-  .telemetry-cell {
-    border-right: none;
-    border-bottom: 1px solid var(--border-subtle);
-  }
-}
-
-/* ==========================================================================
-   SECTION 3: ZONE COVERAGE DECK
-   ========================================================================== */
-
-.coverage-deck-grid {
-  display: grid;
-  grid-template-columns: repeat(auto-fit, minmax(280px, 1fr));
-  gap: var(--space-4);
-}
-
-.coverage-deck-card {
-  padding: var(--space-5);
-  border-radius: var(--radius-lg);
-  background: rgba(15, 22, 38, 0.7);
-  border: 1px solid var(--border-subtle);
-  box-shadow: var(--shadow-sm);
-  display: flex;
-  flex-direction: column;
-  gap: 12px;
-  cursor: pointer;
-  transition: transform 0.22s, border-color 0.22s, box-shadow 0.22s;
-}
-
-.coverage-deck-card:hover {
-  transform: translateY(-3px);
-  box-shadow: var(--shadow-md), 0 0 20px rgba(99, 102, 241, 0.15);
-}
-
-.coverage-card-header {
-  display: flex;
-  align-items: center;
-  justifyContent: space-between;
-}
-
-.coverage-zone-name {
-  font-weight: 700;
-  font-size: 1rem;
-  color: var(--text-primary);
-}
-
-.coverage-status-tag {
-  display: flex;
-  align-items: center;
-  gap: 5px;
-  font-size: 0.72rem;
-  font-weight: 700;
-  padding: 3px 8px;
-  border-radius: var(--radius-full);
-  border: 1px solid;
-  background: rgba(0, 0, 0, 0.3);
-}
-
-.coverage-stats-row {
-  display: flex;
-  align-items: baseline;
-  justifyContent: space-between;
-}
-
-.coverage-ratio {
-  font-family: var(--font-mono);
-  font-size: 0.9rem;
-}
-
-.ratio-assigned {
-  font-weight: 700;
-  color: var(--text-primary);
-  font-size: 1.15rem;
-}
-
-.ratio-required {
-  color: var(--text-muted);
-  font-size: 0.8rem;
-  margin-left: 4px;
-}
-
-.coverage-percentage {
-  font-family: var(--font-mono);
-  font-weight: 800;
-  font-size: 1.15rem;
-}
-
-.coverage-progress-track {
-  width: 100%;
-  height: 6px;
-  border-radius: var(--radius-full);
-  background: rgba(255, 255, 255, 0.06);
-  overflow: hidden;
-}
-
-.coverage-progress-fill {
-  height: 100%;
-  border-radius: var(--radius-full);
-}
-
-.coverage-card-footer {
-  display: flex;
-  align-items: center;
-  justifyContent: space-between;
-  font-size: 0.75rem;
-  color: var(--text-muted);
-  padding-top: 6px;
-  border-top: 1px solid rgba(255, 255, 255, 0.04);
-}
-
-.coverage-lead {
-  color: var(--text-secondary);
-  font-weight: 600;
-}
-
-/* ==========================================================================
-   SECTION 4: ATTENTION QUEUE
-   ========================================================================== */
-
-.queue-count-badge {
-  display: flex;
-  align-items: center;
-  gap: 8px;
-  font-size: 0.8rem;
-  font-weight: 700;
-  color: #fb7185;
-  background: rgba(244, 63, 94, 0.12);
-  border: 1px solid rgba(244, 63, 94, 0.3);
-  padding: 4px 12px;
-  border-radius: var(--radius-full);
-}
-
-.count-dot {
-  width: 7px;
-  height: 7px;
-  border-radius: 50%;
-  background-color: #f43f5e;
-  box-shadow: 0 0 8px #f43f5e;
-  animation: beaconPing 2s infinite ease-out;
-}
-
-.attention-deck-list {
-  display: flex;
-  flex-direction: column;
-  gap: 12px;
-}
-
-.attention-row {
-  padding: 16px 20px;
-  border-radius: var(--radius-lg);
-  border: 1px solid;
-  display: flex;
-  align-items: center;
-  justifyContent: space-between;
-  flex-wrap: wrap;
-  gap: 16px;
-  transition: transform 0.2s, box-shadow 0.2s;
-}
-
-.attention-row:hover {
-  transform: translateX(4px);
-  box-shadow: var(--shadow-sm);
-}
-
-.attention-row-left {
-  display: flex;
-  align-items: flex-start;
-  gap: 14px;
-  flex: 1 1 300px;
-}
-
-.attention-icon-box {
-  padding: 10px;
-  border-radius: var(--radius-md);
-  background: rgba(0, 0, 0, 0.35);
-  display: flex;
-  align-items: center;
-  justifyContent: center;
-  flex-shrink: 0;
-}
-
-.attention-text-content {
-  display: flex;
-  flex-direction: column;
-  gap: 3px;
-}
-
-.attention-meta-tags {
-  display: flex;
-  align-items: center;
-  gap: 10px;
-  font-size: 0.75rem;
-  margin-bottom: 2px;
-}
-
-.attention-badge {
-  font-weight: 700;
-  font-size: 0.7rem;
-  text-transform: uppercase;
-  padding: 2px 7px;
-  border-radius: var(--radius-xs);
-  border: 1px solid;
-}
-
-.attention-time {
-  color: var(--text-muted);
-  display: flex;
-  align-items: center;
-  gap: 4px;
-}
-
-.attention-zone {
-  color: var(--text-secondary);
-  font-weight: 600;
-  display: flex;
-  align-items: center;
-  gap: 4px;
-}
-
-.attention-title {
-  font-size: 1rem;
-  font-weight: 700;
-  color: var(--text-primary);
-  margin: 0;
-}
-
-.attention-detail {
-  font-size: 0.85rem;
-  color: var(--text-secondary);
-  margin: 0;
-}
-
-.attention-action-btn {
-  display: inline-flex;
-  align-items: center;
-  gap: 8px;
-  padding: 8px 16px;
-  border-radius: var(--radius-sm);
-  font-weight: 600;
-  font-size: 0.825rem;
-  cursor: pointer;
-  transition: all 0.2s;
-  border: none;
-}
-
-.attention-action-btn.btn-urgent {
-  background: rgba(244, 63, 94, 0.18);
-  color: #fb7185;
-  border: 1px solid rgba(244, 63, 94, 0.4);
-}
-
-.attention-action-btn.btn-urgent:hover {
-  background: #f43f5e;
-  color: #ffffff;
-  box-shadow: 0 0 16px rgba(244, 63, 94, 0.5);
-}
-
-.attention-action-btn.btn-standard {
-  background: rgba(255, 255, 255, 0.06);
-  color: var(--text-primary);
-  border: 1px solid var(--border-medium);
-}
-
-.attention-action-btn.btn-standard:hover {
-  background: rgba(255, 255, 255, 0.12);
-  border-color: var(--border-strong);
-}
-
-/* ==========================================================================
-   SECTION 5: ACTIVITY TIMELINE & SHIFT STREAM
-   ========================================================================== */
-
-.timeline-dual-layout {
-  display: grid;
-  grid-template-columns: 1.25fr 0.75fr;
-  gap: var(--space-6);
-}
-
-@media (max-width: 960px) {
-  .timeline-dual-layout {
-    grid-template-columns: 1fr;
-  }
-}
-
-.activity-stream-panel, .shifts-stream-panel {
-  padding: var(--space-6);
-  border-radius: var(--radius-lg);
-  background: rgba(15, 22, 38, 0.7);
-  border: 1px solid var(--border-subtle);
-  box-shadow: var(--shadow-sm);
-  display: flex;
-  flex-direction: column;
-  gap: var(--space-5);
-}
-
-.panel-header {
-  display: flex;
-  align-items: center;
-  justifyContent: space-between;
-  padding-bottom: var(--space-3);
-  border-bottom: 1px solid var(--border-subtle);
-}
-
-.panel-title {
-  font-weight: 700;
-  font-size: 1.05rem;
-  color: var(--text-primary);
-}
-
-.panel-live-tag {
-  display: flex;
-  align-items: center;
-  gap: 6px;
-  font-size: 0.6875rem;
-  font-weight: 800;
-  letter-spacing: 0.08em;
-  color: #34d399;
-}
-
-.live-dot {
-  width: 6px;
-  height: 6px;
-  border-radius: 50%;
-  background-color: #10b981;
-  box-shadow: 0 0 8px #10b981;
-}
-
-.panel-subtitle {
-  font-size: 0.78rem;
-  color: var(--text-muted);
-}
-
-.activity-nodes-list {
+.overview-side-column {
   display: flex;
   flex-direction: column;
   gap: 20px;
+  min-width: 0;
 }
 
-.activity-item-row {
-  display: flex;
-  align-items: flex-start;
-  gap: 16px;
-  position: relative;
+/* Animations */
+@keyframes hubPulseRing {
+  0% {
+    transform: scale(0.9);
+    opacity: 0.8;
+  }
+  50% {
+    transform: scale(1.6);
+    opacity: 0.25;
+  }
+  100% {
+    transform: scale(2.2);
+    opacity: 0;
+  }
 }
 
-.node-marker-wrap {
+@keyframes pulseGlow {
+  0%, 100% {
+    opacity: 0.9;
+  }
+  50% {
+    opacity: 0.4;
+  }
+}
+
+@keyframes slideInTop {
+  from {
+    opacity: 0;
+    transform: translateY(-8px);
+  }
+  to {
+    opacity: 1;
+    transform: translateY(0);
+  }
+}
+
+@keyframes skeletonShimmer {
+  0% {
+    background-position: 200% 0;
+  }
+  100% {
+    background-position: -200% 0;
+  }
+}
+
+/* Slow 6s glow breathe for gap nodes (not rapid blink) */
+.pulse-gap-breathe {
+  animation: slowGlowBreathe 6s infinite ease-in-out;
+}
+
+@keyframes slowGlowBreathe {
+  0%, 100% {
+    box-shadow: 0 0 16px rgba(228, 71, 43, 0.2), 0 4px 12px rgba(19, 26, 43, 0.25);
+  }
+  50% {
+    box-shadow: 0 0 28px rgba(228, 71, 43, 0.45), 0 4px 12px rgba(19, 26, 43, 0.25);
+  }
+}
+
+/* Continuous 20s connector dash offset flow */
+.pulse-flow-line {
+  stroke-dasharray: 4 4;
+  animation: connectorFlow 20s linear infinite;
+}
+
+@keyframes connectorFlow {
+  to {
+    stroke-dashoffset: -80px;
+  }
+}
+
+/* Section styling for lower operational decks */
+.overview-deck-section {
   display: flex;
   flex-direction: column;
-  align-items: center;
-  position: relative;
-  width: 14px;
+  gap: 16px;
+  margin-top: 16px;
 }
 
-.node-dot {
-  width: 10px;
-  height: 10px;
-  border-radius: 50%;
-  border: 2px solid var(--bg-surface);
-  position: relative;
-  z-index: 2;
-  margin-top: 4px;
-}
-
-.node-stem {
-  position: absolute;
-  top: 14px;
-  bottom: -22px;
-  width: 1px;
-  background: rgba(255, 255, 255, 0.08);
-  z-index: 1;
-}
-
-.activity-item-row:last-child .node-stem {
-  display: none;
-}
-
-.activity-item-content {
-  flex: 1;
+.overview-deck-header {
   display: flex;
-  align-items: center;
+  align-items: baseline;
   justifyContent: space-between;
   flex-wrap: wrap;
-  gap: 8px;
+  gap: 12px;
+  padding-bottom: 8px;
+  border-bottom: 1px solid var(--line);
 }
 
-.activity-item-main {
-  display: flex;
-  flex-direction: column;
-  gap: 2px;
+.overview-deck-title {
+  font-family: var(--font-display);
+  font-size: 1.25rem;
+  font-weight: 800;
+  color: var(--ink);
+  letter-spacing: -0.02em;
 }
 
-.activity-item-text {
-  font-weight: 600;
-  font-size: 0.9rem;
-  color: var(--text-primary);
-}
-
-.activity-item-zone {
-  font-size: 0.75rem;
-  color: var(--text-muted);
-}
-
-.activity-item-aside {
-  display: flex;
-  align-items: center;
-  gap: 10px;
-}
-
-.activity-category-tag {
-  display: flex;
-  align-items: center;
-  gap: 4px;
-  font-size: 0.72rem;
-  font-weight: 700;
-  padding: 2px 7px;
-  border-radius: var(--radius-xs);
-  border: 1px solid;
-}
-
-.activity-timestamp {
+.overview-deck-kicker {
   font-family: var(--font-mono);
-  font-size: 0.75rem;
-  color: var(--text-muted);
+  font-size: 11px;
+  font-weight: 700;
+  letter-spacing: 0.12em;
+  text-transform: uppercase;
+  color: var(--ink-3);
+  display: block;
+  margin-bottom: 2px;
 }
 
-/* Shifts Stack */
-.shift-cards-stack {
+/* Zone Quotas Grid */
+.coverage-cards-grid {
+  display: grid;
+  grid-template-columns: repeat(auto-fit, minmax(260px, 1fr));
+  gap: 16px;
+}
+
+.coverage-quota-card {
+  background-color: var(--paper-raised);
+  border: 1px solid var(--line-strong);
+  border-radius: var(--radius);
+  padding: 18px;
   display: flex;
   flex-direction: column;
   gap: 12px;
+  transition: transform var(--dur-fast) var(--ease-out), box-shadow var(--dur-fast) var(--ease-out);
 }
 
-.shift-mini-card {
-  padding: 14px;
-  border-radius: var(--radius-md);
-  background: rgba(255, 255, 255, 0.03);
-  border: 1px solid var(--border-subtle);
-  display: flex;
-  flex-direction: column;
-  gap: 10px;
+.coverage-quota-card:hover {
+  transform: translateY(-2px);
+  box-shadow: var(--shadow-md);
 }
 
-.shift-mini-card.shift-active-border {
-  border-color: rgba(99, 102, 241, 0.4);
-  background: rgba(99, 102, 241, 0.06);
-}
-
-.shift-card-top {
-  display: flex;
-  align-items: flex-start;
-  justifyContent: space-between;
-}
-
-.shift-name {
-  font-weight: 700;
-  font-size: 0.95rem;
-  color: var(--text-primary);
-}
-
-.shift-time {
-  font-size: 0.78rem;
-  color: var(--text-secondary);
-  display: flex;
-  align-items: center;
-  gap: 4px;
-  margin-top: 2px;
-}
-
-.shift-active-badge {
-  display: flex;
-  align-items: center;
-  gap: 5px;
-  font-size: 0.65rem;
-  font-weight: 800;
-  letter-spacing: 0.06em;
-  color: #34d399;
-  background: rgba(16, 185, 129, 0.12);
-  border: 1px solid rgba(16, 185, 129, 0.3);
-  padding: 2px 6px;
-  border-radius: var(--radius-xs);
-}
-
-.active-pip {
-  width: 5px;
-  height: 5px;
-  border-radius: 50%;
-  background-color: #10b981;
-}
-
-.shift-card-progress {
-  display: flex;
-  flex-direction: column;
-  gap: 6px;
-}
-
-.shift-progress-meta {
-  display: flex;
-  justify-content: space-between;
-  font-size: 0.78rem;
-  color: var(--text-secondary);
-}
-
-.shift-bar-bg {
-  width: 100%;
-  height: 5px;
-  border-radius: var(--radius-full);
-  background: rgba(255, 255, 255, 0.06);
-  overflow: hidden;
-}
-
-.shift-bar-fill {
-  height: 100%;
-  border-radius: var(--radius-full);
-}
-
-/* Responsive adjustments */
-@media (max-width: 900px) {
-  .hero-editorial-statement {
-    font-size: 1.8rem;
-  }
-  .orbital-zone-node {
-    display: none; /* Hide spatial nodes on mobile to keep focus on centered editorial message and telemetry */
-  }
-  .cinematic-hero-section {
-    min-height: 480px;
+/* Responsive Breakpoints */
+@media (max-width: 1200px) {
+  .overview-command-grid {
+    grid-template-columns: 1fr;
   }
 }
 
-/* ==========================================================================
-   PULSE — INK-ON-PAPER OPERATIONAL PASS (§13)
-   Calm, dense, technical operations surface sharing the visual DNA.
-   ========================================================================== */
-.overview-page-wrapper {
-  background-color: var(--paper);
-  color: var(--ink);
+@media (prefers-reduced-motion: reduce) {
+  .pulse-flow-line,
+  .pulse-gap-breathe,
+  .pulse-hub-expanding-ring {
+    animation: none !important;
+  }
 }
-
-.cinematic-hero-section {
-  background: var(--paper-raised) !important;
-  border: 1px solid var(--hairline) !important;
-  border-radius: 0 !important;
-  box-shadow: none !important;
-}
-
-.spatial-atmosphere-layer {
-  display: none !important;
-}
-
-.hero-status-pill {
-  background: var(--paper) !important;
-  border: 1px solid var(--hairline-bold) !important;
-  border-radius: var(--radius-sm) !important;
-  color: var(--ink) !important;
-  box-shadow: none !important;
-}
-
-.hero-brand-pulse {
-  background: none !important;
-  -webkit-text-fill-color: var(--ink) !important;
-  color: var(--ink) !important;
-}
-
-.hero-editorial-statement {
-  color: var(--ink) !important;
-}
-
-.editorial-accent {
-  color: var(--pulse) !important;
-}
-
-.hero-editorial-subtext {
-  color: var(--ink-70) !important;
-}
-
-.telemetry-strip-wrapper {
-  background: var(--paper) !important;
-  border: 1px solid var(--hairline) !important;
-  border-radius: 0 !important;
-  box-shadow: none !important;
-}
-
-.telemetry-cell {
-  background: var(--paper) !important;
-  border-right: 1px solid var(--hairline) !important;
-}
-
-.telemetry-cell:hover {
-  background: var(--paper-raised) !important;
-}
-
-.cell-label {
-  font-family: var(--font-mono) !important;
-  font-size: 0.72rem !important;
-  color: var(--ink-45) !important;
-  text-transform: uppercase !important;
-  letter-spacing: 0.08em !important;
-}
-
-.cell-value {
-  font-family: var(--font-display) !important;
-  color: var(--ink) !important;
-}
-
-.cell-sub {
-  color: var(--ink-70) !important;
-  font-family: var(--font-mono) !important;
-}
-
-.cell-critical {
-  border-top: 2px solid var(--pulse) !important;
-}
-
-.section-kicker {
-  font-family: var(--font-mono) !important;
-  color: var(--ink-45) !important;
-  letter-spacing: 0.12em !important;
-}
-
-.section-title {
-  font-family: var(--font-display) !important;
-  color: var(--ink) !important;
-  font-weight: 800 !important;
-}
-
-.section-lead {
-  color: var(--ink-70) !important;
-}
-
-.deck-container, .deck-panel, .operational-deck-card {
-  background: var(--paper) !important;
-  border: 1px solid var(--hairline) !important;
-  border-radius: 0 !important;
-  box-shadow: none !important;
-}
-

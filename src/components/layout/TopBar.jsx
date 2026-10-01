@@ -1,16 +1,47 @@
 import React from 'react';
-import { Menu, Plus, RefreshCw, MapPin } from 'lucide-react';
+import { Menu, Plus, RefreshCw, Crosshair } from 'lucide-react';
 import { Button } from '../ui/Button';
-import { Badge } from '../ui/Badge';
 
 export function TopBar({
   pageTitle = 'Overview',
-  eventName = 'TECHFEST 2026 — Main Arena',
+  eventName = 'TECHFEST 2026 — MAIN ARENA',
   onToggleMobileMenu = () => {},
   onOpenAddVolunteer = () => {},
   onRefresh = () => {},
-  refreshing = false
+  refreshing = false,
+  lastSyncTime = new Date(),
+  syncFailed = false
 }) {
+  // Sync status agreement with sidebar
+  const syncDate = lastSyncTime instanceof Date ? lastSyncTime : new Date(lastSyncTime);
+  const diffSeconds = Math.max(0, Math.floor((Date.now() - syncDate.getTime()) / 1000));
+
+  let feedStatus = {
+    label: 'LIVE FEED ACTIVE',
+    color: 'var(--mint)',
+    bg: 'var(--mint-bg)',
+    ink: 'var(--mint-ink)',
+    border: 'rgba(31, 160, 110, 0.35)'
+  };
+
+  if (syncFailed) {
+    feedStatus = {
+      label: 'SYNC ERROR',
+      color: 'var(--coral)',
+      bg: 'var(--coral-bg)',
+      ink: 'var(--coral-ink)',
+      border: 'rgba(228, 71, 43, 0.35)'
+    };
+  } else if (diffSeconds > 30) {
+    feedStatus = {
+      label: 'FEED STALE',
+      color: 'var(--amber)',
+      bg: 'var(--amber-bg)',
+      ink: 'var(--amber-ink)',
+      border: 'rgba(232, 150, 30, 0.35)'
+    };
+  }
+
   return (
     <header
       style={{
@@ -18,28 +49,26 @@ export function TopBar({
         position: 'sticky',
         top: 0,
         zIndex: 80,
-        background: 'rgba(243, 240, 232, 0.94)',
-        backdropFilter: 'blur(12px)',
-        WebkitBackdropFilter: 'blur(12px)',
-        borderBottom: '1px solid var(--hairline)',
+        backgroundColor: 'var(--paper)',
+        borderBottom: '1px solid var(--line)',
         display: 'flex',
         alignItems: 'center',
         justifyContent: 'space-between',
-        padding: '0 var(--space-6)',
-        transition: 'all var(--transition-fast)'
+        padding: '0 32px',
+        transition: 'all var(--dur-fast) var(--ease-out)'
       }}
       className="pulse-topbar"
     >
-      {/* Left: Mobile Toggle + Title + Breadcrumbs */}
-      <div style={{ display: 'flex', alignItems: 'center', gap: '14px' }}>
+      {/* Left: Mobile Toggle + Title + Breadcrumb Location */}
+      <div style={{ display: 'flex', alignItems: 'center', gap: '16px' }}>
         <button
           onClick={onToggleMobileMenu}
           aria-label="Toggle navigation menu"
           style={{
             display: 'none',
-            background: 'var(--paper-raised)',
-            border: '1px solid var(--hairline)',
-            borderRadius: 'var(--radius-sm)',
+            backgroundColor: 'var(--paper-raised)',
+            border: '1px solid var(--line-strong)',
+            borderRadius: 'var(--radius)',
             color: 'var(--ink)',
             padding: '7px',
             cursor: 'pointer'
@@ -49,7 +78,7 @@ export function TopBar({
           <Menu size={18} />
         </button>
 
-        <div style={{ display: 'flex', alignItems: 'baseline', gap: '10px' }}>
+        <div style={{ display: 'flex', alignItems: 'baseline', gap: '14px', flexWrap: 'wrap' }}>
           <h1
             style={{
               fontSize: '1.25rem',
@@ -57,7 +86,8 @@ export function TopBar({
               fontFamily: 'var(--font-display)',
               color: 'var(--ink)',
               letterSpacing: '-0.02em',
-              margin: 0
+              margin: 0,
+              lineHeight: 1
             }}
           >
             {pageTitle}
@@ -65,25 +95,58 @@ export function TopBar({
 
           <span
             style={{
-              fontSize: '0.75rem',
-              color: 'var(--ink-45)',
+              fontSize: '11px',
+              fontFamily: 'var(--font-mono)',
+              fontWeight: 700,
+              letterSpacing: '0.08em',
+              color: 'var(--ink-3)',
               display: 'flex',
               alignItems: 'center',
-              gap: '4px'
+              gap: '5px'
             }}
-            className="topbar-event-badge font-mono"
           >
-            <MapPin size={11} color="var(--pulse)" />
+            <Crosshair size={12} color="var(--vermilion)" aria-hidden="true" />
             {eventName}
           </span>
         </div>
       </div>
 
-      {/* Right: Quick Operational Actions */}
+      {/* Right: Status badge & Actions */}
       <div style={{ display: 'flex', alignItems: 'center', gap: '12px' }}>
-        <Badge variant="healthy" size="sm" dot pulseDot>
-          Live Feed Active
-        </Badge>
+        {/* Live Feed Status - strictly synchronized with sync time */}
+        <span
+          style={{
+            display: 'inline-flex',
+            alignItems: 'center',
+            gap: '6px',
+            padding: '4px 10px',
+            height: '28px',
+            backgroundColor: feedStatus.bg,
+            border: `1px solid ${feedStatus.border}`,
+            borderRadius: 'var(--radius)',
+            color: feedStatus.ink,
+            fontFamily: 'var(--font-mono)',
+            fontSize: '11px',
+            fontWeight: 700,
+            letterSpacing: '0.12em',
+            textTransform: 'uppercase',
+            userSelect: 'none',
+            lineHeight: 1
+          }}
+        >
+          <span
+            style={{
+              width: '6px',
+              height: '6px',
+              borderRadius: '50%',
+              backgroundColor: feedStatus.color,
+              boxShadow: `0 0 6px ${feedStatus.color}`,
+              animation: !syncFailed ? 'pulseGlow 2s infinite ease-in-out' : 'none'
+            }}
+            aria-hidden="true"
+          />
+          <span>{feedStatus.label}</span>
+        </span>
 
         <Button
           variant="secondary"
@@ -93,7 +156,7 @@ export function TopBar({
           loading={refreshing}
           title="Refresh Data"
         >
-          <span className="button-text-responsive">Sync</span>
+          SYNC
         </Button>
 
         <Button
@@ -102,7 +165,7 @@ export function TopBar({
           icon={Plus}
           onClick={onOpenAddVolunteer}
         >
-          <span className="button-text-responsive">Add Volunteer</span>
+          ADD VOLUNTEER
         </Button>
       </div>
     </header>

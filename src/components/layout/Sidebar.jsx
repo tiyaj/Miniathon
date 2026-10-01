@@ -9,18 +9,18 @@ import {
   Megaphone,
   Radio,
   Sliders,
-  RefreshCw,
   ArrowLeft,
   Activity
 } from 'lucide-react';
-import LiveDot from '../landing/primitives/LiveDot';
+import { SyncIndicator } from '../ui/SyncIndicator';
 
 export function Sidebar({
   isOpen = false,
   onClose = () => {},
-  lastUpdated = 'Just now',
+  lastSyncTime = new Date(),
   onRefresh = () => {},
-  refreshing = false
+  refreshing = false,
+  syncFailed = false
 }) {
   const location = useLocation();
 
@@ -47,14 +47,15 @@ export function Sidebar({
       to: '/tasks',
       label: 'Live Tasks',
       icon: CheckSquare,
-      badge: '34'
+      badge: '34',
+      badgeType: 'neutral'
     },
     {
       to: '/incidents',
       label: 'Incidents',
       icon: AlertTriangle,
       badge: '03',
-      alert: true
+      badgeType: 'coral'
     },
     {
       to: '/announcements',
@@ -66,7 +67,8 @@ export function Sidebar({
       to: '/live-ops',
       label: 'Live Ops',
       icon: Radio,
-      badge: 'Live'
+      badge: 'LIVE',
+      badgeType: 'mint'
     },
     {
       to: '/event-setup',
@@ -75,6 +77,80 @@ export function Sidebar({
       badge: null
     }
   ];
+
+  const renderBadge = (item) => {
+    if (!item.badge) return null;
+
+    if (item.badgeType === 'coral') {
+      return (
+        <span
+          style={{
+            fontFamily: 'var(--font-mono)',
+            fontSize: '11px',
+            fontWeight: 700,
+            padding: '1px 6px',
+            backgroundColor: 'var(--coral-bg)',
+            color: 'var(--coral-ink)',
+            border: '1px solid var(--coral)',
+            borderRadius: 'var(--radius)',
+            lineHeight: 1.2
+          }}
+        >
+          {item.badge}
+        </span>
+      );
+    }
+
+    if (item.badgeType === 'mint') {
+      return (
+        <span
+          style={{
+            fontFamily: 'var(--font-mono)',
+            fontSize: '11px',
+            fontWeight: 700,
+            padding: '1px 6px',
+            backgroundColor: 'var(--mint-bg)',
+            color: 'var(--mint-ink)',
+            border: '1px solid rgba(31, 160, 110, 0.35)',
+            borderRadius: 'var(--radius)',
+            display: 'inline-flex',
+            alignItems: 'center',
+            gap: '4px',
+            lineHeight: 1.2
+          }}
+        >
+          <span
+            style={{
+              width: '5px',
+              height: '5px',
+              borderRadius: '50%',
+              backgroundColor: 'var(--mint)'
+            }}
+            aria-hidden="true"
+          />
+          {item.badge}
+        </span>
+      );
+    }
+
+    return (
+      <span
+        style={{
+          fontFamily: 'var(--font-mono)',
+          fontSize: '11px',
+          fontWeight: 700,
+          padding: '1px 6px',
+          backgroundColor: 'var(--paper-sunken)',
+          color: 'var(--ink)',
+          border: '1px solid var(--line-strong)',
+          borderRadius: 'var(--radius)',
+          lineHeight: 1.2
+        }}
+      >
+        {item.badge}
+      </span>
+    );
+  };
 
   return (
     <>
@@ -85,9 +161,8 @@ export function Sidebar({
           style={{
             position: 'fixed',
             inset: 0,
-            background: 'var(--bg-overlay)',
-            zIndex: 90,
-            display: 'block'
+            backgroundColor: 'var(--bg-overlay)',
+            zIndex: 90
           }}
           className="mobile-backdrop"
         />
@@ -100,12 +175,12 @@ export function Sidebar({
           position: 'fixed',
           top: 0,
           left: 0,
-          background: 'var(--paper)',
-          borderRight: '1px solid var(--hairline)',
+          backgroundColor: 'var(--paper)',
+          borderRight: '1px solid var(--line-strong)',
           display: 'flex',
           flexDirection: 'column',
           zIndex: 95,
-          transition: 'transform var(--transition-base)'
+          transition: 'transform var(--dur-base) var(--ease-out)'
         }}
         className={`pulse-sidebar ${isOpen ? 'sidebar-open' : ''}`}
       >
@@ -113,11 +188,12 @@ export function Sidebar({
         <div
           style={{
             height: 'var(--topbar-height)',
-            padding: '0 var(--space-6)',
+            padding: '0 20px',
             display: 'flex',
             alignItems: 'center',
             justifyContent: 'space-between',
-            borderBottom: '1px solid var(--hairline)'
+            borderBottom: '1px solid var(--line-strong)',
+            backgroundColor: 'var(--paper)'
           }}
         >
           <Link
@@ -131,17 +207,17 @@ export function Sidebar({
           >
             <div
               style={{
-                width: '32px',
-                height: '32px',
+                width: '30px',
+                height: '30px',
                 backgroundColor: 'var(--ink)',
-                color: 'var(--paper)',
+                color: 'var(--ink-inverse)',
                 display: 'flex',
                 alignItems: 'center',
                 justifyContent: 'center',
-                borderRadius: '0px'
+                borderRadius: 'var(--radius)'
               }}
             >
-              <Activity size={18} />
+              <Activity size={17} aria-hidden="true" />
             </div>
 
             <span
@@ -159,15 +235,16 @@ export function Sidebar({
           </Link>
 
           <span
-            className="font-mono"
             style={{
-              fontSize: '0.65rem',
-              fontWeight: 700,
+              fontFamily: 'var(--font-mono)',
+              fontSize: '10px',
+              fontWeight: 800,
               padding: '2px 6px',
-              background: 'var(--paper-raised)',
-              color: 'var(--ink-70)',
-              border: '1px solid var(--hairline)',
-              letterSpacing: '0.08em'
+              backgroundColor: 'var(--paper-sunken)',
+              color: 'var(--ink)',
+              border: '1px solid var(--line-strong)',
+              borderRadius: 'var(--radius)',
+              letterSpacing: '0.12em'
             }}
           >
             COMMAND
@@ -175,21 +252,22 @@ export function Sidebar({
         </div>
 
         {/* Navigation Section */}
-        <div style={{ flex: 1, padding: 'var(--space-4) var(--space-3)', overflowY: 'auto' }}>
+        <div style={{ flex: 1, padding: '16px 12px', overflowY: 'auto' }}>
           <div
-            className="font-mono"
             style={{
-              fontSize: '0.65rem',
-              color: 'var(--ink-45)',
+              fontFamily: 'var(--font-mono)',
+              fontSize: '11px',
+              fontWeight: 700,
+              color: 'var(--ink-3)',
               letterSpacing: '0.14em',
-              padding: '0 var(--space-3) 8px var(--space-3)',
+              padding: '0 10px 10px 10px',
               textTransform: 'uppercase'
             }}
           >
             OPERATIONS
           </div>
 
-          <nav style={{ display: 'flex', flexDirection: 'column', gap: '2px' }}>
+          <nav style={{ display: 'flex', flexDirection: 'column', gap: '3px' }}>
             {navItems.map((item) => {
               const Icon = item.icon;
               const isActive =
@@ -206,12 +284,14 @@ export function Sidebar({
                     alignItems: 'center',
                     gap: '12px',
                     padding: '9px 12px',
-                    color: isActive ? 'var(--ink)' : 'var(--ink-70)',
-                    background: isActive ? 'var(--paper-raised)' : 'transparent',
-                    borderLeft: isActive ? '3px solid var(--pulse)' : '3px solid transparent',
+                    color: isActive ? 'var(--ink)' : 'var(--ink-2)',
+                    backgroundColor: isActive ? 'var(--paper-sunken)' : 'transparent',
+                    borderLeft: isActive ? '3px solid var(--vermilion)' : '3px solid transparent',
                     fontWeight: isActive ? 700 : 500,
-                    fontSize: '0.85rem',
-                    transition: 'all var(--transition-fast)',
+                    fontSize: '13px',
+                    fontFamily: 'var(--font-ui)',
+                    borderRadius: '0 var(--radius) var(--radius) 0',
+                    transition: 'all var(--dur-fast) var(--ease-out)',
                     textDecoration: 'none'
                   }}
                   className="sidebar-nav-item"
@@ -219,27 +299,13 @@ export function Sidebar({
                   <Icon
                     size={17}
                     style={{
-                      color: isActive ? 'var(--pulse)' : 'var(--ink-45)',
-                      transition: 'color var(--transition-fast)'
+                      color: isActive ? 'var(--vermilion)' : 'var(--ink-2)',
+                      flexShrink: 0
                     }}
+                    aria-hidden="true"
                   />
-                  <span style={{ flex: 1, fontFamily: 'var(--font-ui)' }}>{item.label}</span>
-
-                  {item.badge && (
-                    <span
-                      className="font-mono"
-                      style={{
-                        fontSize: '0.65rem',
-                        fontWeight: 700,
-                        padding: '1px 6px',
-                        background: item.alert ? 'var(--pulse-weak)' : 'var(--paper-alt)',
-                        color: item.alert ? 'var(--pulse)' : 'var(--ink-70)',
-                        border: item.alert ? '1px solid var(--pulse-weak)' : '1px solid var(--hairline)'
-                      }}
-                    >
-                      {item.badge}
-                    </span>
-                  )}
+                  <span style={{ flex: 1 }}>{item.label}</span>
+                  {renderBadge(item)}
                 </NavLink>
               );
             })}
@@ -249,9 +315,9 @@ export function Sidebar({
         {/* Bottom Operations Status Area */}
         <div
           style={{
-            padding: 'var(--space-4)',
-            borderTop: '1px solid var(--hairline)',
-            background: 'var(--paper-raised)',
+            padding: '16px',
+            borderTop: '1px solid var(--line-strong)',
+            backgroundColor: 'var(--paper-raised)',
             display: 'flex',
             flexDirection: 'column',
             gap: '12px'
@@ -266,52 +332,30 @@ export function Sidebar({
               justifyContent: 'center',
               gap: '8px',
               padding: '8px 12px',
-              border: '1px solid var(--hairline-bold)',
+              border: '1px solid var(--line-strong)',
               backgroundColor: 'var(--paper)',
               color: 'var(--ink)',
-              fontSize: '0.75rem',
+              fontFamily: 'var(--font-mono)',
+              fontSize: '11px',
               fontWeight: 700,
-              textDecoration: 'none'
+              letterSpacing: '0.1em',
+              textDecoration: 'none',
+              borderRadius: 'var(--radius)',
+              transition: 'all var(--dur-fast) var(--ease-out)'
             }}
-            className="font-mono"
           >
-            <ArrowLeft size={14} />
+            <ArrowLeft size={13} aria-hidden="true" />
             <span>RETURN TO LANDING</span>
           </Link>
 
-          {/* Sync Time & Telemetry */}
-          <div
-            style={{
-              display: 'flex',
-              alignItems: 'center',
-              justifyContent: 'space-between',
-              fontSize: '0.72rem',
-              color: 'var(--ink-45)',
-              padding: '0 2px'
-            }}
-            className="font-mono"
-          >
-            <span style={{ display: 'flex', alignItems: 'center', gap: '6px' }}>
-              <LiveDot size={5} />
-              SYNC: {lastUpdated}
-            </span>
-
-            <button
-              onClick={onRefresh}
-              title="Manual Telemetry Sync"
-              style={{
-                background: 'transparent',
-                border: 'none',
-                color: 'var(--ink-70)',
-                cursor: 'pointer',
-                display: 'flex',
-                alignItems: 'center',
-                padding: '3px'
-              }}
-            >
-              <RefreshCw size={13} className={refreshing ? 'animate-spin' : ''} />
-            </button>
-          </div>
+          {/* Sync Time & Telemetry using SyncIndicator */}
+          <SyncIndicator
+            lastSyncTime={lastSyncTime}
+            syncFailed={syncFailed}
+            refreshing={refreshing}
+            onRefresh={onRefresh}
+            showControls={true}
+          />
         </div>
       </aside>
     </>

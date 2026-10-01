@@ -128,7 +128,7 @@ export function EventZoneSequence() {
       className="pulse-zone-sequence-container"
       style={{
         position: 'relative',
-        backgroundColor: '#000000',
+        backgroundColor: '#0a0a10',
         height: isFallback ? 'auto' : containerHeight,
         zIndex: 12,
         willChange: isFallback ? 'auto' : 'scroll-position',
@@ -148,17 +148,17 @@ export function EventZoneSequence() {
           display: 'flex',
           flexDirection: 'column',
           justifyContent: 'center',
-          backgroundColor: '#000000',
-          padding: isFallback ? '4rem 1.5rem' : 0,
+          backgroundColor: '#0a0a10',
+          padding: isFallback ? '4rem 1.5rem' : '1vh 0',
         }}
       >
         {/* Subtle Top Telemetry Strip */}
         <div
           style={{
             position: isFallback ? 'relative' : 'absolute',
-            top: isFallback ? 'auto' : '3.5vh',
-            left: 'clamp(1.5rem, 5vw, 4rem)',
-            right: 'clamp(1.5rem, 5vw, 4rem)',
+            top: isFallback ? 'auto' : '2.5vh',
+            left: '3.3vw',
+            right: '3.3vw',
             marginBottom: isFallback ? '2rem' : 0,
             display: 'flex',
             justifyContent: 'space-between',
@@ -209,9 +209,9 @@ export function EventZoneSequence() {
             flexDirection: isFallback ? 'column' : 'row',
             alignItems: isFallback ? 'stretch' : 'center',
             flexWrap: isFallback ? 'wrap' : 'nowrap',
-            gap: isFallback ? '2rem' : '1.5vw',
-            paddingLeft: isFallback ? 0 : 'clamp(2rem, 5vw, 4rem)',
-            paddingRight: isFallback ? 0 : 'clamp(2rem, 5vw, 4rem)',
+            gap: isFallback ? '2rem' : '4vw',
+            paddingLeft: isFallback ? 0 : '3.3vw',
+            paddingRight: isFallback ? 0 : '3.3vw',
             width: isFallback ? '100%' : 'max-content',
             willChange: isFallback ? 'auto' : 'transform',
           }}
@@ -222,13 +222,13 @@ export function EventZoneSequence() {
             const fillPct = Math.min(Math.round((zone.staffed / zone.required) * 100), 100);
             const isLead = idx === 0;
 
-            // Card Widths: Lead 59vw landscape, others 36-52vw
+            // Card Widths: Lead 58vw landscape, others 38-52vw
             const cardWidth = isFallback
               ? '100%'
               : isLead
-              ? 'clamp(320px, 59vw, 980px)'
+              ? 'clamp(340px, 58vw, 980px)'
               : zone.type === 'portrait'
-              ? `clamp(280px, ${zone.widthVw}vw, 600px)`
+              ? `clamp(280px, ${zone.widthVw}vw, 620px)`
               : `clamp(320px, ${zone.widthVw}vw, 860px)`;
 
             return (
@@ -247,18 +247,19 @@ export function EventZoneSequence() {
                 style={{
                   position: 'relative',
                   width: cardWidth,
-                  height: isFallback ? '500px' : 'clamp(520px, 84vh, 860px)',
-                  borderRadius: '12px',
+                  height: isFallback ? '520px' : 'clamp(580px, 98vh, 1080px)',
+                  borderRadius: 'clamp(16px, 1.5vw, 24px)',
                   overflow: 'hidden',
                   flexShrink: 0,
-                  backgroundColor: '#0e0e18',
-                  border: '1px solid rgba(255, 255, 255, 0.12)',
-                  boxShadow: '0 24px 60px rgba(0, 0, 0, 0.85)',
+                  backgroundColor: 'transparent',
+                  border: 'none',
+                  boxShadow: '0 30px 70px rgba(0, 0, 0, 0.9)',
                   cursor: 'pointer',
+                  margin: isFallback ? 0 : '1vh 0',
                 }}
                 aria-label={`Open ${zone.name} zone: ${zone.status}`}
               >
-                {/* Background Zone Imagery */}
+                {/* Background Zone Photographic Imagery with Unified Cinematic Grade */}
                 <div
                   style={{
                     position: 'absolute',
@@ -276,47 +277,79 @@ export function EventZoneSequence() {
                     decoding="async"
                     onLoad={updateMetrics}
                     style={{
+                      position: 'absolute',
+                      top: '-4%',
+                      left: 0,
                       width: '100%',
-                      height: '100%',
+                      height: '108%', // allows ±4% inner image parallax
                       objectFit: 'cover',
                       display: 'block',
-                      transition: 'transform 0.5s cubic-bezier(0.16, 1, 0.3, 1)',
+                      filter: 'contrast(1.08) saturate(1.1) brightness(0.9)',
+                      transition: 'transform 0.6s cubic-bezier(0.16, 1, 0.3, 1)',
                     }}
                     className="pulse-zone-card-img"
                   />
                 </div>
 
-                {/* Dark Gradient Scrim (55%) for text legibility */}
+                {/* Unified Film Grain Overlay (6-8% opacity, mix-blend-mode: overlay) */}
                 <div
                   style={{
                     position: 'absolute',
                     inset: 0,
-                    background: 'linear-gradient(180deg, rgba(10, 10, 16, 0.05) 0%, rgba(10, 10, 16, 0.35) 45%, rgba(10, 10, 16, 0.94) 100%)',
                     pointerEvents: 'none',
+                    backgroundImage: `url("data:image/svg+xml,%3Csvg viewBox='0 0 200 200' xmlns='http://www.w3.org/2000/svg'%3E%3Cfilter id='noiseFilter'%3E%3CfeTurbulence type='fractalNoise' baseFrequency='0.8' numOctaves='3' stitchTiles='stitch'/%3E%3C/filter%3E%3Crect width='100%25' height='100%25' filter='url(%23noiseFilter)'/%3E%3C/svg%3E")`,
+                    opacity: 0.07,
+                    mixBlendMode: 'overlay',
+                    zIndex: 2,
                   }}
+                  aria-hidden="true"
                 />
 
-                {/* Card Content Overlay */}
+                {/* Soft Vignette Overlay */}
+                <div
+                  style={{
+                    position: 'absolute',
+                    inset: 0,
+                    pointerEvents: 'none',
+                    background: 'radial-gradient(circle at center, transparent 45%, rgba(10, 10, 16, 0.45) 100%)',
+                    zIndex: 3,
+                  }}
+                  aria-hidden="true"
+                />
+
+                {/* Dark Gradient Scrim (~55%) behind text for impeccable legibility */}
+                <div
+                  style={{
+                    position: 'absolute',
+                    inset: 0,
+                    background: 'linear-gradient(180deg, transparent 0%, transparent 45%, rgba(10, 10, 16, 0.35) 60%, rgba(10, 10, 16, 0.94) 100%)',
+                    pointerEvents: 'none',
+                    zIndex: 4,
+                  }}
+                  aria-hidden="true"
+                />
+
+                {/* Card Content Overlay — Inset 3.3vw, bottom text raised >= 110px above viewport bottom to clear Menu pill */}
                 <div
                   style={{
                     position: 'absolute',
                     bottom: 0,
                     left: 0,
                     right: 0,
-                    padding: 'clamp(1.25rem, 3vw, 2.75rem)',
+                    padding: '0 3.3vw clamp(110px, 13vh, 140px) 3.3vw',
                     display: 'flex',
                     justifyContent: 'space-between',
                     alignItems: 'flex-end',
                     zIndex: 5,
                   }}
                 >
-                  {/* Left: Eyebrow + Huge Zone Name + Coverage */}
+                  {/* Left: Eyebrow + Huge Zone Name + Coverage Line */}
                   <div style={{ maxWidth: '82%' }}>
                     <span
                       className="font-mono"
                       style={{
                         fontSize: '0.72rem',
-                        color: 'rgba(255, 255, 255, 0.7)',
+                        color: 'rgba(255, 255, 255, 0.75)',
                         letterSpacing: '0.14em',
                         textTransform: 'uppercase',
                         display: 'block',
@@ -337,6 +370,7 @@ export function EventZoneSequence() {
                         color: '#FFFFFF',
                         margin: '0 0 10px 0',
                         textTransform: 'uppercase',
+                        textWrap: 'balance',
                       }}
                     >
                       {zone.name}
@@ -346,7 +380,7 @@ export function EventZoneSequence() {
                       className="font-mono"
                       style={{
                         fontSize: 'clamp(0.75rem, 0.9vw, 0.88rem)',
-                        color: isFull ? 'rgba(255, 255, 255, 0.85)' : '#ff6b55',
+                        color: isFull ? 'rgba(255, 255, 255, 0.9)' : '#ff6b55',
                         letterSpacing: '0.08em',
                         display: 'flex',
                         alignItems: 'center',
@@ -358,7 +392,7 @@ export function EventZoneSequence() {
                     </div>
                   </div>
 
-                  {/* Right: Round White Arrow Button */}
+                  {/* Right: Round White Arrow Button (Inset 3.3vw) */}
                   <div
                     style={{
                       width: 'clamp(38px, 3.5vw, 48px)',
@@ -370,7 +404,7 @@ export function EventZoneSequence() {
                       alignItems: 'center',
                       justifyContent: 'center',
                       flexShrink: 0,
-                      boxShadow: '0 4px 16px rgba(0, 0, 0, 0.4)',
+                      boxShadow: '0 4px 16px rgba(0, 0, 0, 0.5)',
                       transition: 'transform 0.25s ease, background-color 0.25s ease, color 0.25s ease',
                     }}
                     className="pulse-zone-arrow-btn"
@@ -380,13 +414,14 @@ export function EventZoneSequence() {
                   </div>
                 </div>
 
-                {/* 2px Coverage Bar at Card's Bottom Edge */}
+                {/* 2px Red/White Coverage Bar (Raised to clear Menu pill zone) */}
                 <div
                   style={{
                     position: 'absolute',
-                    bottom: 0,
-                    left: 0,
-                    width: '100%',
+                    bottom: 'clamp(102px, 12vh, 130px)',
+                    left: '3.3vw',
+                    right: '3.3vw',
+                    width: 'calc(100% - 6.6vw)',
                     height: '2px',
                     backgroundColor: 'rgba(255, 255, 255, 0.15)',
                     zIndex: 6,

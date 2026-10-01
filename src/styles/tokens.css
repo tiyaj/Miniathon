@@ -1,75 +1,87 @@
+/* =========================================================
+   PULSE SEMANTIC DESIGN TOKENS
+   Ink-on-Paper High Contrast & Strict Typographic Hierarchy
+   ========================================================= */
+
 :root {
-  /* Color Palette - Deep Ink & Spatial Dark */
-  --bg-base: #060911;
-  --bg-space: #090d18;
-  --bg-surface: #0f1626;
-  --bg-surface-elevated: #141d32;
-  --bg-surface-hover: #19243d;
-  --bg-surface-glass: rgba(15, 22, 38, 0.72);
-  --bg-overlay: rgba(6, 9, 17, 0.82);
+  /* Surfaces */
+  --paper: #f3f0e8;          /* page background */
+  --paper-raised: #fbfaf5;   /* tables, inputs, drawers, popovers, cards */
+  --paper-sunken: #eae6db;   /* row hover, wells, disabled, chips */
+  --navy: #131a2b;           /* INVERSE surface (map nodes, tooltips, dark table header) */
+  --navy-raised: #1b2438;
 
-  /* Primary Accents - Electric Violet & Cobalt */
-  --color-primary: #6366f1;
-  --color-primary-light: #818cf8;
-  --color-primary-dark: #4f46e5;
-  --color-primary-glow: rgba(99, 102, 241, 0.28);
-  --color-primary-subtle: rgba(99, 102, 241, 0.12);
+  /* Text on Paper */
+  --ink: #15130f;            /* primary text, primary button fill */
+  --ink-2: #4a463d;          /* secondary text */
+  --ink-3: #6b665a;          /* meta/placeholder (verified >= 4.5:1 on --paper-raised) */
+  --ink-dim: #8c867a;
 
-  /* Highlight Cyan / Azure */
-  --color-accent-cyan: #38bdf8;
-  --color-accent-cyan-glow: rgba(56, 189, 248, 0.25);
+  /* Text on Navy / Ink */
+  --ink-inverse: #f6f3ea;    /* primary text on dark */
+  --ink-inverse-2: #b9bdcc;  /* secondary text on dark */
 
-  /* Semantic Status Colors */
-  --color-healthy: #10b981;
-  --color-healthy-light: #34d399;
-  --color-healthy-bg: rgba(16, 185, 129, 0.12);
-  --color-healthy-glow: rgba(16, 185, 129, 0.28);
+  /* Lines & Borders */
+  --line: #d9d4c6;           /* hairlines, table borders, dividers */
+  --line-strong: #15130f;    /* 1px control borders, cards, sticky headers */
 
-  --color-warning: #f59e0b;
-  --color-warning-light: #fbbf24;
-  --color-warning-bg: rgba(245, 158, 11, 0.12);
-  --color-warning-glow: rgba(245, 158, 11, 0.28);
+  /* Brand / Accents */
+  --vermilion: #e4472b;      /* brand accent, active nav bar, headline accent */
+  --indigo: #5b54e6;         /* hub core, accents */
 
-  --color-critical: #f43f5e;
-  --color-critical-light: #fb7185;
-  --color-critical-bg: rgba(244, 63, 94, 0.14);
-  --color-critical-glow: rgba(244, 63, 94, 0.35);
+  /* Semantic Status — ink = text on paper, bg = tint, solid = dots/bars */
+  --mint: #1fa06e;
+  --mint-ink: #146b49;
+  --mint-bg: rgba(31, 160, 110, 0.12);
 
-  --color-neutral: #64748b;
-  --color-neutral-bg: rgba(100, 116, 139, 0.14);
+  --amber: #e8961e;
+  --amber-ink: #8a5300;
+  --amber-bg: rgba(232, 150, 30, 0.16);
+
+  --coral: #e4472b;
+  --coral-ink: #a8281a;
+  --coral-bg: rgba(228, 71, 43, 0.12);
+
+  --sky: #3696e6;
+  --sky-ink: #1d5f9a;
+  --sky-bg: rgba(54, 150, 230, 0.12);
+
+  /* Status text ON NAVY (lighter high-contrast variants >= 4.5:1 on #131a2b) */
+  --on-navy-mint: #4fd6a0;
+  --on-navy-coral: #ff7a6b;
+  --on-navy-amber: #ffb84d;
+  --on-navy-sky: #6cb8ff;
+
+  /* Shape / Elevation / Motion */
+  --radius: 4px;             /* hard-edged look; 0-4px only */
+  --radius-xs: 2px;
+  --radius-sm: 4px;
+  --radius-md: 4px;
+  --radius-lg: 6px;
+  --radius-xl: 8px;
+  --radius-full: 9999px;
+
+  --shadow-float: 0 12px 32px -12px rgba(21, 19, 15, 0.28), 0 0 0 1px var(--line-strong);
+  --shadow-sm: 0 2px 4px rgba(21, 19, 15, 0.05);
+  --shadow-md: 0 6px 16px rgba(21, 19, 15, 0.08);
+  --shadow-lg: 0 12px 32px rgba(21, 19, 15, 0.12);
+  --shadow-critical: 0 0 24px rgba(228, 71, 43, 0.35);
+
+  --focus-ring: 0 0 0 2px var(--paper), 0 0 0 4px var(--vermilion);
+  --dur-fast: 180ms;
+  --dur-base: 300ms;
+  --dur-slow: 600ms;
+  --ease-out: cubic-bezier(0.22, 1, 0.36, 1);
 
   /* Typography */
-  --font-display: 'Outfit', -apple-system, BlinkMacSystemFont, 'Segoe UI', sans-serif;
-  --font-body: 'Plus Jakarta Sans', -apple-system, BlinkMacSystemFont, 'Segoe UI', sans-serif;
-  --font-mono: 'JetBrains Mono', monospace;
+  --font-display: 'Bricolage Grotesque', system-ui, -apple-system, sans-serif;
+  --font-ui: 'Space Grotesk', system-ui, -apple-system, sans-serif;
+  --font-mono: 'Space Mono', ui-monospace, SFMono-Regular, Menlo, monospace;
 
-  /* Text Colors */
-  --text-primary: #f8fafc;
-  --text-secondary: #94a3b8;
-  --text-muted: #64748b;
-  --text-dim: #475569;
-
-  /* Borders & Dividers */
-  --border-subtle: rgba(255, 255, 255, 0.07);
-  --border-medium: rgba(255, 255, 255, 0.12);
-  --border-strong: rgba(255, 255, 255, 0.18);
-  --border-accent: rgba(99, 102, 241, 0.35);
-  --border-accent-active: rgba(99, 102, 241, 0.65);
-
-  /* Elevation & Shadows */
-  --shadow-sm: 0 2px 8px rgba(0, 0, 0, 0.35);
-  --shadow-md: 0 4px 20px -2px rgba(0, 0, 0, 0.45);
-  --shadow-lg: 0 10px 32px -4px rgba(0, 0, 0, 0.55), 0 0 1px 1px rgba(255, 255, 255, 0.05);
-  --shadow-glow: 0 0 30px -4px var(--color-primary-glow);
-  --shadow-critical: 0 0 24px -2px var(--color-critical-glow);
-
-  /* Radii */
-  --radius-xs: 6px;
-  --radius-sm: 10px;
-  --radius-md: 14px;
-  --radius-lg: 18px;
-  --radius-xl: 24px;
-  --radius-full: 9999px;
+  /* Layout dimensions */
+  --sidebar-width: 250px;
+  --sidebar-collapsed-width: 76px;
+  --topbar-height: 60px;
 
   /* Spacing */
   --space-1: 4px;
@@ -83,14 +95,61 @@
   --space-12: 48px;
   --space-16: 64px;
 
-  /* Transitions */
-  --transition-fast: 150ms cubic-bezier(0.16, 1, 0.3, 1);
-  --transition-base: 220ms cubic-bezier(0.16, 1, 0.3, 1);
-  --transition-smooth: 350ms cubic-bezier(0.16, 1, 0.3, 1);
-  --transition-entrance: 500ms cubic-bezier(0.16, 1, 0.3, 1);
+  /* Backward Compatibility Aliases for components */
+  --bg-base: var(--paper);
+  --bg-space: var(--paper-sunken);
+  --bg-surface: var(--paper-raised);
+  --bg-surface-elevated: var(--paper-raised);
+  --bg-surface-hover: var(--paper-sunken);
+  --bg-surface-glass: rgba(251, 250, 245, 0.96);
+  --bg-overlay: rgba(21, 19, 15, 0.60);
 
-  /* Layout */
-  --sidebar-width: 260px;
-  --sidebar-collapsed-width: 76px;
-  --topbar-height: 64px;
+  --text-primary: var(--ink);
+  --text-secondary: var(--ink-2);
+  --text-muted: var(--ink-3);
+  --text-dim: var(--ink-dim);
+
+  --border-subtle: var(--line);
+  --border-medium: var(--line);
+  --border-strong: var(--line-strong);
+  --border-accent: var(--vermilion);
+  --border-accent-active: var(--vermilion);
+
+  --pulse: var(--vermilion);
+  --pulse-weak: var(--coral-bg);
+  --pulse-glow: rgba(228, 71, 43, 0.28);
+  --pulse-dark: #b82d16;
+
+  --hairline: var(--line);
+  --hairline-bold: var(--line-strong);
+
+  --color-primary: var(--ink);
+  --color-primary-light: var(--ink-2);
+  --color-primary-dark: #000000;
+  --color-primary-subtle: var(--paper-sunken);
+  --color-primary-glow: rgba(21, 19, 15, 0.15);
+
+  --color-healthy: var(--mint);
+  --color-healthy-light: var(--mint-ink);
+  --color-healthy-bg: var(--mint-bg);
+  --color-healthy-glow: rgba(31, 160, 110, 0.24);
+
+  --color-warning: var(--amber);
+  --color-warning-light: var(--amber-ink);
+  --color-warning-bg: var(--amber-bg);
+  --color-warning-glow: rgba(232, 150, 30, 0.24);
+
+  --color-critical: var(--coral);
+  --color-critical-light: var(--coral-ink);
+  --color-critical-bg: var(--coral-bg);
+  --color-critical-glow: rgba(228, 71, 43, 0.24);
+
+  --color-accent-cyan: var(--sky);
+  --color-accent-cyan-glow: rgba(54, 150, 230, 0.24);
+
+  --color-neutral: var(--ink-3);
+  --color-neutral-bg: var(--paper-sunken);
+
+  --transition-fast: var(--dur-fast) var(--ease-out);
+  --transition-base: var(--dur-base) var(--ease-out);
 }

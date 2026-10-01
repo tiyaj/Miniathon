@@ -58,122 +58,174 @@ export function LiveNumbers({ eventData }) {
       />
 
       <div className="pulse-container">
-        {/* Section Eyebrow */}
-        <div style={{ marginBottom: 'clamp(1.5rem, 3vw, 2.5rem)' }}>
-          <SectionIndex index="02" title="TELEMETRY PULSE" />
-        </div>
-
-        {/* Headline Revealed Line by Line (§6.4) */}
-        <div style={{ marginBottom: 'clamp(2.5rem, 5vw, 4.5rem)' }}>
-          <RevealText
-            as="h2"
-            id="live-numbers-title"
+        {/* 12-Column Editorial Grid Layout (§6) */}
+        <div
+          style={{
+            display: 'grid',
+            gridTemplateColumns: 'repeat(12, 1fr)',
+            gap: 'clamp(2rem, 4vw, 5rem)',
+            alignItems: 'start',
+          }}
+          className="pulse-live-numbers-grid"
+        >
+          {/* Left Column (Cols 1-5): Section Index + Large Balanced Headline */}
+          <div
             style={{
-              fontFamily: "'Archivo', 'Archivo Black', sans-serif",
-              fontVariationSettings: "'wdth' 125, 'wght' 900",
-              fontWeight: 900,
-              fontSize: 'clamp(2.4rem, 6.5vw, 6rem)',
-              lineHeight: 0.92,
-              letterSpacing: '-0.02em',
-              textTransform: 'uppercase',
-              color: '#FFFFFF',
-              margin: 0,
+              gridColumn: 'span 5',
+              position: 'sticky',
+              top: '100px',
             }}
+            className="pulse-live-numbers-header-col"
           >
-            {"THE EVENT\nIS MOVING."}
-          </RevealText>
-        </div>
+            <div style={{ marginBottom: 'clamp(1.5rem, 2.5vw, 2.2rem)' }}>
+              <SectionIndex index="02" title="TELEMETRY PULSE" />
+            </div>
 
-        {/* Editorial Numbers Ledger */}
-        <div className="pulse-numbers-ledger">
-          {stats.map((item, idx) => {
-            const isAlert = Boolean(item.isAlert);
+            <RevealText
+              as="h2"
+              id="live-numbers-title"
+              style={{
+                fontFamily: "'Archivo', 'Archivo Black', sans-serif",
+                fontVariationSettings: "'wdth' 125, 'wght' 900",
+                fontWeight: 900,
+                fontSize: 'clamp(2.6rem, 5vw, 5.4rem)',
+                lineHeight: 0.92,
+                letterSpacing: '-0.02em',
+                textTransform: 'uppercase',
+                color: '#FFFFFF',
+                margin: '0 0 1.5rem 0',
+                textWrap: 'balance',
+              }}
+            >
+              {"THE EVENT\nIS MOVING."}
+            </RevealText>
 
-            return (
-              <motion.div
-                key={item.id}
-                variants={shouldReduceMotion ? {} : ledgerRow}
-                initial={shouldReduceMotion ? 'visible' : 'hidden'}
-                whileInView="visible"
-                viewport={{ once: true, margin: '-40px' }}
-                transition={{ delay: idx * 0.1 }}
+            <div
+              className="font-mono"
+              style={{
+                fontSize: '0.75rem',
+                color: 'rgba(255, 255, 255, 0.5)',
+                letterSpacing: '0.12em',
+                textTransform: 'uppercase',
+                display: 'flex',
+                alignItems: 'center',
+                gap: '8px',
+                marginTop: '1.5rem',
+                paddingTop: '1.25rem',
+                borderTop: '1px solid rgba(90, 60, 240, 0.25)',
+                maxWidth: '360px',
+              }}
+            >
+              <span
                 style={{
-                  display: 'grid',
-                  gridTemplateColumns: 'clamp(140px, 20vw, 260px) 1.5fr 2fr',
-                  alignItems: 'baseline',
-                  padding: 'clamp(1.25rem, 2.5vw, 2.25rem) 0',
-                  borderBottom: '1px solid rgba(90, 60, 240, 0.25)',
-                  position: 'relative',
+                  width: '6px',
+                  height: '6px',
+                  borderRadius: '50%',
+                  backgroundColor: '#10b981',
+                  boxShadow: '0 0 8px #10b981',
                 }}
-                className={`pulse-dark-num-row ${isAlert ? 'is-alert-row' : ''}`}
-                role="group"
-                aria-label={`${item.value} ${item.label}`}
-              >
-                {/* Giant Heavy Numeral in Archivo */}
-                <div
-                  style={{
-                    fontFamily: "'Archivo', 'Archivo Black', sans-serif",
-                    fontWeight: 900,
-                    fontSize: 'clamp(3rem, 7vw, 7.5rem)',
-                    lineHeight: 0.9,
-                    color: isAlert ? '#F5452C' : '#FFFFFF',
-                    letterSpacing: '-0.03em',
-                    textShadow: isAlert ? '0 0 16px rgba(245, 69, 44, 0.4)' : 'none',
-                  }}
-                >
-                  <CountUp
-                    target={item.value}
-                    padStart={item.pad}
-                    delay={idx * 140}
-                    duration={1400}
-                  />
-                </div>
+              />
+              <span>128 VOLUNTEERS · LIVE TELEMETRY</span>
+            </div>
+          </div>
 
-                {/* Mono Label Center */}
-                <div
-                  className="font-mono"
-                  style={{
-                    fontSize: 'clamp(0.85rem, 1.2vw, 1.15rem)',
-                    color: isAlert ? '#F5452C' : 'rgba(255, 255, 255, 0.9)',
-                    letterSpacing: '0.12em',
-                    fontWeight: 700,
-                    textTransform: 'uppercase',
-                    display: 'flex',
-                    alignItems: 'center',
-                    gap: '10px',
-                  }}
-                >
-                  <span>{item.label}</span>
-                  {isAlert && (
-                    <span
-                      style={{
-                        fontSize: '0.65em',
-                        color: '#F5452C',
-                        backgroundColor: 'rgba(245, 69, 44, 0.14)',
-                        border: '1px solid rgba(245, 69, 44, 0.35)',
-                        padding: '3px 8px',
-                        borderRadius: '2px',
-                        fontWeight: 700,
-                      }}
-                    >
-                      ● ATTN REQ
-                    </span>
-                  )}
-                </div>
+          {/* Right Column (Cols 6-12): Editorial Numbers Ledger */}
+          <div
+            style={{
+              gridColumn: 'span 7',
+              borderTop: '1px solid rgba(90, 60, 240, 0.25)',
+            }}
+            className="pulse-numbers-ledger pulse-live-numbers-ledger-col"
+          >
+            {stats.map((item, idx) => {
+              const isAlert = Boolean(item.isAlert);
 
-                {/* Operational Description Right */}
-                <div
+              return (
+                <motion.div
+                  key={item.id}
+                  variants={shouldReduceMotion ? {} : ledgerRow}
+                  initial={shouldReduceMotion ? 'visible' : 'hidden'}
+                  whileInView="visible"
+                  viewport={{ once: true, margin: '-40px' }}
+                  transition={{ delay: idx * 0.1 }}
                   style={{
-                    color: 'rgba(255, 255, 255, 0.58)',
-                    fontSize: 'clamp(0.85rem, 1vw, 1rem)',
-                    lineHeight: 1.5,
+                    display: 'grid',
+                    gridTemplateColumns: 'clamp(100px, 14vw, 170px) 1.2fr 1.6fr',
+                    alignItems: 'baseline',
+                    padding: 'clamp(1.25rem, 2.2vw, 2rem) 0',
+                    borderBottom: '1px solid rgba(90, 60, 240, 0.25)',
+                    position: 'relative',
                   }}
+                  className={`pulse-dark-num-row ${isAlert ? 'is-alert-row' : ''}`}
+                  role="group"
+                  aria-label={`${item.value} ${item.label}`}
                 >
-                  {item.desc}
-                </div>
-              </motion.div>
-            );
-          })}
+                  {/* Giant Heavy Numeral in Archivo */}
+                  <div
+                    style={{
+                      fontFamily: "'Archivo', 'Archivo Black', sans-serif",
+                      fontWeight: 900,
+                      fontSize: 'clamp(2.8rem, 6vw, 6.2rem)',
+                      lineHeight: 0.9,
+                      color: isAlert ? '#F5452C' : '#FFFFFF',
+                      letterSpacing: '-0.03em',
+                      textShadow: isAlert ? '0 0 16px rgba(245, 69, 44, 0.4)' : 'none',
+                    }}
+                  >
+                    <CountUp
+                      target={item.value}
+                      padStart={item.pad}
+                      delay={idx * 140}
+                      duration={1400}
+                    />
+                  </div>
+
+                  {/* Mono Label Center */}
+                  <div
+                    className="font-mono"
+                    style={{
+                      fontSize: 'clamp(0.8rem, 1.1vw, 1.05rem)',
+                      color: isAlert ? '#F5452C' : 'rgba(255, 255, 255, 0.9)',
+                      letterSpacing: '0.12em',
+                      fontWeight: 700,
+                      textTransform: 'uppercase',
+                      display: 'flex',
+                      alignItems: 'center',
+                      gap: '8px',
+                    }}
+                  >
+                    <span>{item.label}</span>
+                    {isAlert && (
+                      <span
+                        style={{
+                          fontSize: '0.65em',
+                          color: '#F5452C',
+                          backgroundColor: 'rgba(245, 69, 44, 0.14)',
+                          border: '1px solid rgba(245, 69, 44, 0.35)',
+                          padding: '2px 6px',
+                          borderRadius: '2px',
+                          fontWeight: 700,
+                        }}
+                      >
+                        ● ATTN
+                      </span>
+                    )}
+                  </div>
+
+                  {/* Operational Description Right */}
+                  <div
+                    style={{
+                      color: 'rgba(255, 255, 255, 0.58)',
+                      fontSize: 'clamp(0.82rem, 0.95vw, 0.95rem)',
+                      lineHeight: 1.5,
+                    }}
+                  >
+                    {item.desc}
+                  </div>
+                </motion.div>
+              );
+            })}
+          </div>
         </div>
       </div>
     </section>

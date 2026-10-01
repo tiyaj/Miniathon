@@ -58,6 +58,7 @@
 
 /* --- Base Landing Canvas --- */
 .pulse-landing {
+  --container-gutter: clamp(1.5rem, 3.5vw, 4.5rem);
   background-color: var(--paper);
   color: var(--ink);
   min-height: 100vh;
@@ -235,6 +236,16 @@
   padding-top: clamp(6.5rem, 12vw, 9.5rem);
   padding-bottom: 0;
   position: relative;
+}
+
+/* Balance large headings across all breakpoints (§4) */
+h1, h2, h3,
+.pulse-hero-display-h1,
+.pulse-dark-hero-headline,
+.pulse-hero-title,
+.pulse-hero-mega,
+.font-display {
+  text-wrap: balance;
 }
 
 .pulse-hero-mega {
@@ -799,6 +810,17 @@
   .pulse-zone-card {
     height: clamp(480px, 78vh, 720px) !important;
   }
+  .pulse-live-numbers-grid {
+    grid-template-columns: 1fr !important;
+    gap: 2.5rem !important;
+  }
+  .pulse-live-numbers-header-col {
+    grid-column: span 1 !important;
+    position: static !important;
+  }
+  .pulse-live-numbers-ledger-col {
+    grid-column: span 1 !important;
+  }
 }
 
 @media (max-width: 640px) {
@@ -864,9 +886,9 @@
 
 /* Dark World (ReferenceHero, EventZoneSequence, LiveNumbers) */
 .pulse-dark-world {
-  --paper: #000000;
-  --paper-raised: #0a0a10;
-  --paper-alt: #12121c;
+  --paper: #0a0a10;
+  --paper-raised: #12121c;
+  --paper-alt: #1a1a28;
   --ink: #FFFFFF;
   --ink-90: rgba(255, 255, 255, 0.90);
   --ink-70: rgba(255, 255, 255, 0.65);
@@ -881,7 +903,7 @@
   --pulse-weak: rgba(245, 69, 44, 0.15);
   --pulse-glow: rgba(245, 69, 44, 0.35);
   --font-display: 'Archivo', 'Archivo Black', 'Bricolage Grotesque', sans-serif;
-  background-color: #000000;
+  background-color: #0a0a10;
   color: #FFFFFF;
 }
 

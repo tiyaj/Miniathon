@@ -21,11 +21,11 @@ export const HERO_CONFIG = {
   letterSpacing: '-0.01em',
   globeCenter: { x: '49.7vw', y: '60vh' },
   globeDiameterVw: 27,
-  bgColor: '#000000',
+  bgColor: '#0a0a10',
   stageHeight: '112vh',
 };
 
-export function ReferenceHero({ onOpenEventPanel }) {
+export function ReferenceHero() {
   const containerRef = useRef(null);
   const shouldReduceMotion = useReducedMotionSafe();
 
@@ -116,8 +116,7 @@ export function ReferenceHero({ onOpenEventPanel }) {
             pointerEvents: 'auto',
           }}
         >
-          <button
-            onClick={onOpenEventPanel}
+          <div
             className="font-mono pulse-hero-eyebrow"
             style={{
               fontSize: '0.72rem',
@@ -131,22 +130,12 @@ export function ReferenceHero({ onOpenEventPanel }) {
               border: '1px solid rgba(255, 255, 255, 0.1)',
               backgroundColor: 'rgba(255, 255, 255, 0.03)',
               borderRadius: '2px',
-              cursor: 'pointer',
-              transition: 'background-color 0.2s ease, border-color 0.2s ease',
+              userSelect: 'none',
             }}
-            onMouseEnter={(e) => {
-              e.currentTarget.style.backgroundColor = 'rgba(255, 255, 255, 0.08)';
-              e.currentTarget.style.borderColor = 'rgba(255, 255, 255, 0.25)';
-            }}
-            onMouseLeave={(e) => {
-              e.currentTarget.style.backgroundColor = 'rgba(255, 255, 255, 0.03)';
-              e.currentTarget.style.borderColor = 'rgba(255, 255, 255, 0.1)';
-            }}
-            aria-label="View event timetable and status drawer"
           >
             <LiveDot size={6} />
             <span>LIVE EVENT COORDINATION · TECHFEST 2026 · EVENT ACTIVE</span>
-          </button>
+          </div>
         </motion.div>
 
         {/* Layer 3: Lower-Center Display Headline (§4.2, §5.1) */}

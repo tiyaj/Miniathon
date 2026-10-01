@@ -8,20 +8,22 @@ export function EmptyState({
   description = 'There is currently no data matching your query or active criteria.',
   actionLabel,
   onAction,
+  secondaryActionLabel,
+  onSecondaryAction,
   className = ''
 }) {
   return (
     <div
       style={{
-        padding: 'var(--space-12) var(--space-6)',
+        padding: '48px 24px',
         display: 'flex',
         flexDirection: 'column',
         alignItems: 'center',
         justifyContent: 'center',
         textAlign: 'center',
-        background: 'rgba(15, 22, 38, 0.4)',
-        border: '1px dashed var(--border-subtle)',
-        borderRadius: 'var(--radius-lg)'
+        backgroundColor: 'var(--paper-raised)',
+        border: '1px dashed var(--line-strong)',
+        borderRadius: 'var(--radius)'
       }}
       className={`pulse-empty-state ${className}`}
     >
@@ -29,31 +31,57 @@ export function EmptyState({
         style={{
           width: '52px',
           height: '52px',
-          borderRadius: 'var(--radius-full)',
-          background: 'rgba(255, 255, 255, 0.04)',
-          border: '1px solid var(--border-subtle)',
-          color: 'var(--text-muted)',
+          borderRadius: 'var(--radius)',
+          backgroundColor: 'var(--paper-sunken)',
+          border: '1px solid var(--line)',
+          color: 'var(--ink)',
           display: 'flex',
           alignItems: 'center',
           justifyContent: 'center',
-          marginBottom: 'var(--space-4)'
+          marginBottom: '16px'
         }}
       >
-        <Icon size={24} />
+        <Icon size={24} aria-hidden="true" />
       </div>
 
-      <h4 style={{ fontSize: '1.05rem', fontWeight: 600, color: 'var(--text-primary)', marginBottom: '6px' }}>
+      <h4
+        style={{
+          fontSize: '1.05rem',
+          fontWeight: 700,
+          color: 'var(--ink)',
+          marginBottom: '6px',
+          fontFamily: 'var(--font-display)',
+          letterSpacing: '-0.02em'
+        }}
+      >
         {title}
       </h4>
-      <p style={{ fontSize: '0.875rem', color: 'var(--text-secondary)', maxWidth: '360px', marginBottom: actionLabel ? 'var(--space-5)' : 0 }}>
+      <p
+        style={{
+          fontSize: '0.875rem',
+          color: 'var(--ink-2)',
+          maxWidth: '400px',
+          lineHeight: 1.5,
+          marginBottom: actionLabel || secondaryActionLabel ? '20px' : 0
+        }}
+      >
         {description}
       </p>
 
-      {actionLabel && (
-        <Button variant="secondary" size="sm" onClick={onAction}>
-          {actionLabel}
-        </Button>
-      )}
+      <div style={{ display: 'flex', alignItems: 'center', gap: '10px' }}>
+        {secondaryActionLabel && (
+          <Button variant="ghost" size="sm" onClick={onSecondaryAction}>
+            {secondaryActionLabel}
+          </Button>
+        )}
+        {actionLabel && (
+          <Button variant="primary" size="sm" onClick={onAction}>
+            {actionLabel}
+          </Button>
+        )}
+      </div>
     </div>
   );
 }
+
+export default EmptyState;

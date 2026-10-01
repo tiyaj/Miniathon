@@ -10,7 +10,7 @@ import { useReducedMotionSafe } from '../../hooks/useReducedMotionSafe';
  * significantly enlarged dimensions (wider, longer, more prominent),
  * smooth travel distances synchronized with the hero exit into the zone strip.
  */
-export const MEDIA_MOTION_CONFIG = {
+const MEDIA_MOTION_CONFIG = {
   upperExitSpeed: 1.35,
   naturalScrollSpeed: 1.0,
   bridgeGrowScrollEnd: 0.65,

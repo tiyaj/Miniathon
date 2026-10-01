@@ -1,6 +1,5 @@
 import React, { useEffect } from 'react';
 import { X } from 'lucide-react';
-import { Button } from './Button';
 
 export function Modal({
   isOpen,
@@ -38,10 +37,8 @@ export function Modal({
         display: 'flex',
         alignItems: 'center',
         justifyContent: 'center',
-        padding: 'var(--space-4)',
-        background: 'var(--bg-overlay)',
-        backdropFilter: 'blur(10px)',
-        WebkitBackdropFilter: 'blur(10px)',
+        padding: '16px',
+        backgroundColor: 'rgba(21, 19, 15, 0.55)',
         animation: 'fadeIn 180ms ease-out forwards'
       }}
       onClick={(e) => {
@@ -54,10 +51,10 @@ export function Modal({
         style={{
           width: '100%',
           maxWidth,
-          background: 'var(--bg-surface-elevated)',
-          border: '1px solid var(--border-medium)',
-          borderRadius: 'var(--radius-xl)',
-          boxShadow: 'var(--shadow-lg), 0 0 40px rgba(0, 0, 0, 0.6)',
+          backgroundColor: 'var(--paper-raised)',
+          border: '1px solid var(--line-strong)',
+          borderRadius: 'var(--radius)',
+          boxShadow: 'var(--shadow-float)',
           display: 'flex',
           flexDirection: 'column',
           maxHeight: '90vh',
@@ -69,18 +66,38 @@ export function Modal({
         {/* Modal Header */}
         <div
           style={{
-            padding: 'var(--space-5) var(--space-6)',
-            borderBottom: '1px solid var(--border-subtle)',
+            padding: '20px 24px',
+            borderBottom: '1px solid var(--line)',
             display: 'flex',
             alignItems: 'flex-start',
             justifyContent: 'space-between',
-            gap: 'var(--space-4)'
+            gap: '16px',
+            backgroundColor: 'var(--paper-raised)'
           }}
         >
           <div>
-            <h3 style={{ fontSize: '1.25rem', fontWeight: 700, margin: 0 }}>{title}</h3>
+            <h3
+              style={{
+                fontSize: '1.25rem',
+                fontWeight: 700,
+                margin: 0,
+                color: 'var(--ink)',
+                fontFamily: 'var(--font-display)',
+                letterSpacing: '-0.02em'
+              }}
+            >
+              {title}
+            </h3>
             {subtitle && (
-              <p style={{ fontSize: '0.875rem', color: 'var(--text-secondary)', marginTop: '4px', margin: 0 }}>
+              <p
+                style={{
+                  fontSize: '0.8125rem',
+                  color: 'var(--ink-2)',
+                  fontFamily: 'var(--font-mono)',
+                  marginTop: '4px',
+                  margin: 0
+                }}
+              >
                 {subtitle}
               </p>
             )}
@@ -89,24 +106,16 @@ export function Modal({
             onClick={onClose}
             aria-label="Close modal"
             style={{
-              background: 'rgba(255, 255, 255, 0.06)',
-              border: '1px solid var(--border-subtle)',
-              borderRadius: 'var(--radius-sm)',
-              color: 'var(--text-secondary)',
+              backgroundColor: 'var(--paper-sunken)',
+              border: '1px solid var(--line-strong)',
+              borderRadius: 'var(--radius)',
+              color: 'var(--ink)',
               padding: '6px',
               cursor: 'pointer',
               display: 'flex',
               alignItems: 'center',
               justifyContent: 'center',
-              transition: 'all var(--transition-fast)'
-            }}
-            onMouseEnter={(e) => {
-              e.currentTarget.style.color = 'var(--text-primary)';
-              e.currentTarget.style.background = 'rgba(255, 255, 255, 0.12)';
-            }}
-            onMouseLeave={(e) => {
-              e.currentTarget.style.color = 'var(--text-secondary)';
-              e.currentTarget.style.background = 'rgba(255, 255, 255, 0.06)';
+              transition: 'all var(--dur-fast) var(--ease-out)'
             }}
           >
             <X size={18} />
@@ -116,9 +125,10 @@ export function Modal({
         {/* Modal Body */}
         <div
           style={{
-            padding: 'var(--space-6)',
+            padding: '24px',
             overflowY: 'auto',
-            flex: 1
+            flex: 1,
+            backgroundColor: 'var(--paper-raised)'
           }}
         >
           {children}
@@ -128,13 +138,13 @@ export function Modal({
         {footer && (
           <div
             style={{
-              padding: 'var(--space-4) var(--space-6)',
-              borderTop: '1px solid var(--border-subtle)',
-              background: 'rgba(10, 15, 26, 0.5)',
+              padding: '16px 24px',
+              borderTop: '1px solid var(--line)',
+              backgroundColor: 'var(--paper-sunken)',
               display: 'flex',
               alignItems: 'center',
               justifyContent: 'flex-end',
-              gap: 'var(--space-3)'
+              gap: '12px'
             }}
           >
             {footer}
@@ -144,3 +154,5 @@ export function Modal({
     </div>
   );
 }
+
+export default Modal;

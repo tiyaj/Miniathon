@@ -27,7 +27,7 @@ const MENU_CONFIG = {
   handleBottom: '15px',
 };
 
-export function LandingMenuPill({ onOpenEventPanel }) {
+export function LandingMenuPill() {
   const [isOpen, setIsOpen] = useState(false);
   const [isCreamInView, setIsCreamInView] = useState(false);
   const pillRef = useRef(null);
@@ -78,7 +78,7 @@ export function LandingMenuPill({ onOpenEventPanel }) {
   }, [isOpen]);
 
   const navItems = [
-    { label: 'EVENT', target: '#reference-hero', action: onOpenEventPanel },
+    { label: 'EVENT', target: '#reference-hero' },
     { label: 'ZONES', target: '#event-zone-sequence' },
     { label: 'PULSE', target: '#live-numbers' },
     { label: 'STAFFING', target: '#zone-coverage' },

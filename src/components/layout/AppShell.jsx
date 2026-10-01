@@ -11,12 +11,13 @@ export function AppShell({ children }) {
   const [mobileMenuOpen, setMobileMenuOpen] = useState(false);
   const [addVolunteerModalOpen, setAddVolunteerModalOpen] = useState(false);
   const [refreshing, setRefreshing] = useState(false);
-  const [lastUpdated, setLastUpdated] = useState('02:12:00');
+  const [lastSyncDate, setLastSyncDate] = useState(() => new Date());
+  const [syncFailed, setSyncFailed] = useState(false);
   const { showToast } = useToast();
   const location = useLocation();
 
   useEffect(() => {
-    setLastUpdated(new Date().toLocaleTimeString([], { hour: '2-digit', minute: '2-digit', second: '2-digit' }));
+    setLastSyncDate(new Date());
   }, []);
 
   const routeTitleMap = {
@@ -36,11 +37,11 @@ export function AppShell({ children }) {
 
   const handleRefresh = async () => {
     setRefreshing(true);
-    // Simulate real sync
+    setSyncFailed(false);
     setTimeout(() => {
       setRefreshing(false);
-      const timeStr = new Date().toLocaleTimeString([], { hour: '2-digit', minute: '2-digit', second: '2-digit' });
-      setLastUpdated(timeStr);
+      const now = new Date();
+      setLastSyncDate(now);
       showToast('Operations telemetry synchronized with on-ground feed', 'success', 2500);
       window.dispatchEvent(new CustomEvent('pulse:refresh'));
     }, 600);
@@ -58,14 +59,15 @@ export function AppShell({ children }) {
   };
 
   return (
-    <div style={{ minHeight: '100vh', display: 'flex', position: 'relative' }}>
+    <div style={{ minHeight: '100vh', display: 'flex', position: 'relative', backgroundColor: 'var(--paper)' }}>
       {/* Persistent Sidebar */}
       <Sidebar
         isOpen={mobileMenuOpen}
         onClose={() => setMobileMenuOpen(false)}
-        lastUpdated={lastUpdated}
+        lastSyncTime={lastSyncDate}
         onRefresh={handleRefresh}
         refreshing={refreshing}
+        syncFailed={syncFailed}
       />
 
       {/* Main Content Viewport */}
@@ -76,7 +78,8 @@ export function AppShell({ children }) {
           display: 'flex',
           flexDirection: 'column',
           minWidth: 0,
-          transition: 'margin-left var(--transition-base)'
+          backgroundColor: 'var(--paper)',
+          transition: 'margin-left var(--dur-base) var(--ease-out)'
         }}
         className="pulse-main-viewport"
       >
@@ -86,9 +89,11 @@ export function AppShell({ children }) {
           onOpenAddVolunteer={() => setAddVolunteerModalOpen(true)}
           onRefresh={handleRefresh}
           refreshing={refreshing}
+          lastSyncTime={lastSyncDate}
+          syncFailed={syncFailed}
         />
 
-        <main style={{ flex: 1, padding: 'var(--space-6) var(--space-8)', maxWidth: '1440px', width: '100%', margin: '0 auto' }}>
+        <main style={{ flex: 1, padding: '24px 32px', maxWidth: '1440px', width: '100%', margin: '0 auto', boxSizing: 'border-box' }}>
           {children}
         </main>
       </div>
@@ -105,3 +110,5 @@ export function AppShell({ children }) {
     </div>
   );
 }
+
+export default AppShell;
