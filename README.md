@@ -1,16 +1,54 @@
-# React + Vite
+# Miniathon — PULSE Live Event Volunteer Coordination Platform
 
-This template provides a minimal setup to get React working in Vite with HMR and some Oxlint rules.
+Centralized real-time command center and coordination system for large-scale events, managing volunteer shifts, zone coverage, incident dispatch, and telemetry.
 
-Currently, two official plugins are available:
+---
 
-- [@vitejs/plugin-react](https://github.com/vitejs/vite-plugin-react/blob/main/packages/plugin-react) uses [Oxc](https://oxc.rs)
-- [@vitejs/plugin-react-swc](https://github.com/vitejs/vite-plugin-react/blob/main/packages/plugin-react-swc) uses [SWC](https://swc.rs/)
+## 🏗️ Repository Architecture
 
-## React Compiler
+This repository contains both the frontend interface and backend service:
 
-The React Compiler is not enabled on this template because of its impact on dev & build performances. To add it, see [this documentation](https://react.dev/learn/react-compiler/installation).
+```
+Miniathon/
+├── Frontend/                 # React 19 + Vite frontend application
+│   ├── src/                  # Application source (Pages, Components, Context, Hooks)
+│   ├── public/               # Static assets & WebP hero photos
+│   └── package.json          # Frontend dependencies & scripts
+├── pulse/
+│   └── Backend/              # Node.js + Express backend service
+│       ├── src/              # Express API (Controllers, Models, Routes, Services)
+│       ├── tests/            # Test suites (auth, incidents, simulation, etc.)
+│       └── package.json      # Backend dependencies & scripts
+└── .gitignore                # Unified monorepo gitignore
+```
 
-## Expanding the Oxlint configuration
+---
 
-If you are developing a production application, we recommend using TypeScript with type-aware lint rules enabled. Check out the [TS template](https://github.com/vitejs/vite/tree/main/packages/create-vite/template-react-ts) for information on how to integrate TypeScript and Oxlint's TypeScript related rules in your project.
+## 🚀 Quick Start
+
+### 1. Backend (`pulse/Backend`)
+
+```bash
+cd pulse/Backend
+npm install
+npm run seed:demo    # Pre-populate demo events, users, and volunteers
+npm run dev          # Starts Express server at http://localhost:5000
+```
+
+### 2. Frontend (`Frontend/`)
+
+```bash
+cd Frontend
+npm install
+npm run dev          # Starts Vite dev server at http://localhost:5173
+```
+
+---
+
+## ✨ Features
+
+- **Cinematic Landing Page**: 3D coordination orb, photographic zone sequence, and micro-interactions.
+- **Live Command Center**: Real-time zone coverage heatmaps, active volunteers, and live incident stream.
+- **Incident & Task Dispatch**: Instant marshaling and reassignment workflows.
+- **Auth & RBAC**: Role-based access control for Coordinator, Admin, Super Admin, and Volunteers.
+- **Resilience & Simulation Engine**: Built-in test harnesses for chaos and load scenarios.

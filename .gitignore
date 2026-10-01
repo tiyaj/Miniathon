@@ -1,3 +1,24 @@
+# Dependencies
+node_modules/
+Frontend/node_modules/
+Backend/node_modules/
+pulse/Backend/node_modules/
+
+# Production build artifacts
+dist/
+dist-ssr/
+Frontend/dist/
+
+# Local Environment & Secrets
+.env
+.env*.local
+*.local
+pulse/Backend/.env
+Backend/.env
+
+# Local directory junctions / symlinks
+/Backend
+
 # Logs
 logs
 *.log
@@ -7,16 +28,12 @@ yarn-error.log*
 pnpm-debug.log*
 lerna-debug.log*
 
-node_modules
-dist
-dist-ssr
-*.local
-
-# Editor directories and files
+# Editor & OS files
+.DS_Store
+Thumbs.db
 .vscode/*
 !.vscode/extensions.json
-.idea
-.DS_Store
+.idea/
 *.suo
 *.ntvs*
 *.njsproj

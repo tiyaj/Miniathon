@@ -1,0 +1,35 @@
+{
+  "name": "pulse-backend",
+  "version": "1.0.0",
+  "description": "PULSE Backend",
+  "main": "src/server.js",
+  "type": "module",
+  "scripts": {
+    "dev": "nodemon src/server.js",
+    "start": "node src/server.js",
+    "test": "node tests/taskApi.test.js && node tests/incidentApi.test.js && node tests/announcementAndActivityApi.test.js && node tests/dashboardAndIntegrationApi.test.js && node tests/e2eWorkflow.test.js && node tests/devAApi.test.js && node tests/resilienceApi.test.js && node tests/simulationApi.test.js && node tests/authApi.test.js",
+    "test:auth": "node tests/authApi.test.js",
+    "test:deva": "node tests/devAApi.test.js",
+    "test:resilience": "node tests/resilienceApi.test.js",
+    "test:simulate": "node tests/simulationApi.test.js",
+    "test:tasks": "node tests/taskApi.test.js",
+    "test:incidents": "node tests/incidentApi.test.js",
+    "test:announcements": "node tests/announcementAndActivityApi.test.js",
+    "test:dashboard": "node tests/dashboardAndIntegrationApi.test.js",
+    "test:e2e": "node tests/e2eWorkflow.test.js",
+    "seed": "node scripts/seedDemo.js",
+    "seed:demo": "node scripts/seedDemo.js"
+  },
+  "dependencies": {
+    "bcryptjs": "^3.0.3",
+    "cors": "^2.8.6",
+    "dotenv": "^18.0.5",
+    "express": "^5.2.1",
+    "jsonwebtoken": "^9.0.3",
+    "mongoose": "^9.10.3",
+    "resend": "^6.31.0"
+  },
+  "devDependencies": {
+    "nodemon": "^3.1.14"
+  }
+}
