@@ -6,12 +6,11 @@ import LiveDot from './primitives/LiveDot';
 import { useReducedMotionSafe } from '../../hooks/useReducedMotionSafe';
 
 /**
- * TUNING CONFIG: Reference Hero (§4, §5.1, §5.4)
- * All measured coordinates from the 1908x795 reference:
- * - Headline Center: (50vw, 62vh)
- * - Headline Font: Archivo 900, 4.7vw (63px cap height at 1908w), line-height 0.94, letter-spacing -0.01em
- * - Globe Center: (49.7vw, 60vh), diameter ~27vw (64vh)
- * - 1:1 Natural scroll base: headline and globe translate synchronously
+ * TUNING CONFIG: Reference Hero
+ * Background: Pure Black (#000000)
+ * Extended vertical scroll area (260vh) to provide ample room for enlarged floating cream cards
+ * Headline: (50vw, 62vh), Archivo 900
+ * Globe: (49.7vw, 60vh), WebGL wireframe line loops & tilted orbit ring
  */
 export const HERO_CONFIG = {
   headlineCenter: { x: '50vw', y: '62vh' },
@@ -20,6 +19,8 @@ export const HERO_CONFIG = {
   letterSpacing: '-0.01em',
   globeCenter: { x: '49.7vw', y: '60vh' },
   globeDiameterVw: 27,
+  bgColor: '#000000',
+  stageHeight: '260vh',
 };
 
 export function ReferenceHero({ onOpenEventPanel }) {
@@ -31,23 +32,22 @@ export function ReferenceHero({ onOpenEventPanel }) {
     offset: ['start start', 'end start'],
   });
 
-  // 1:1 Natural scroll translation (§5.1: headline & globe move together within ~2vh)
+  // 1:1 Natural scroll translation across the extended scrollable area
   const masterY = useTransform(
     scrollYProgress,
-    [0, 0.55],
-    ['0vh', '-58vh']
+    [0, 0.52],
+    ['0vh', '-60vh']
   );
 
-  // Globe lags by at most ~2vh from headline (§5.2)
   const globeY = useTransform(
     scrollYProgress,
-    [0, 0.55],
-    ['0vh', '-56vh']
+    [0, 0.52],
+    ['0vh', '-58vh']
   );
 
   const headlineOpacity = useTransform(
     scrollYProgress,
-    [0, 0.38],
+    [0, 0.36],
     [1, 0]
   );
 
@@ -65,9 +65,9 @@ export function ReferenceHero({ onOpenEventPanel }) {
       className="pulse-reference-hero-container"
       style={{
         position: 'relative',
-        backgroundColor: '#0a0a10',
+        backgroundColor: HERO_CONFIG.bgColor, // Pure Black (#000000)
         color: '#FFFFFF',
-        height: shouldReduceMotion ? '100vh' : '200vh',
+        height: shouldReduceMotion ? '100vh' : HERO_CONFIG.stageHeight,
         width: '100%',
         zIndex: 10,
       }}
@@ -82,10 +82,10 @@ export function ReferenceHero({ onOpenEventPanel }) {
           width: '100%',
           height: '100vh',
           overflow: 'clip',
-          backgroundColor: '#0a0a10',
+          backgroundColor: HERO_CONFIG.bgColor,
         }}
       >
-        {/* Layer 1: Background Wireframe Coordination Orb (§4.2) */}
+        {/* Layer 1: Background Wireframe Coordination Orb */}
         <motion.div
           style={{
             y: shouldReduceMotion ? 0 : globeY,
@@ -98,10 +98,10 @@ export function ReferenceHero({ onOpenEventPanel }) {
           <CoordinationOrb />
         </motion.div>
 
-        {/* Layer 2: Scattered 6 Asymmetric Photos + 2 Below Fold (§4.3) */}
+        {/* Layer 2: Scattered Enlarged Floating Cream Cards */}
         <FloatingEventMedia scrollYProgress={scrollYProgress} />
 
-        {/* Top Eyebrow: LIVE EVENT COORDINATION · TECHFEST 2026 · EVENT ACTIVE (§4.1) */}
+        {/* Top Eyebrow: LIVE EVENT COORDINATION · TECHFEST 2026 · EVENT ACTIVE */}
         <motion.div
           style={{
             position: 'absolute',
@@ -153,8 +153,7 @@ export function ReferenceHero({ onOpenEventPanel }) {
           </button>
         </motion.div>
 
-        {/* Layer 3: Centered 3-Line Headline (§4.1) */}
-        {/* Center at (50vw, 62vh), lower-center of viewport */}
+        {/* Layer 3: Centered 3-Line Headline at (50vw, 62vh) */}
         <motion.div
           style={{
             position: 'absolute',
@@ -191,7 +190,7 @@ export function ReferenceHero({ onOpenEventPanel }) {
           </h1>
         </motion.div>
 
-        {/* Bottom Line: THADOMAL SHAHANI ENGINEERING COLLEGE · MUMBAI + LIVE (§4.1) */}
+        {/* Bottom Line: THADOMAL SHAHANI ENGINEERING COLLEGE · MUMBAI + LIVE */}
         <motion.div
           style={{
             position: 'absolute',

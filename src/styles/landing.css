@@ -863,9 +863,9 @@
    Background: #0a0a10, Lines: #5a3cf0 (1px glow), Text: #FFFFFF, Accent: #F5452C
    ========================================================================== */
 .landing-dark {
-  --paper: #0a0a10;
-  --paper-raised: #12121c;
-  --paper-alt: #161624;
+  --paper: #000000;
+  --paper-raised: #0a0a10;
+  --paper-alt: #12121c;
   --ink: #FFFFFF;
   --ink-90: rgba(255, 255, 255, 0.90);
   --ink-70: rgba(255, 255, 255, 0.65);
@@ -880,12 +880,12 @@
   --pulse-weak: rgba(245, 69, 44, 0.15);
   --pulse-glow: rgba(245, 69, 44, 0.35);
   --font-display: 'Archivo', 'Archivo Black', 'Bricolage Grotesque', sans-serif;
-  background-color: #0a0a10 !important;
+  background-color: #000000 !important;
   color: #FFFFFF !important;
 }
 
 .landing-dark .pulse-section {
-  background-color: #0a0a10 !important;
+  background-color: #000000 !important;
   color: #FFFFFF !important;
 }
 

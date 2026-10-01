@@ -14,7 +14,6 @@ import { useReducedMotionSafe } from '../../hooks/useReducedMotionSafe';
  * - Compact pill of existing footer links bottom-right
  */
 export function EnterControl() {
-  const shouldReduceMotion = useReducedMotionSafe();
   const { wipeTo } = useRouteWipe();
 
   const footerLinks = [
@@ -157,7 +156,18 @@ export function EnterControl() {
           style={{ display: 'inline-block' }}
         >
           <button
-            onClick={() => wipeTo('/dashboard')}
+            onClick={() => {
+              const commandCenterEl = document.getElementById('operational-command-center');
+              if (commandCenterEl) {
+                if (window.__pulse_lenis) {
+                  window.__pulse_lenis.scrollTo(commandCenterEl, { offset: -20, duration: 1.2 });
+                } else {
+                  commandCenterEl.scrollIntoView({ behavior: 'smooth' });
+                }
+              } else {
+                wipeTo('/dashboard');
+              }
+            }}
             id="enter-control-cta-pill"
             style={{
               backgroundColor: '#FFFFFF',

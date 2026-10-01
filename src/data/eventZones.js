@@ -41,7 +41,7 @@ export const eventZones = [
     index: '01',
     name: 'ENTRY GATE',
     type: 'landscape',
-    widthVw: 59, // Lead landscape ~58-60vw
+    widthVw: 62, // Prominent lead landscape
     aspectRatio: '16/10',
     image: entryGateImg,
     staffed: 18,
@@ -57,7 +57,7 @@ export const eventZones = [
     index: '02',
     name: 'MAIN STAGE',
     type: 'portrait',
-    widthVw: 38, // Portrait ~35-40vw
+    widthVw: 42, // Prominent portrait
     aspectRatio: '3/4',
     image: mainStageImg,
     staffed: 14,
@@ -73,7 +73,7 @@ export const eventZones = [
     index: '03',
     name: 'REGISTRATION',
     type: 'landscape',
-    widthVw: 52, // Landscape
+    widthVw: 54, // Landscape
     aspectRatio: '16/10',
     image: registrationImg,
     staffed: 12,
@@ -89,7 +89,7 @@ export const eventZones = [
     index: '04',
     name: 'FOOD ZONE',
     type: 'portrait',
-    widthVw: 36, // Portrait
+    widthVw: 40, // Portrait
     aspectRatio: '3/4',
     image: foodZoneImg,
     staffed: 9,
@@ -105,7 +105,7 @@ export const eventZones = [
     index: '05',
     name: 'BACKSTAGE',
     type: 'landscape',
-    widthVw: 50, // Landscape
+    widthVw: 52, // Landscape
     aspectRatio: '16/10',
     image: backstageImg,
     staffed: 8,
@@ -119,16 +119,9 @@ export const eventZones = [
 ];
 
 /**
- * TUNING CONFIG: Hero Media (§4.3, §5.1, §5.2, §5.3)
- * Exact reference-measured positions at scroll 0 (top-left corner + width):
- * 1: Red-lit crowd / stage truss: left 23.1vw, top 9.7vh, width 7.8vw, 3:4, main-stage
- * 2: Silhouette DJ purple/orange: left 59.7vw, top 8.4vh, width 9.2vw, 4:3, backstage
- * 3: DJ with raised hands magenta: left 6.4vw, top 37.4vh, width 8.2vw, 3:4, registration
- * 4: Tent / venue exterior: left 7.5vw, top 77.1vh, width 11.9vw, 4:5, entry-gate (cropped bottom)
- * 5: Teal crowd at stage: left 86.4vw, top 50.3vh, width 8.1vw, 3:4, food-zone (behind #6)
- * 6: Hot red/orange stage: left 80.8vw, top 69.8vh, width 10.3vw, 2:3, backstage (cropped bottom, in front of #5)
- * 7 (below fold): Small crowd: left 27.7vw, top 108vh (rises to 25.7vh at 74vh scroll), width 8.9vw, 1.43:1, entry-gate
- * 8 (bridge): Bridge DJ: left 52.4vw, top 105vh (rises to 30.3vh at 74vh scroll), starts 9vw growing to 18.9vw, 4:3, main-stage
+ * TUNING CONFIG: Hero Media
+ * Significantly enlarged dimensions (larger, wider, longer) with warm cream background.
+ * Adjusted coordinates so they float prominently on the black canvas without overlapping the center globe/headline.
  */
 export const heroMedia = [
   {
@@ -136,12 +129,13 @@ export const heroMedia = [
     zoneId: 'main-stage',
     subject: 'Red-lit crowd / stage truss',
     src: heroRightTop,
-    left: '23.1vw',
-    top: '9.7vh',
-    width: '7.8vw',
+    left: '18vw',
+    top: '7vh',
+    width: '15.5vw', // Enlarged from 7.8vw
+    minWidth: '220px',
     aspectRatio: '3/4',
-    speed: 1.35, // Upper photo exits faster (1.1x–1.5x)
-    radius: '6px',
+    speed: 1.35,
+    radius: '10px',
     zIndex: 3,
     caption: 'MAIN STAGE · 14/16',
     isBridge: false,
@@ -152,12 +146,13 @@ export const heroMedia = [
     zoneId: 'backstage',
     subject: 'Silhouette DJ, purple/orange',
     src: heroRightPort1,
-    left: '59.7vw',
-    top: '8.4vh',
-    width: '9.2vw',
+    left: '64vw',
+    top: '6vh',
+    width: '17.5vw', // Enlarged from 9.2vw
+    minWidth: '240px',
     aspectRatio: '4/3',
-    speed: 1.4, // Upper photo exits faster
-    radius: '6px',
+    speed: 1.4,
+    radius: '10px',
     zIndex: 3,
     caption: 'BACKSTAGE · 08/08',
     isBridge: false,
@@ -168,12 +163,13 @@ export const heroMedia = [
     zoneId: 'registration',
     subject: 'DJ with raised hands, magenta',
     src: heroLeftTop,
-    left: '6.4vw',
-    top: '37.4vh',
-    width: '8.2vw',
+    left: '3vw',
+    top: '32vh',
+    width: '16.5vw', // Enlarged from 8.2vw
+    minWidth: '220px',
     aspectRatio: '3/4',
-    speed: 1.25, // Upper photo exits faster
-    radius: '6px',
+    speed: 1.25,
+    radius: '10px',
     zIndex: 3,
     caption: 'REGISTRATION · 12/12',
     isBridge: false,
@@ -184,12 +180,13 @@ export const heroMedia = [
     zoneId: 'entry-gate',
     subject: 'Tent / venue exterior',
     src: heroLeftBot,
-    left: '7.5vw',
-    top: '77.1vh',
-    width: '11.9vw',
+    left: '4vw',
+    top: '72vh',
+    width: '21vw', // Enlarged from 11.9vw
+    minWidth: '280px',
     aspectRatio: '4/5',
-    speed: 1.0, // 1:1 scroll
-    radius: '6px',
+    speed: 1.0,
+    radius: '10px',
     zIndex: 3,
     caption: 'ENTRY GATE · 18/20',
     isBridge: false,
@@ -200,13 +197,14 @@ export const heroMedia = [
     zoneId: 'food-zone',
     subject: 'Teal crowd at stage',
     src: heroRightPort2,
-    left: '86.4vw',
-    top: '50.3vh',
-    width: '8.1vw',
+    left: '81vw',
+    top: '44vh',
+    width: '16.5vw', // Enlarged from 8.1vw
+    minWidth: '220px',
     aspectRatio: '3/4',
-    speed: 1.05, // near 1:1
-    radius: '6px',
-    zIndex: 2, // Behind #6
+    speed: 1.05,
+    radius: '10px',
+    zIndex: 2,
     caption: 'FOOD ZONE · 09/10',
     isBridge: false,
     initialVisible: true,
@@ -216,13 +214,14 @@ export const heroMedia = [
     zoneId: 'backstage',
     subject: 'Hot red/orange stage',
     src: backstageImg,
-    left: '80.8vw',
-    top: '69.8vh',
-    width: '10.3vw',
+    left: '76vw',
+    top: '67vh',
+    width: '19.5vw', // Enlarged from 10.3vw
+    minWidth: '260px',
     aspectRatio: '2/3',
-    speed: 1.0, // 1:1 scroll
-    radius: '6px',
-    zIndex: 4, // In front of #5
+    speed: 1.0,
+    radius: '10px',
+    zIndex: 4,
     caption: 'BACKSTAGE · LIVE',
     isBridge: false,
     initialVisible: true,
@@ -232,13 +231,14 @@ export const heroMedia = [
     zoneId: 'entry-gate',
     subject: 'Small crowd shot',
     src: heroCenterCrowd,
-    left: '27.7vw',
-    top: '106vh', // below fold, rises
-    targetTopMid: '25.7vh',
-    width: '8.9vw',
+    left: '24vw',
+    top: '110vh',
+    targetTopMid: '24vh',
+    width: '17vw', // Enlarged from 8.9vw
+    minWidth: '230px',
     aspectRatio: '1.43/1',
     speed: 1.1,
-    radius: '6px',
+    radius: '10px',
     zIndex: 3,
     caption: 'ENTRY GATE · FLOW',
     isBridge: false,
@@ -249,15 +249,15 @@ export const heroMedia = [
     zoneId: 'main-stage',
     subject: 'Bridge DJ (grows and drifts)',
     src: heroBridgeStage,
-    left: '52.4vw',
-    top: '104vh', // below fold, rises
-    targetTopMid: '30.3vh',
-    width: '9vw', // starts ~9vw, expands to 18.9vw+
-    expandedWidth: '18.9vw',
+    left: '52vw',
+    top: '108vh',
+    targetTopMid: '28vh',
+    width: '16vw', // Starts at 16vw, expands to 28vw+
+    expandedWidth: '28vw',
     aspectRatio: '4/3',
     speed: 1.0,
-    radius: '6px',
-    expandedRadius: '12px',
+    radius: '10px',
+    expandedRadius: '16px',
     zIndex: 5,
     caption: 'MAIN STAGE · 14/16',
     isBridge: true,

@@ -5,19 +5,18 @@ import { useRouteWipe } from './RouteWipeTransition';
 import { useReducedMotionSafe } from '../../hooks/useReducedMotionSafe';
 
 /**
- * TUNING CONFIG: Hero Scattered Media Parallax & Bridge (§4.3, §5.1, §5.2, §5.3)
- * Exact reference-measured starting coordinates at scroll 0:
- * - Upper items (#1, #2, #3) exit faster: travelMultiplier ~1.3x-1.45x
- * - Mid & lower items (#4, #5, #6) move 1:1 with natural scroll
- * - Bridge DJ starts at 9vw, scales to 18.9vw, drifts to center
+ * TUNING CONFIG: Hero Scattered Media Parallax & Bridge
+ * Floating cards styled with warm cream / off-white (#F4F1EA) background framing,
+ * significantly enlarged dimensions (wider, longer, more prominent),
+ * smooth travel distances over the extended black background canvas.
  */
 export const MEDIA_MOTION_CONFIG = {
   upperExitSpeed: 1.35,
   naturalScrollSpeed: 1.0,
   bridgeGrowScrollEnd: 0.45,
-  bridgeStartWidthVw: 9,
-  bridgeEndWidthVw: 18.9,
-  hoverScale: 1.03,
+  hoverScale: 1.035,
+  creamBg: '#F4F1EA',
+  creamBgLight: '#FAF8F3',
 };
 
 export function FloatingEventMedia({ scrollYProgress }) {
@@ -25,10 +24,10 @@ export function FloatingEventMedia({ scrollYProgress }) {
   const { wipeTo } = useRouteWipe();
   const [hoveredZoneId, setHoveredZoneId] = useState(null);
 
-  // Global fade-out as the transition to the strip takes over
+  // Global fade-out as the transition into the pinned strip takes over
   const layerOpacity = useTransform(
     scrollYProgress,
-    [0.26, 0.48],
+    [0.28, 0.52],
     [1, 0]
   );
 
@@ -74,26 +73,26 @@ function ScatteredCard({
   const isBridge = Boolean(item.isBridge);
   const zoneInfo = eventZones.find((z) => z.id === item.zoneId) || eventZones[0];
 
-  // Natural scroll baseline with upper photo speed boost (§5.1, §5.2)
-  const travelDistance = item.speed > 1.1 ? -160 * item.speed : -110 * item.speed;
+  // Natural scroll baseline with upper photo speed boost
+  const travelDistance = item.speed > 1.1 ? -170 * item.speed : -115 * item.speed;
   const yTranslate = useTransform(
     scrollYProgress,
-    [0, 0.5],
+    [0, 0.52],
     ['0vh', `${travelDistance}vh`]
   );
 
   // Below-the-fold entrance (small crowd & bridge DJ rise into view)
   const belowFoldTranslate = useTransform(
     scrollYProgress,
-    [0, 0.38],
-    ['0vh', '-76vh']
+    [0, 0.40],
+    ['0vh', '-82vh']
   );
 
-  // Bridge DJ growth and center drift (§5.3)
+  // Bridge DJ growth and center drift
   const bridgeScale = useTransform(
     scrollYProgress,
     [0, 0.42],
-    [1.0, 2.1]
+    [1.0, 1.85]
   );
 
   const bridgeX = useTransform(
@@ -105,7 +104,7 @@ function ScatteredCard({
   const bridgeRadius = useTransform(
     scrollYProgress,
     [0, 0.42],
-    ['6px', '12px']
+    ['10px', '16px']
   );
 
   const isBelowFold = !item.initialVisible;
@@ -153,51 +152,72 @@ function ScatteredCard({
         }}
         aria-label={`Open ${zoneInfo.name} zone`}
       >
+        {/* Floating Card Outer Frame with Warm Cream Background (#F4F1EA) */}
         <motion.div
           style={{
             width: '100%',
             height: '100%',
             borderRadius: isBridge && !shouldReduceMotion ? bridgeRadius : item.radius,
             overflow: 'hidden',
-            backgroundColor: '#0c0c14',
+            backgroundColor: MEDIA_MOTION_CONFIG.creamBg, // Warm cream / off-white shade
+            padding: '7px',
+            boxShadow: '0 24px 60px rgba(0, 0, 0, 0.85), 0 0 0 1px rgba(244, 241, 234, 0.3)',
             transform: isHovered ? `scale(${MEDIA_MOTION_CONFIG.hoverScale})` : 'scale(1)',
-            transition: 'transform 0.35s cubic-bezier(0.16, 1, 0.3, 1)',
+            transition: 'transform 0.35s cubic-bezier(0.16, 1, 0.3, 1), box-shadow 0.35s ease',
+            display: 'flex',
+            flexDirection: 'column',
           }}
         >
-          <img
-            src={item.src}
-            alt={item.subject}
-            loading={item.initialVisible ? 'eager' : 'lazy'}
-            decoding="async"
+          {/* Inner Artwork Frame */}
+          <div
             style={{
               width: '100%',
               height: '100%',
-              objectFit: 'cover',
-              display: 'block',
+              borderRadius: '6px',
+              overflow: 'hidden',
+              backgroundColor: '#0c0c14',
+              position: 'relative',
             }}
-          />
+          >
+            <img
+              src={item.src}
+              alt={item.subject}
+              loading={item.initialVisible ? 'eager' : 'lazy'}
+              decoding="async"
+              style={{
+                width: '100%',
+                height: '100%',
+                objectFit: 'cover',
+                display: 'block',
+              }}
+            />
+          </div>
         </motion.div>
       </button>
 
-      {/* Hover/focus mono tag beneath card (§7: ENTRY GATE · 18/20) */}
+      {/* Hover/focus mono tag beneath card: preserved text colours */}
       <motion.div
         initial={false}
-        animate={{ opacity: isHovered ? 1 : 0, y: isHovered ? 4 : -2 }}
+        animate={{ opacity: isHovered ? 1 : 0, y: isHovered ? 6 : -2 }}
         transition={{ duration: 0.18 }}
         style={{
           position: 'absolute',
           top: '100%',
           left: 0,
           pointerEvents: 'none',
-          marginTop: '4px',
+          marginTop: '6px',
           whiteSpace: 'nowrap',
           fontFamily: 'var(--font-mono, monospace)',
-          fontSize: '9px',
+          fontSize: '10px',
           fontWeight: 700,
-          letterSpacing: '0.1em',
-          color: 'rgba(255, 255, 255, 0.85)',
+          letterSpacing: '0.12em',
+          color: '#FFFFFF',
           textTransform: 'uppercase',
-          textShadow: '0 2px 6px rgba(0, 0, 0, 0.9)',
+          textShadow: '0 2px 8px rgba(0, 0, 0, 0.95)',
+          backgroundColor: 'rgba(0, 0, 0, 0.75)',
+          padding: '3px 8px',
+          borderRadius: '2px',
+          border: '1px solid rgba(255, 255, 255, 0.15)',
         }}
         className="font-mono"
       >

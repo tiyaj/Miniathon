@@ -74,7 +74,7 @@ export function EventZoneSequence() {
       className="pulse-zone-sequence-container"
       style={{
         position: 'relative',
-        backgroundColor: '#0a0a10',
+        backgroundColor: '#000000',
         height: shouldReduceMotion ? 'auto' : STRIP_CONFIG.containerHeight,
         zIndex: 12,
       }}
@@ -92,7 +92,7 @@ export function EventZoneSequence() {
           display: 'flex',
           flexDirection: 'column',
           justifyContent: 'center',
-          backgroundColor: '#0a0a10',
+          backgroundColor: '#000000',
           padding: shouldReduceMotion ? '4rem 1.5rem' : 0,
         }}
       >

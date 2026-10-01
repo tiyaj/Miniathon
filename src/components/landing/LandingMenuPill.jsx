@@ -61,6 +61,7 @@ export function LandingMenuPill({ onOpenEventPanel }) {
     { label: 'STAFFING', target: '#zone-coverage' },
     { label: 'NETWORK', target: '#volunteer-flow' },
     { label: 'CONTROL', target: '#operations' },
+    { label: 'COMMAND CENTER', target: '#operational-command-center' },
   ];
 
   const handleNavClick = (item) => {
